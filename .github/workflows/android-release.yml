@@ -1,0 +1,39 @@
+name: Android Release
+
+on:
+  push:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+      - run: flutter doctor -v
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Start release build
+        run: flutter build appbundle
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1.10.0
+        with:
+          tag: "0.0.1"
+          artifacts: "build/app/outputs/apk/release/*.apk, build/app/outputs/bundle/release/*.aab"
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: release-apk
+          path: build/app/outputs/apk/

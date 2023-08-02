@@ -1,4 +1,6 @@
+
 # regatta_buddy
+![example workflow](https://github.com/SomeBuddies/RegattaBuddy/actions/workflows/tests.yml/badge.svg)
 
 A new Flutter project.
 
