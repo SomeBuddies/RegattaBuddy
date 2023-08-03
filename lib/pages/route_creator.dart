@@ -13,25 +13,56 @@ class RouteCreatorPage extends StatefulWidget {
 }
 
 class _RouteCreatorPageState extends State<RouteCreatorPage> {
-  final mapController = MapController();
+  late final MapController _mapController;
+  List<Marker> markers = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _mapController = MapController();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const AppHeader(),
       body: FlutterMap(
+        mapController: _mapController,
         options: MapOptions(
-          onMapReady: () {
-            mapController.mapEventStream.listen((event) {});
+          onLongPress: (tapPosition, coordinates) {
+            markers.add(Marker(
+                point: coordinates,
+                builder: (context) => const Icon(
+                      Icons.circle,
+                      color: Colors.red,
+                      size: 12,
+                    )));
+            setState(() {});
           },
           center: const LatLng(54.372158, 18.638306),
-          zoom: 9.2,
+          zoom: 12,
         ),
+        nonRotatedChildren: const [
+          RichAttributionWidget(
+            popupInitialDisplayDuration: Duration(seconds: 5),
+            animationConfig: ScaleRAWA(),
+            attributions: [
+              TextSourceAttribution(
+                'OpenStreetMap contributors',
+              ),
+              TextSourceAttribution(
+                'This attribution is the same throughout this app, except where otherwise specified',
+                prependCopyright: false,
+              ),
+            ],
+          ),
+        ],
         children: [
           TileLayer(
             urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             userAgentPackageName: 'com.regattaBuddy.app',
           ),
+          MarkerLayer(markers: markers)
         ],
       ),
     );
