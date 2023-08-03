@@ -3,22 +3,27 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:regatta_buddy/components/app_header.dart';
 import 'package:latlong2/latlong.dart';
 
-class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+class RouteCreatorPage extends StatefulWidget {
+  static const String route = '/route_creator';
 
-  static const String routeName = '/main';
+  const RouteCreatorPage({super.key});
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<RouteCreatorPage> createState() => _RouteCreatorPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _RouteCreatorPageState extends State<RouteCreatorPage> {
+  final mapController = MapController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const AppHeader(),
       body: FlutterMap(
         options: MapOptions(
+          onMapReady: () {
+            mapController.mapEventStream.listen((event) {});
+          },
           center: const LatLng(54.372158, 18.638306),
           zoom: 9.2,
         ),
