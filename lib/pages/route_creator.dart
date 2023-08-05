@@ -46,7 +46,7 @@ class _RouteCreatorPageState extends State<RouteCreatorPage> {
                         Color(Random().nextInt(0x55555555) + 0xaaaaaaaa)
                             .withAlpha(0xff);
                     Marker markerWithRandomColor = Marker(
-                        key: Key(point.toString()),
+                        key: UniqueKey(),
                         point: point,
                         builder: (context) => Icon(
                               Icons.circle,
