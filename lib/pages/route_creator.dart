@@ -19,14 +19,32 @@ class RouteCreatorPage extends StatefulWidget {
 class _RouteCreatorPageState extends State<RouteCreatorPage> {
   late final MapController _mapController;
 
-  // List<Marker> markers = [];
-  // List<Color> colors = [];
-  List<ComplexMarker> markers = [];
+  final List<ComplexMarker> markers = [];
 
   @override
   void initState() {
     super.initState();
     _mapController = MapController();
+  }
+
+  Color generateBrightColor() {
+    int r = 0, g = 0, b = 0, a = 255;
+    while (r + g + b < 255) {
+      r = Random().nextInt(0xffffffff);
+      g = Random().nextInt(255);
+      b = Random().nextInt(255);
+    }
+    return Color.fromARGB(a, r, g, b);
+  }
+
+  void addMarker(ComplexMarker marker) {
+    markers.add(marker);
+    setState(() {});
+  }
+
+  void deleteMarker(ComplexMarker marker) {
+    markers.remove(marker);
+    setState(() {});
   }
 
   @override
@@ -42,9 +60,7 @@ class _RouteCreatorPageState extends State<RouteCreatorPage> {
                 mapController: _mapController,
                 options: MapOptions(
                   onLongPress: (tapPosition, point) {
-                    Color randomColor =
-                        Color(Random().nextInt(0x55555555) + 0xaaaaaaaa)
-                            .withAlpha(0xff);
+                    Color randomColor = generateBrightColor();
                     Marker markerWithRandomColor = Marker(
                         key: UniqueKey(),
                         point: point,
@@ -53,9 +69,8 @@ class _RouteCreatorPageState extends State<RouteCreatorPage> {
                               color: randomColor,
                               size: 12,
                             ));
-                    markers
-                        .add(ComplexMarker(markerWithRandomColor, randomColor));
-                    setState(() {});
+                    addMarker(
+                        ComplexMarker(markerWithRandomColor, randomColor));
                   },
                   center: const LatLng(54.372158, 18.638306),
                   zoom: 12,
@@ -97,15 +112,21 @@ class _RouteCreatorPageState extends State<RouteCreatorPage> {
                             key: complexMarker.marker.key,
                             title: Text(complexMarker.marker.point.toString()),
                             tileColor: complexMarker.color,
+                            trailing: IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () => deleteMarker(complexMarker),
+                            ),
                           ))
                       .toList(),
-                  onReorder: (oldIndex, newIndex) => setState(() {
-                    if (oldIndex < newIndex) {
-                          newIndex -= 1;
-                        }
-                        final ComplexMarker item = markers.removeAt(oldIndex);
-                        markers.insert(newIndex, item);
-                      })),
+                  onReorder: (oldIndex, newIndex) => setState(
+                        () {
+                          if (oldIndex < newIndex) {
+                            newIndex -= 1;
+                          }
+                          final ComplexMarker item = markers.removeAt(oldIndex);
+                          markers.insert(newIndex, item);
+                        },
+                      )),
             )
           ],
         ),
