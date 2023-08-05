@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:regatta_buddy/pages/event_creation/event_creation.dart';
 import 'package:regatta_buddy/pages/home.dart';
 import 'package:regatta_buddy/pages/regatta_details.dart';
-import 'package:regatta_buddy/pages/route_creator.dart';
 import 'package:regatta_buddy/pages/search.dart';
 import 'package:regatta_buddy/pages/user_regattas.dart';
 
@@ -24,7 +24,7 @@ void main() {
     SearchPage.route: (_) => const Scaffold(
           body: Text("mockedSearchPage"),
         ),
-    RouteCreatorPage.route: (_) => const Scaffold(
+    EventCreationPage.route: (_) => const Scaffold(
           body: Text("mockedCreatePage"),
         ),
     UserRegattasPage.route: (_) => const Scaffold(
