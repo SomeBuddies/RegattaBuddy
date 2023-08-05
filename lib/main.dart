@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:regatta_buddy/pages/main_page.dart';
+import 'package:regatta_buddy/pages/home.dart';
+import 'package:regatta_buddy/pages/route_creator.dart';
 
 void main() => runApp(const RegattaBuddy());
 
@@ -11,8 +12,9 @@ class RegattaBuddy extends StatelessWidget {
     return MaterialApp(
       title: 'RegattaBuddy',
       debugShowCheckedModeBanner: false,
+      home: const HomePage(),
       routes: {
-        '/': (context) => const MainPage(),
+        RouteCreatorPage.route: (context) => const RouteCreatorPage(),
       },
     );
   }
