@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:regatta_buddy/components/app_header.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:regatta_buddy/widgets/app_header.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
