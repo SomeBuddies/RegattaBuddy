@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:regatta_buddy/pages/race/race_page.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 
 class UserRegattasPage extends StatefulWidget {
@@ -13,9 +13,14 @@ class UserRegattasPage extends StatefulWidget {
 class _UserRegattasPageState extends State<UserRegattasPage> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       appBar: AppHeader(),
-      body: Text('Page with regattas that user is participating in')
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () => Navigator.pushNamed(context, RacePage.route),
+          child: const Text('Page with regattas that user is participating in'),
+        ),
+      )
     );
   }
 }
