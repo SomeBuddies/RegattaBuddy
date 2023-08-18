@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:regatta_buddy/pages/event_creation/event_creation.dart';
 import 'package:regatta_buddy/pages/home.dart';
@@ -6,7 +7,14 @@ import 'package:regatta_buddy/pages/regatta_details.dart';
 import 'package:regatta_buddy/pages/search.dart';
 import 'package:regatta_buddy/pages/user_regattas.dart';
 
-void main() => runApp(const RegattaBuddy());
+import 'firebase_options.dart';
+
+void main() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const RegattaBuddy());
+}
 
 class RegattaBuddy extends StatelessWidget {
   const RegattaBuddy({super.key});
