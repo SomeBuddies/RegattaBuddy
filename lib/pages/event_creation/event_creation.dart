@@ -1,9 +1,13 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:regatta_buddy/pages/event_creation/event_form.dart';
 import 'package:regatta_buddy/pages/event_creation/event_route.dart';
 import 'package:regatta_buddy/pages/event_creation/event_social.dart';
+import 'package:regatta_buddy/pages/home.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/widgets/complex_marker.dart';
+import 'package:uuid/uuid.dart';
 
 class EventCreationPage extends StatefulWidget {
   static const String route = '/event_creation';
@@ -15,7 +19,13 @@ class EventCreationPage extends StatefulWidget {
 }
 
 class _EventCreationPageState extends State<EventCreationPage> {
+  DatabaseReference databaseReference = FirebaseDatabase.instanceFor(
+          app: Firebase.app(),
+          databaseURL:
+              " https://regattabuddy-default-rtdb.europe-west1.firebasedatabase.app")
+      .ref('/events');
   final List<ComplexMarker> markers = [];
+  final String eventId = const Uuid().v4();
   String eventName = '';
   String eventDescription = '';
 
@@ -72,7 +82,10 @@ class _EventCreationPageState extends State<EventCreationPage> {
     }
   }
 
-  void finishEventCreation() {}
+  void finishEventCreation() {
+    databaseReference.update(toJson());
+    Navigator.pushReplacementNamed(context, HomePage.route);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,4 +124,12 @@ class _EventCreationPageState extends State<EventCreationPage> {
           )),
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        eventId: {
+          'name': eventName,
+          'description': eventDescription,
+          'route': markers.map((e) => e.marker.point.toJson()).toList()
+        }
+      };
 }

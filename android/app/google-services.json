@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "73358650827",
+    "firebase_url": "https://regattabuddy-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "regattabuddy",
+    "storage_bucket": "regattabuddy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:73358650827:android:f1278ba855f7b02ee79a4e",
+        "android_client_info": {
+          "package_name": "com.example.regatta_buddy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "73358650827-8jk8rtt9duqcp7l32p0libq8jkcla710.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmGf938PWHAXogHZmhgay9MFnr70Q3pe4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "73358650827-8jk8rtt9duqcp7l32p0libq8jkcla710.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
