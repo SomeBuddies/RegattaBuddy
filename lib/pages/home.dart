@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quickalert/quickalert.dart';
+import 'package:regatta_buddy/pages/event_creation/event_creation.dart';
 import 'package:regatta_buddy/pages/regatta_details.dart';
-import 'package:regatta_buddy/pages/route_creator.dart';
 import 'package:regatta_buddy/pages/search.dart';
 import 'package:regatta_buddy/pages/user_regattas.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
                       title: 'New regatta',
                       text: 'Are you sure you want to start creating a new regatta?',
                       onConfirmBtnTap: () {
-                        Navigator.pushNamed(context, RouteCreatorPage.route);
+                        Navigator.pushNamed(context, EventCreationPage.route);
                       },
                       confirmBtnText: 'Yes',
                     );
@@ -123,10 +123,10 @@ class _HomePageState extends State<HomePage> {
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
   static const String route = '/';
 
+  const HomePage({super.key});
+  
   @override
   State<HomePage> createState() => _HomePageState();
 }
