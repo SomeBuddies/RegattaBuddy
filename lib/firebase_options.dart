@@ -26,10 +26,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -57,6 +54,18 @@ class DefaultFirebaseOptions {
     appId: '1:73358650827:android:f1278ba855f7b02ee79a4e',
     messagingSenderId: '73358650827',
     projectId: 'regattabuddy',
+    databaseURL: 'https://regattabuddy-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'regattabuddy.appspot.com',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyA_3GzKPEl9PD4ezm1DvloNdxWsMtv7-i0',
+    appId: '1:73358650827:ios:e8da848108c7fe15e79a4e',
+    messagingSenderId: '73358650827',
+    projectId: 'regattabuddy',
+    databaseURL: 'https://regattabuddy-default-rtdb.europe-west1.firebasedatabase.app',
+    storageBucket: 'regattabuddy.appspot.com',
+    iosClientId: '73358650827-50m177n4tc6ri4shah386cq517ei7a7j.apps.googleusercontent.com',
+    iosBundleId: 'com.example.regattaBuddy',
   );
 }

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:regatta_buddy/utils/externalAPIConstants.dart';
 import 'package:regatta_buddy/widgets/complex_marker.dart';
 
 class EventRouteSubPage extends StatefulWidget {
@@ -67,8 +68,8 @@ class _EventRouteSubPageState extends State<EventRouteSubPage> {
             ],
             children: [
               TileLayer(
-                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                userAgentPackageName: 'com.regattaBuddy.app',
+                urlTemplate: tileLayerUrl,
+                userAgentPackageName: tileLayerUserAgent,
               ),
               PolylineLayer(
                 polylines: [

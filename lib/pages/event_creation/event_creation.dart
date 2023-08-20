@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:regatta_buddy/pages/event_creation/event_form.dart';
@@ -10,7 +9,7 @@ import 'package:regatta_buddy/widgets/complex_marker.dart';
 import 'package:uuid/uuid.dart';
 
 class EventCreationPage extends StatefulWidget {
-  static const String route = '/event_creation';
+  static const String route = '/eventCreation';
 
   const EventCreationPage({super.key});
 
@@ -19,11 +18,8 @@ class EventCreationPage extends StatefulWidget {
 }
 
 class _EventCreationPageState extends State<EventCreationPage> {
-  DatabaseReference databaseReference = FirebaseDatabase.instanceFor(
-          app: Firebase.app(),
-          databaseURL:
-              " https://regattabuddy-default-rtdb.europe-west1.firebasedatabase.app")
-      .ref('/events');
+  DatabaseReference databaseReference =
+      FirebaseDatabase.instance.ref('/events');
   final List<ComplexMarker> markers = [];
   final String eventId = const Uuid().v4();
   String eventName = '';
@@ -102,7 +98,10 @@ class _EventCreationPageState extends State<EventCreationPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  TextButton(onPressed: () {}, child: const Text("Cancel")),
+                  TextButton(
+                      onPressed: () => Navigator.pushReplacementNamed(
+                          context, HomePage.route),
+                      child: const Text("Cancel")),
                   Row(
                     children: [
                       if (step > 0)

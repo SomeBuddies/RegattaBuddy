@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../utils/form_utils.dart';
+import 'package:regatta_buddy/utils/form_utils.dart';
 
 class EventFormSubPage extends StatefulWidget {
   final GlobalKey<FormState> _formKey;
