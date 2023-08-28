@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quickalert/quickalert.dart';
+
 import 'package:regatta_buddy/pages/event_creation/event_creation.dart';
 import 'package:regatta_buddy/pages/regatta_details.dart';
 import 'package:regatta_buddy/pages/search.dart';
@@ -10,51 +11,57 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const AppHeader(),
-        body: Container(
-          color: Colors.green,
-          constraints: const BoxConstraints.expand(),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              buildButton(
-                  onTap: () => handleJoinRegatta(context),
-                  title: 'Join',
-                  text: 'Use code to join an existing regatta'),
-              const SizedBox(height: 20.0),
-              buildButton(
-                  onTap: () =>
-                      Navigator.pushNamed(context, UserRegattasPage.route),
-                  title: 'Your regattas',
-                  text: 'View your upcoming regattas'),
-              const SizedBox(height: 20.0),
-              buildButton(
-                  onTap: () {
-                    QuickAlert.show(
-                      context: context,
-                      type: QuickAlertType.confirm,
-                      title: 'New regatta',
-                      text: 'Are you sure you want to start creating a new regatta?',
-                      onConfirmBtnTap: () {
-                        Navigator.pushNamed(context, EventCreationPage.route);
-                      },
-                      confirmBtnText: 'Yes',
-                    );
+      appBar: const AppHeader(),
+      body: Container(
+        color: Colors.green,
+        constraints: const BoxConstraints.expand(),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            buildButton(
+              onTap: () => handleJoinRegatta(context),
+              title: 'Join',
+              text: 'Use code to join an existing regatta',
+            ),
+            const SizedBox(height: 20.0),
+            buildButton(
+              onTap: () => Navigator.pushNamed(context, UserRegattasPage.route),
+              title: 'Your regattas',
+              text: 'View your upcoming regattas',
+            ),
+            const SizedBox(height: 20.0),
+            buildButton(
+              onTap: () {
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.confirm,
+                  title: 'New regatta',
+                  text: 'Are you sure you want to start creating a new regatta?',
+                  onConfirmBtnTap: () {
+                    Navigator.pushNamed(context, EventCreationPage.route);
                   },
-                  title: 'Create',
-                  text: 'Create a new regatta'),
-              const SizedBox(height: 20.0),
-              buildButton(
-                  onTap: () => Navigator.pushNamed(context, SearchPage.route),
-                  title: 'Search',
-                  text: 'Search for upcoming regattas in your area')
-            ],
-          ),
-        ));
+                  confirmBtnText: 'Yes',
+                );
+              },
+              title: 'Create',
+              text: 'Create a new regatta',
+            ),
+            const SizedBox(height: 20.0),
+            buildButton(
+              onTap: () => Navigator.pushNamed(context, SearchPage.route),
+              title: 'Search',
+              text: 'Search for upcoming regattas in your area',
+            )
+          ],
+        ),
+      ),
+    );
   }
 
-  void handleJoinRegatta(BuildContext context) {
+  void handleJoinRegatta(
+    BuildContext context,
+  ) {
     var regattaCode = '';
 
     QuickAlert.show(
@@ -90,7 +97,7 @@ class _HomePageState extends State<HomePage> {
           title: '{Regatta Name}',
           text: "You successfully joined the regatta!",
         );
-        Navigator.pushNamed(context, RegattaDetailsPage.route);
+        if (context.mounted) Navigator.pushNamed(context, RegattaDetailsPage.route);
       },
     );
   }
@@ -103,7 +110,11 @@ class _HomePageState extends State<HomePage> {
     return false;
   }
 
-  Card buildButton({required onTap, required title, required text}) {
+  Card buildButton({
+    required VoidCallback onTap,
+    required String title,
+    required String text,
+  }) {
     return Card(
       shape: const StadiumBorder(),
       margin: const EdgeInsets.symmetric(
@@ -112,12 +123,13 @@ class _HomePageState extends State<HomePage> {
       clipBehavior: Clip.antiAlias,
       elevation: 1,
       child: ListTile(
-          onTap: onTap,
-          contentPadding: const EdgeInsets.only(
-            left: 30,
-          ),
-          title: Text(title ?? ""),
-          subtitle: Text(text ?? "")),
+        onTap: onTap,
+        contentPadding: const EdgeInsets.only(
+          left: 30,
+        ),
+        title: Text(title),
+        subtitle: Text(text),
+      ),
     );
   }
 }
@@ -126,7 +138,7 @@ class HomePage extends StatefulWidget {
   static const String route = '/';
 
   const HomePage({super.key});
-  
+
   @override
   State<HomePage> createState() => _HomePageState();
 }

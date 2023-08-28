@@ -14,13 +14,13 @@ class _UserRegattasPageState extends State<UserRegattasPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppHeader(),
+      appBar: const AppHeader(),
       body: Center(
         child: ElevatedButton(
           onPressed: () => Navigator.pushNamed(context, RacePage.route),
           child: const Text('Page with regattas that user is participating in'),
         ),
-      )
+      ),
     );
   }
 }

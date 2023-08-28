@@ -15,10 +15,12 @@ class RaceStatistics extends StatelessWidget {
       height: height,
       width: MediaQuery.of(context).size.width,
       decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(constants.elementsBorderRadius),
-              bottomRight: Radius.circular(constants.elementsBorderRadius))),
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(constants.elementsBorderRadius),
+          bottomRight: Radius.circular(constants.elementsBorderRadius),
+        ),
+      ),
       child: const Padding(
         padding: EdgeInsets.only(left: 20, right: 20),
         child: Row(
@@ -30,16 +32,18 @@ class RaceStatistics extends StatelessWidget {
                 Text(
                   "Distance",
                   style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 Text(
                   "0.00km",
                   style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
@@ -49,16 +53,18 @@ class RaceStatistics extends StatelessWidget {
                 Text(
                   "Time",
                   style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 Text(
                   "0:00:00",
                   style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
@@ -68,16 +74,18 @@ class RaceStatistics extends StatelessWidget {
                 Text(
                   "Avg. Speed",
                   style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 Text(
                   "0.00km/h",
                   style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
