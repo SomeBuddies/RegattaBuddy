@@ -10,6 +10,10 @@ class EventSocialSubPage extends StatefulWidget {
 class _EventSocialSubPageState extends State<EventSocialSubPage> {
   @override
   Widget build(BuildContext context) {
-    return const Column(children: [Text('You can invite contestants here')]);
+    return const Column(
+      children: [
+        Text('You can invite contestants here'),
+      ],
+    );
   }
 }

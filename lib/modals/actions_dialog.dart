@@ -3,7 +3,9 @@ import 'package:regatta_buddy/modals/action_button.dart';
 import 'package:regatta_buddy/utils/constants.dart' as constants;
 
 Future<void> showActionsDialog(
-    BuildContext context, List<ActionButton> actions) async {
+  BuildContext context,
+  List<ActionButton> actions,
+) async {
   await Future.delayed(const Duration(seconds: 0));
   if (context.mounted) {
     showDialog(
@@ -11,8 +13,7 @@ Future<void> showActionsDialog(
       context: context,
       builder: (BuildContext cxt) {
         var autoClosingActions = actions.map((action) {
-          action.setAdditionalCallback(() => Navigator.of(cxt).pop(false));
-          return action;
+          return action.copyWith(additionalCallback: () => Navigator.of(cxt).pop(false));
         }).toList();
 
         return Align(
@@ -22,8 +23,8 @@ Future<void> showActionsDialog(
             child: Material(
               color: Colors.white,
               shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(constants.elementsBorderRadius)),
+                borderRadius: BorderRadius.circular(constants.elementsBorderRadius),
+              ),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: GridView.count(

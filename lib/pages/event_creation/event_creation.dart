@@ -1,12 +1,13 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
+
 import 'package:regatta_buddy/pages/event_creation/event_form.dart';
 import 'package:regatta_buddy/pages/event_creation/event_route.dart';
 import 'package:regatta_buddy/pages/event_creation/event_social.dart';
 import 'package:regatta_buddy/pages/home.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/widgets/complex_marker.dart';
-import 'package:uuid/uuid.dart';
 
 class EventCreationPage extends StatefulWidget {
   static const String route = '/eventCreation';
@@ -18,8 +19,7 @@ class EventCreationPage extends StatefulWidget {
 }
 
 class _EventCreationPageState extends State<EventCreationPage> {
-  DatabaseReference databaseReference =
-      FirebaseDatabase.instance.ref('/events');
+  DatabaseReference databaseReference = FirebaseDatabase.instance.ref('/events');
   final List<ComplexMarker> markers = [];
   final String eventId = const Uuid().v4();
   String eventName = '';
@@ -28,14 +28,13 @@ class _EventCreationPageState extends State<EventCreationPage> {
   int step = 0;
   late final List pages;
 
-  late final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
     pages = [
-      () => EventFormSubPage(
-          _formKey, eventName, eventDescription, changeName, changeDescription),
+      () => EventFormSubPage(_formKey, eventName, eventDescription, changeName, changeDescription),
       () => EventRouteSubPage(markers, addMarker, deleteMarker),
       () => const EventSocialSubPage(),
     ];
@@ -88,39 +87,44 @@ class _EventCreationPageState extends State<EventCreationPage> {
     return Scaffold(
       appBar: const AppHeader(),
       body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              const Text('Event creation'),
-              Flexible(
-                child: pages[step](),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(
-                      onPressed: () => Navigator.pushReplacementNamed(
-                          context, HomePage.route),
-                      child: const Text("Cancel")),
-                  Row(
-                    children: [
-                      if (step > 0)
-                        TextButton(
-                            onPressed: previousStep,
-                            child: const Text("Previous")),
-                      if (step < pages.length - 1)
-                        TextButton(
-                            onPressed: nextStep, child: const Text("Next"))
-                      else
-                        TextButton(
-                            onPressed: finishEventCreation,
-                            child: const Text("Finish")),
-                    ],
-                  )
-                ],
-              )
-            ],
-          )),
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            const Text('Event creation'),
+            Flexible(
+              child: pages[step](),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.pushReplacementNamed(context, HomePage.route),
+                  child: const Text("Cancel"),
+                ),
+                Row(
+                  children: [
+                    if (step > 0)
+                      TextButton(
+                        onPressed: previousStep,
+                        child: const Text("Previous"),
+                      ),
+                    if (step < pages.length - 1)
+                      TextButton(
+                        onPressed: nextStep,
+                        child: const Text("Next"),
+                      )
+                    else
+                      TextButton(
+                        onPressed: finishEventCreation,
+                        child: const Text("Finish"),
+                      ),
+                  ],
+                )
+              ],
+            )
+          ],
+        ),
+      ),
     );
   }
 

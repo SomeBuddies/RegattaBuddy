@@ -27,23 +27,29 @@ class RBNotification extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius:
-            BorderRadius.all(Radius.circular(constants.elementsBorderRadius)),
+        borderRadius: BorderRadius.all(Radius.circular(constants.elementsBorderRadius)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 20),
-            child: Text(title,
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.only(right: 20),
             child: Row(
               children: [
-                Text(additionalText, style: const TextStyle(fontSize: 14)),
+                Text(
+                  additionalText,
+                  style: const TextStyle(fontSize: 14),
+                ),
                 const SizedBox(width: 10),
                 GestureDetector(
                   onTap: () => onClose(),

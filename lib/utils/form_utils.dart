@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-InputDecoration customTextFormFieldDecoration(String labelText) =>
-    InputDecoration(
-        border: const OutlineInputBorder(),
-        labelText: labelText,
-        labelStyle: const TextStyle(fontSize: 20));
+InputDecoration customTextFormFieldDecoration(String labelText) => InputDecoration(
+      border: const OutlineInputBorder(),
+      labelText: labelText,
+      labelStyle: const TextStyle(fontSize: 20),
+    );
 
 String? requiredFieldValidator(value) {
   if (value == null || value.isEmpty) {
@@ -13,9 +13,7 @@ String? requiredFieldValidator(value) {
   return null;
 }
 
-Widget customRequiredInputFormField(
-        String label, TextEditingController controller) =>
-    Padding(
+Widget customRequiredInputFormField(String label, TextEditingController controller) => Padding(
       padding: const EdgeInsets.all(10),
       child: TextFormField(
         controller: controller,
@@ -24,9 +22,7 @@ Widget customRequiredInputFormField(
       ),
     );
 
-Widget customRequiredTextAreaFormField(
-        String label, TextEditingController controller) =>
-    Padding(
+Widget customRequiredTextAreaFormField(String label, TextEditingController controller) => Padding(
       padding: const EdgeInsets.all(10.0),
       child: TextFormField(
         controller: controller,

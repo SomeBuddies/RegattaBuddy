@@ -44,3 +44,7 @@ app.*.map.json
 /android/app/release
 
 /reports
+
+# Build Related (i think)
+/windows/flutter
+/macos/Flutter

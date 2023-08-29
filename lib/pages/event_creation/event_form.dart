@@ -9,12 +9,13 @@ class EventFormSubPage extends StatefulWidget {
   final void Function(String) descriptionChangeHandler;
 
   const EventFormSubPage(
-      this._formKey,
-      this.initialName,
-      this.initialDescription,
-      this.nameChangeHandler,
-      this.descriptionChangeHandler,
-      {super.key});
+    this._formKey,
+    this.initialName,
+    this.initialDescription,
+    this.nameChangeHandler,
+    this.descriptionChangeHandler, {
+    super.key,
+  });
 
   @override
   State<EventFormSubPage> createState() => _EventFormSubPageState();
@@ -29,10 +30,12 @@ class _EventFormSubPageState extends State<EventFormSubPage> {
     super.initState();
     eventNameController.text = widget.initialName;
     eventDescriptionController.text = widget.initialDescription;
-    eventNameController
-        .addListener(() => widget.nameChangeHandler(eventNameController.text));
+    eventNameController.addListener(
+      () => widget.nameChangeHandler(eventNameController.text),
+    );
     eventDescriptionController.addListener(
-        () => widget.descriptionChangeHandler(eventDescriptionController.text));
+      () => widget.descriptionChangeHandler(eventDescriptionController.text),
+    );
   }
 
   @override
@@ -45,14 +48,14 @@ class _EventFormSubPageState extends State<EventFormSubPage> {
   @override
   Widget build(BuildContext context) {
     return Form(
-        key: widget._formKey,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            customRequiredInputFormField('Event name', eventNameController),
-            customRequiredTextAreaFormField(
-                'Event description', eventDescriptionController),
-          ],
-        ));
+      key: widget._formKey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          customRequiredInputFormField('Event name', eventNameController),
+          customRequiredTextAreaFormField('Event description', eventDescriptionController),
+        ],
+      ),
+    );
   }
 }
