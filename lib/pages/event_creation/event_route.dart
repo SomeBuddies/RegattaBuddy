@@ -6,7 +6,7 @@ import 'package:latlong2/latlong.dart';
 
 import 'package:regatta_buddy/utils/constants.dart' as constants;
 import 'package:regatta_buddy/utils/external_api_constants.dart';
-import 'package:regatta_buddy/widgets/complex_marker.dart';
+import 'package:regatta_buddy/models/complex_marker.dart';
 
 class EventRouteSubPage extends StatefulWidget {
   final List<ComplexMarker> markers;
