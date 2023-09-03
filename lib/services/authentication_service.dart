@@ -7,8 +7,25 @@ import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 
 class AuthenticationService {
   final Logger logger = getLogger('AuthenticationService');
-  final firebaseAuth = FirebaseAuth.instance;
+  late final FirebaseAuth firebaseAuth;
+  late final FirebaseFirestore firestore;
 
+  AuthenticationService() {
+    firebaseAuth = FirebaseAuth.instance;
+    firestore = FirebaseFirestore.instance;
+    logger.i('AuthenticationService initialized');
+  }
+
+  AuthenticationService.custom({
+    required this.firebaseAuth,
+    required this.firestore,
+  }) {
+    logger.i('AuthenticationService initialized with custom dependencies');
+  }
+
+  /// Tries to login with the provided [email] and [password].
+  ///
+  /// Returns user uid if successful, otherwise returns null.
   Future<String?> login(String email, String password) async {
     try {
       await firebaseAuth.signInWithEmailAndPassword(
@@ -27,6 +44,42 @@ class AuthenticationService {
     return firebaseAuth.currentUser!.uid;
   }
 
+  /// Tries to sign up user with provided [registrationData].
+  ///
+  /// Returns user uid if successful, otherwise returns null.
+  Future<String?> signUp(RegistrationData registrationData) async {
+    logger.d('Signing up user with email: ${registrationData.email}');
+    try {
+      await firebaseAuth.createUserWithEmailAndPassword(
+        email: registrationData.email,
+        password: registrationData.password,
+      );
+    } catch (e) {
+      logger.e('Error when creating user: $e');
+      return null;
+    }
+    logger.d(
+        'Successfully created user with email: ${registrationData.email}. Now storing user info...');
+    try {
+      await firestore
+          .collection('users')
+          .doc(firebaseAuth.currentUser!.uid)
+          .set({
+        'firstName': registrationData.firstName,
+        'lastName': registrationData.lastName,
+        'email': registrationData.email,
+      });
+    } catch (e) {
+      logger.e('Error when storing user info: $e');
+      return null;
+    }
+    logger.i('Successfully sign up for email: ${registrationData.email}');
+    return firebaseAuth.currentUser!.uid;
+  }
+
+  /// Tries to fetch current user data from Firestore.
+  ///
+  /// Returns [UserData] if successful, otherwise returns null.
   Future<UserData?> fetchCurrentUserData() async {
     try {
       final user = firebaseAuth.currentUser;
@@ -41,11 +94,13 @@ class AuthenticationService {
     }
   }
 
+  /// Tries to fetch user data from Firestore for provided [uid].
+  ///
+  /// Returns [UserData] if successful, otherwise returns null.
   Future<UserData?> fetchUserData(String uid) async {
     try {
       logger.i('Fetching user data from Firestore for uid: $uid');
-      final userData =
-          await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      final userData = await firestore.collection('users').doc(uid).get();
 
       if (userData.exists) {
         final data = userData.data() as Map<String, dynamic>;
@@ -64,34 +119,5 @@ class AuthenticationService {
       logger.e('Error fetching user data: $e');
       return null;
     }
-  }
-
-  Future<String?> signUp(RegistrationData registrationData) async {
-    logger.d('Signing up user with email: ${registrationData.email}');
-    try {
-      await firebaseAuth.createUserWithEmailAndPassword(
-        email: registrationData.email,
-        password: registrationData.password,
-      );
-    } catch (e) {
-      logger.e('Error when creating user: $e');
-      return null;
-    }
-    logger.d('Successfully created user with email: ${registrationData.email}. Now storing user info...');
-    try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(firebaseAuth.currentUser!.uid)
-          .set({
-        'firstName': registrationData.firstName,
-        'lastName': registrationData.lastName,
-        'email': registrationData.email,
-      });
-    } catch (e) {
-      logger.e('Error when storing user info: $e');
-      return null;
-    }
-    logger.i('Successfully sign up for email: ${registrationData.email}');
-    return firebaseAuth.currentUser!.uid;
   }
 }

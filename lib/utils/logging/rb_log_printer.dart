@@ -6,8 +6,8 @@ class RBLogPrinter extends LogPrinter {
 
   @override
   List<String> log(LogEvent event) {
-    final color = PrettyPrinter.defaultLevelColors[event.level];
-    final emoji = PrettyPrinter.defaultLevelEmojis[event.level];
+    final color = PrettyPrinter.levelColors[event.level];
+    final emoji = PrettyPrinter.levelEmojis[event.level];
     final message = color!('$emoji $className - ${event.message}');
     return [message];
   }
