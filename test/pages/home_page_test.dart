@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -7,6 +8,8 @@ import 'package:regatta_buddy/pages/regatta_details.dart';
 import 'package:regatta_buddy/pages/search.dart';
 import 'package:regatta_buddy/pages/user_regattas.dart';
 
+import '../firebase_mock.dart';
+
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
 class FakeRoute extends Fake implements Route {}
@@ -15,8 +18,11 @@ const validRegattaCode = '12345';
 const invalidRegattaCode = '0';
 
 void main() {
-  setUpAll(() {
+  setupFirebaseMocks();
+
+  setUpAll(() async {
     registerFallbackValue(FakeRoute());
+    await Firebase.initializeApp();
   });
   TestWidgetsFlutterBinding.ensureInitialized();
 
