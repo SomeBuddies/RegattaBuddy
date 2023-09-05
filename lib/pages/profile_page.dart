@@ -1,15 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:regatta_buddy/pages/home.dart';
+import 'package:regatta_buddy/pages/login_page.dart';
 import 'package:regatta_buddy/providers/user_provider.dart';
-import 'package:regatta_buddy/utils/authentication_helper.dart';
 import 'package:regatta_buddy/utils/notification_helper.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  ProfilePage({super.key});
 
   static const String route = '/profile';
 
@@ -50,9 +49,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 clipBehavior: Clip.antiAlias,
                 elevation: 1,
                 child: ListTile(
-                  onTap: () => {
-                    FirebaseAuth.instance.signOut(),
-                    Get.offAll(() => const HomePage()),
+                  onTap: () async => {
+                    showLoadingSpinner(),
+                    await FirebaseAuth.instance.signOut(),
+                    Navigator.of(context).popUntil(ModalRoute.withName(HomePage.route)),
                   },
                   contentPadding: const EdgeInsets.only(
                     left: 30,
@@ -64,5 +64,19 @@ class _ProfilePageState extends State<ProfilePage> {
             ]),
       ),
     );
+  }
+  void showLoadingSpinner() {
+    showDialog(
+      context: context,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+      barrierDismissible: false,
+    );
+  }
+
+  void verifyUserIsAuthenticated() {
+    var user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      Navigator.pushNamed(context, LoginPage.route);
+    }
   }
 }

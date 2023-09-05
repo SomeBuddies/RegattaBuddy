@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:regatta_buddy/models/user_data.dart';
 import 'package:regatta_buddy/services/authentication_service.dart';
@@ -7,9 +6,11 @@ import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 
 class UserProvider with ChangeNotifier {
   Logger logger = getLogger('UserProvider');
-  final AuthenticationService loginService = Get.find<AuthenticationService>();
+  final AuthenticationService authenticationService;
 
   UserData? _user;
+
+  UserProvider(this.authenticationService);
 
   UserData? get user {
     initializeUserDataIfAuthenticated();
@@ -21,21 +22,21 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void initializeUserDataIfAuthenticated() {
+  Future<void> initializeUserDataIfAuthenticated() async {
     if (_user != null) {
       return;
     }
 
-    loginService.fetchCurrentUserData().then((userData) {
+    await authenticationService.fetchCurrentUserData().then((userData) {
       if (userData != null) {
         setUser(userData);
       }
     });
   }
 
-  void loadUserData() {
+  Future<void> loadUserData() async {
     logger.i('Loading user data from Firestore');
-    loginService.fetchCurrentUserData().then((userData) {
+    await authenticationService.fetchCurrentUserData().then((userData) {
       if (userData != null) {
         setUser(userData);
       }

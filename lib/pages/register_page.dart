@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:regatta_buddy/models/registration_data.dart';
 import 'package:regatta_buddy/pages/home.dart';
@@ -13,7 +11,7 @@ import 'package:regatta_buddy/widgets/app_header.dart';
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
-  static const String route = '/login';
+  static const String route = '/register';
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -26,7 +24,6 @@ class _RegisterPageState extends State<RegisterPage> {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  AuthenticationService authenticationService = Get.find<AuthenticationService>();
 
   @override
   void dispose() {
@@ -95,7 +92,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            signUp();
+                            signUp(context);
                           }
                         },
                         child: const Text('Sign Up'),
@@ -114,9 +111,9 @@ class _RegisterPageState extends State<RegisterPage> {
             )));
   }
 
-  Future signUp() async {
+  Future signUp(BuildContext context) async {
     showLoadingSpinner();
-
+    final authenticationService = Provider.of<AuthenticationService>(context, listen: false);
     var registrationData = RegistrationData(
       email: emailController.text,
       password: passwordController.text,
@@ -128,12 +125,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (newUserUid == null) {
       showToast('Error when creating user');
-      Get.back();
+      Navigator.pop(context);
       return;
     }
 
-    Provider.of<UserProvider>(context, listen: false).loadUserData();
-    Get.offAll(() => const HomePage());
+    await Provider.of<UserProvider>(context, listen: false).loadUserData();
+    Navigator.of(context).popUntil(ModalRoute.withName(HomePage.route));
   }
 
   void showLoadingSpinner() {

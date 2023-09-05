@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
+import 'package:logger/logger.dart';
 import 'package:regatta_buddy/pages/login_page.dart';
 import 'package:regatta_buddy/pages/profile_page.dart';
+import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 
 class AppHeader extends StatefulWidget implements PreferredSizeWidget {
   const AppHeader({
@@ -34,6 +35,8 @@ class AppHeader extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _AppHeaderState extends State<AppHeader> {
+  final Logger logger = getLogger('AppHeader');
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -78,9 +81,7 @@ class _AppHeaderState extends State<AppHeader> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return GestureDetector(
-              onTap: () {
-                Get.to(() => const ProfilePage());
-              },
+              onTap: () => Navigator.pushNamed(context, ProfilePage.route),
               child: const Icon(
                 Icons.account_circle,
                 size: 26.0,
@@ -88,13 +89,7 @@ class _AppHeaderState extends State<AppHeader> {
             );
           } else {
             return GestureDetector(
-              onTap: () {
-                Get.to(
-                  () => const LoginPage(),
-                  transition: Transition.rightToLeft,
-                  duration: const Duration(milliseconds: 500),
-                );
-              },
+              onTap: () => Navigator.pushNamed(context, LoginPage.route),
               child: const Icon(
                 Icons.login,
                 size: 26.0,

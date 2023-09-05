@@ -39,6 +39,9 @@ class AuthenticationService {
         logger.i('Wrong password provided for email: $email');
       }
       return null;
+    } on Exception catch (e) {
+      logger.e('Error when logging in: $e');
+      return null;
     }
     logger.i('Successfully logged in with email: $email');
     return firebaseAuth.currentUser!.uid;

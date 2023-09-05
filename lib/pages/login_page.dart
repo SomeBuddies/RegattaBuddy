@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:regatta_buddy/pages/home.dart';
 import 'package:regatta_buddy/pages/register_page.dart';
@@ -12,22 +11,20 @@ import 'package:regatta_buddy/utils/validations.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
-
+  LoginPage({super.key});
   static const String route = '/login';
+
+  final logger = getLogger('LoginPage');
 
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final logger = getLogger('LoginPage');
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
-  AuthenticationService loginService = Get.find<AuthenticationService>();
 
   @override
   void dispose() {
@@ -67,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            signIn();
+                            signIn(context);
                           }
                         },
                         child: const Text('Login'),
@@ -82,9 +79,8 @@ class _LoginPageState extends State<LoginPage> {
                               text: 'Sign up',
                               style: const TextStyle(color: Colors.blue),
                               recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Get.to(const RegisterPage());
-                                })
+                                ..onTap = () => Navigator.pushNamed(context, RegisterPage.route)
+                                )
                         ])),
                     StreamBuilder<User?>(
                         stream: FirebaseAuth.instance.authStateChanges(),
@@ -98,22 +94,24 @@ class _LoginPageState extends State<LoginPage> {
             )));
   }
 
-  Future signIn() async {
+  Future signIn(BuildContext) async {
     showLoadingSpinner();
+    final authenticationService = Provider.of<AuthenticationService>(context, listen: false);
 
     var userUuid =
-        await loginService.login(emailController.text, passwordController.text);
+        await authenticationService.login(emailController.text, passwordController.text);
     if (userUuid != null) {
-      var userData = await loginService.fetchUserData(userUuid);
+      widget.logger.i('starting to fetch user data');
+      var userData = await authenticationService.fetchUserData(userUuid);
       if (userData == null) {
-        logger.e('User data was null');
+        widget.logger.e('User data was null');
         return;
       }
       Provider.of<UserProvider>(context, listen: false).setUser(userData);
-      Get.offAll(() => const HomePage());
+      Navigator.of(context).popUntil(ModalRoute.withName(HomePage.route));
     } else {
       showToast('Wrong email or password.');
-      Get.back();
+      Navigator.pop(context);
     }
   }
 
