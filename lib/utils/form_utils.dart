@@ -112,7 +112,7 @@ class RBRequiredDateFormField extends StatelessWidget {
           }
         },
         onSaved: (newValue) {
-          handler(DateFormat('dd.MM.yyyy').parse(newValue!));
+          handler(DateFormat('dd.MM.yyyy').parse(newValue!).toUtc());
         },
       ),
     );

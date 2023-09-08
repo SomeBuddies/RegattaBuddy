@@ -53,7 +53,7 @@ class RegattaBuddy extends StatelessWidget {
         RacePage.route: (context) => const RacePage(),
         LoginPage.route: (context) => LoginPage(),
         RegisterPage.route: (context) => const RegisterPage(),
-        ProfilePage.route: (context) => ProfilePage(),
+        ProfilePage.route: (context) => const ProfilePage(),
       },
     );
   }

@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:regatta_buddy/extensions/latlng_extension.dart';
 
 class Event {
   final String hostId;
@@ -43,8 +42,8 @@ class Event {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'hostId': hostId,
-      'route': route.map((x) => x.toMap()).toList(),
-      'location': location.toMap(),
+      'route': route.map((x) => x.toJson()).toList(),
+      'location': location.toJson(),
       'date': date.millisecondsSinceEpoch,
       'name': name,
       'description': description,
@@ -52,10 +51,11 @@ class Event {
   }
 
   factory Event.fromMap(Map<String, dynamic> map) {
+    // LatLng.fromJson zwraca Map<String, dynamic> a nie json encoded String
     return Event(
       hostId: map['hostId'] as String,
       route: List<LatLng>.from(
-        (map['route'] as List<Map<String, dynamic>>).map<LatLng>(
+        (map['route'] as List<dynamic>).map<LatLng>(
           (x) => LatLng.fromJson(x),
         ),
       ),

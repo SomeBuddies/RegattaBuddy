@@ -8,7 +8,7 @@ import 'package:regatta_buddy/utils/notification_helper.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 
 class ProfilePage extends StatefulWidget {
-  ProfilePage({super.key});
+  const ProfilePage({super.key});
 
   static const String route = '/profile';
 
@@ -38,10 +38,8 @@ class _ProfilePageState extends State<ProfilePage> {
             children: <Widget>[
               const Text("Profile", style: TextStyle(fontSize: 30)),
               const SizedBox(height: 20),
-              Text("user: ${userData?.email}",
-                  style: const TextStyle(fontSize: 20)),
-              Text("name: ${userData?.firstName}",
-                  style: const TextStyle(fontSize: 20)),
+              Text("user: ${userData?.email}", style: const TextStyle(fontSize: 20)),
+              Text("name: ${userData?.firstName}", style: const TextStyle(fontSize: 20)),
               const SizedBox(height: 20),
               Card(
                 shape: const StadiumBorder(),
@@ -52,7 +50,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   onTap: () async => {
                     showLoadingSpinner(),
                     await FirebaseAuth.instance.signOut(),
-                    Navigator.of(context).popUntil(ModalRoute.withName(HomePage.route)),
+                    if (context.mounted)
+                      {
+                        Navigator.of(context).popUntil(ModalRoute.withName(HomePage.route)),
+                      }
                   },
                   contentPadding: const EdgeInsets.only(
                     left: 30,
@@ -65,6 +66,7 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+
   void showLoadingSpinner() {
     showDialog(
       context: context,

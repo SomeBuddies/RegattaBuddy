@@ -21,7 +21,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -64,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            signIn(context);
+                            signIn();
                           }
                         },
                         child: const Text('Login'),
@@ -79,8 +78,7 @@ class _LoginPageState extends State<LoginPage> {
                               text: 'Sign up',
                               style: const TextStyle(color: Colors.blue),
                               recognizer: TapGestureRecognizer()
-                                ..onTap = () => Navigator.pushNamed(context, RegisterPage.route)
-                                )
+                                ..onTap = () => Navigator.pushNamed(context, RegisterPage.route))
                         ])),
                     StreamBuilder<User?>(
                         stream: FirebaseAuth.instance.authStateChanges(),
@@ -94,12 +92,11 @@ class _LoginPageState extends State<LoginPage> {
             )));
   }
 
-  Future signIn(BuildContext) async {
+  Future signIn() async {
     showLoadingSpinner();
     final authenticationService = Provider.of<AuthenticationService>(context, listen: false);
 
-    var userUuid =
-        await authenticationService.login(emailController.text, passwordController.text);
+    var userUuid = await authenticationService.login(emailController.text, passwordController.text);
     if (userUuid != null) {
       widget.logger.i('starting to fetch user data');
       var userData = await authenticationService.fetchUserData(userUuid);
@@ -107,11 +104,15 @@ class _LoginPageState extends State<LoginPage> {
         widget.logger.e('User data was null');
         return;
       }
-      Provider.of<UserProvider>(context, listen: false).setUser(userData);
-      Navigator.of(context).popUntil(ModalRoute.withName(HomePage.route));
+      if (context.mounted) {
+        Provider.of<UserProvider>(context, listen: false).setUser(userData);
+        Navigator.of(context).popUntil(ModalRoute.withName(HomePage.route));
+      }
     } else {
       showToast('Wrong email or password.');
-      Navigator.pop(context);
+      if (context.mounted) {
+        Navigator.pop(context);
+      }
     }
   }
 
