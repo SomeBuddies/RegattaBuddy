@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:provider/provider.dart' as p;
 import 'package:regatta_buddy/firebase_options.dart';
 import 'package:regatta_buddy/pages/event_creation/event_creation.dart';
 import 'package:regatta_buddy/pages/home.dart';
@@ -23,12 +24,14 @@ void main() async {
   AuthenticationService authenticationService = AuthenticationService();
 
   runApp(
-    MultiProvider(
-      providers: [
-        Provider(create: (context) => authenticationService),
-        ChangeNotifierProvider(create: (context) => UserProvider(authenticationService)),
-      ],
-      child: const RegattaBuddy(),
+    ProviderScope(
+      child: p.MultiProvider(
+        providers: [
+          p.Provider(create: (context) => authenticationService),
+          p.ChangeNotifierProvider(create: (context) => UserProvider(authenticationService)),
+        ],
+        child: const RegattaBuddy(),
+      ),
     ),
   );
 }
