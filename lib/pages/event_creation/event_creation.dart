@@ -1,13 +1,13 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
+import 'package:regatta_buddy/models/event.dart';
 
 import 'package:regatta_buddy/pages/event_creation/event_form.dart';
 import 'package:regatta_buddy/pages/event_creation/event_route.dart';
 import 'package:regatta_buddy/pages/event_creation/event_social.dart';
 import 'package:regatta_buddy/pages/home.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
-import 'package:regatta_buddy/widgets/complex_marker.dart';
+import 'package:regatta_buddy/models/complex_marker.dart';
 
 class EventCreationPage extends StatefulWidget {
   static const String route = '/eventCreation';
@@ -19,11 +19,12 @@ class EventCreationPage extends StatefulWidget {
 }
 
 class _EventCreationPageState extends State<EventCreationPage> {
-  DatabaseReference databaseReference = FirebaseDatabase.instance.ref('/events');
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final List<ComplexMarker> markers = [];
-  final String eventId = const Uuid().v4();
-  String eventName = '';
-  String eventDescription = '';
+
+  String? eventName;
+  String? eventDescription;
+  DateTime? eventDate;
 
   int step = 0;
   late final List pages;
@@ -34,7 +35,7 @@ class _EventCreationPageState extends State<EventCreationPage> {
   void initState() {
     super.initState();
     pages = [
-      () => EventFormSubPage(_formKey, eventName, eventDescription, changeName, changeDescription),
+      () => EventFormSubPage(_formKey, changeName, changeDescription, changeDate),
       () => EventRouteSubPage(markers, addMarker, deleteMarker),
       () => const EventSocialSubPage(),
     ];
@@ -52,6 +53,12 @@ class _EventCreationPageState extends State<EventCreationPage> {
     });
   }
 
+  void changeDate(DateTime newDate) {
+    setState(() {
+      eventDate = newDate;
+    });
+  }
+
   void addMarker(ComplexMarker marker) {
     markers.add(marker);
     setState(() {});
@@ -63,7 +70,9 @@ class _EventCreationPageState extends State<EventCreationPage> {
   }
 
   void nextStep() {
-    if (step == 0 && !_formKey.currentState!.validate()) return;
+    if (step == 0 && _formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+    }
     if (step < pages.length - 1) {
       step += 1;
       setState(() {});
@@ -78,7 +87,17 @@ class _EventCreationPageState extends State<EventCreationPage> {
   }
 
   void finishEventCreation() {
-    databaseReference.update(toJson());
+    Event event = Event(
+      hostId: "TEMP VALUE CHANGE LATER",
+      route: markers.map((e) => e.marker.point).toList(),
+      location: markers[0].marker.point,
+      date: eventDate!,
+      name: eventName!,
+      description: eventDescription!,
+    );
+
+    firestore.collection('events').add(event.toMap());
+
     Navigator.pushReplacementNamed(context, HomePage.route);
   }
 
@@ -127,12 +146,4 @@ class _EventCreationPageState extends State<EventCreationPage> {
       ),
     );
   }
-
-  Map<String, dynamic> toJson() => {
-        eventId: {
-          'name': eventName,
-          'description': eventDescription,
-          'route': markers.map((e) => e.marker.point.toJson()).toList()
-        }
-      };
 }

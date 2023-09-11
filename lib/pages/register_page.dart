@@ -49,16 +49,14 @@ class _RegisterPageState extends State<RegisterPage> {
                   children: <Widget>[
                     TextFormField(
                       controller: firstNameController,
-                      validator: (firstName) =>
-                          validateShortTextInput(firstName, 'first name'),
+                      validator: (firstName) => validateShortTextInput(firstName, 'first name'),
                       decoration: const InputDecoration(
                         labelText: 'First Name',
                       ),
                     ),
                     TextFormField(
                       controller: lastNameController,
-                      validator: (firstName) =>
-                          validateShortTextInput(firstName, 'last name'),
+                      validator: (firstName) => validateShortTextInput(firstName, 'last name'),
                       decoration: const InputDecoration(
                         labelText: 'Last Name',
                       ),
@@ -81,8 +79,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     TextFormField(
                       controller: confirmPasswordController,
                       obscureText: true,
-                      validator: (confirmPassword) => validateConfirmPassword(
-                          confirmPassword, passwordController.text),
+                      validator: (confirmPassword) =>
+                          validateConfirmPassword(confirmPassword, passwordController.text),
                       decoration: const InputDecoration(
                         labelText: 'Confirm Password',
                       ),
@@ -125,12 +123,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (newUserUid == null) {
       showToast('Error when creating user');
-      Navigator.pop(context);
+      if (context.mounted) Navigator.pop(context);
       return;
     }
 
-    await Provider.of<UserProvider>(context, listen: false).loadUserData();
-    Navigator.of(context).popUntil(ModalRoute.withName(HomePage.route));
+    if (context.mounted) await Provider.of<UserProvider>(context, listen: false).loadUserData();
+    if (context.mounted) Provider.of(context).popUntil(ModalRoute.withName(HomePage.route));
   }
 
   void showLoadingSpinner() {

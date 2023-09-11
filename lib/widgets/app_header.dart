@@ -28,7 +28,7 @@ class AppHeader extends StatefulWidget implements PreferredSizeWidget {
   final bool showAuthButton;
 
   @override
-  _AppHeaderState createState() => _AppHeaderState();
+  State<AppHeader> createState() => _AppHeaderState();
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
