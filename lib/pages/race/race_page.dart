@@ -1,12 +1,15 @@
+import 'dart:async';
+
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:regatta_buddy/pages/race/race_map.dart';
-import 'package:uuid/uuid.dart';
+import 'package:geolocator/geolocator.dart';
 
 import 'package:regatta_buddy/modals/action_button.dart';
 import 'package:regatta_buddy/modals/actions_dialog.dart' as actions_dialog;
 import 'package:regatta_buddy/pages/race/race_statistics.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/widgets/rb_notification.dart';
+import 'package:uuid/uuid.dart';
 
 class RacePage extends StatefulWidget {
   const RacePage({super.key});
@@ -21,6 +24,7 @@ class _RacePageState extends State<RacePage> {
   final int _notificationTimeInSeconds = 10;
   List<RBNotification> activeNotifications = [];
   List<ActionButton> raceActions = [];
+  final databaseReference = FirebaseDatabase.instance.ref();
 
   void addNotification(String title) {
     String uuid = const Uuid().v4();
@@ -35,7 +39,7 @@ class _RacePageState extends State<RacePage> {
     });
     Future.delayed(
       Duration(seconds: _notificationTimeInSeconds),
-      () => {removeNotification(uuid), setState(() {})},
+          () => {removeNotification(uuid), setState(() {})},
     );
   }
 
@@ -48,6 +52,7 @@ class _RacePageState extends State<RacePage> {
   @override
   void initState() {
     super.initState();
+    runGeolocator();
     raceActions = [
       ActionButton(
         iconData: Icons.help_outline,
@@ -72,33 +77,81 @@ class _RacePageState extends State<RacePage> {
     ];
   }
 
+  void runGeolocator() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+    LocationSettings locationSettings = const LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 5,
+    );
+
+    Geolocator.getPositionStream(locationSettings: locationSettings)
+        .listen((Position? position) {
+      if (position != null) {
+        print(
+            '${position.latitude.toString()}, ${position.longitude.toString()} ${position.timestamp.toString()}');
+        // databaseReference.once().then((snapshot) {
+        //   print('Data: ${snapshot.snapshot.value}');
+        // });
+
+        databaseReference
+            .child('traces')
+            .child('uniqueEventID')
+            .child('teamX')
+            .child('0')
+            .update({
+          'score': 10,
+          'lastUpdate': position.timestamp.toString(),
+          'lastPosition':
+              '${position.latitude.toString()}, ${position.longitude.toString()}'
+        });
+        databaseReference
+            .child('traces')
+            .child('uniqueEventID')
+            .child('teamX')
+            .child('0')
+            .child('positions')
+            .update({
+          position.timestamp!.millisecondsSinceEpoch.toString():
+              '${position.latitude.toString()}, ${position.longitude.toString()}',
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        elevation: 10,
+        onPressed: () => actions_dialog.showActionsDialog(context, raceActions),
+        child: const Icon(Icons.warning_amber_rounded, size: 35),
+      ),
       appBar: const AppHeader(),
       body: Column(
         children: [
+          const RaceStatistics(),
           Flexible(
             child: Stack(
               children: [
-                const RaceMap(),
-                Positioned(
-                  bottom: 32,
-                  right: 32,
-                  child: SizedBox(
-                    height: 60,
-                    width: 60,
-                    child: FloatingActionButton(
-                      elevation: 10,
-                      onPressed: () => actions_dialog.showActionsDialog(context, raceActions),
-                      child: const Icon(Icons.warning_amber_rounded, size: 35),
-                    ),
-                  ),
-                ),
-                const Positioned(
-                  top: 0,
-                  child: RaceStatistics(),
-                ),
                 Positioned(
                   top: 85,
                   child: Align(
