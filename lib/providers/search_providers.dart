@@ -49,11 +49,11 @@ Future<List<Event>> firestoreEvents(FirestoreEventsRef ref) async {
       .collection('events')
       .where(
         "date",
-        isGreaterThan: showPastEvents ? null : DateTime.timestamp().millisecondsSinceEpoch,
+        isGreaterThan: showPastEvents ? null : DateTime.timestamp().toIso8601String(),
       )
       .get();
 
-  return query.docs.map((doc) => Event.fromMap(doc.data())).toList();
+  return query.docs.map((doc) => Event.fromJson(doc.data())).toList();
 }
 
 @riverpod

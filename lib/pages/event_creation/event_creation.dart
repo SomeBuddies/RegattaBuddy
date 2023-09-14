@@ -96,7 +96,7 @@ class _EventCreationPageState extends State<EventCreationPage> {
       description: eventDescription!,
     );
 
-    firestore.collection('events').add(event.toMap());
+    firestore.collection('events').add(event.toJson());
 
     Navigator.pushReplacementNamed(context, HomePage.route);
   }

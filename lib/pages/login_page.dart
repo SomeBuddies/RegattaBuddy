@@ -1,26 +1,25 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:regatta_buddy/pages/home.dart';
 import 'package:regatta_buddy/pages/register_page.dart';
-import 'package:regatta_buddy/providers/user_provider.dart';
-import 'package:regatta_buddy/services/authentication_service.dart';
+import 'package:regatta_buddy/providers/auth/auth_state_notifier.dart';
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:regatta_buddy/utils/validations.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   LoginPage({super.key});
   static const String route = '/login';
 
   final logger = getLogger('LoginPage');
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends ConsumerState<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -34,6 +33,21 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(
+      authStateNotiferProvider,
+      (previous, next) {
+        next.maybeWhen(
+          orElse: () => null,
+          authenticated: (user) =>
+              Navigator.of(context).popUntil(ModalRoute.withName(HomePage.route)),
+          unauthenticated: (message) {
+            showToast(message);
+            Navigator.pop(context);
+          },
+        );
+      },
+    );
+
     return Scaffold(
         appBar: const AppHeader.hideAuthButton(),
         body: Container(
@@ -94,26 +108,10 @@ class _LoginPageState extends State<LoginPage> {
 
   Future signIn() async {
     showLoadingSpinner();
-    final authenticationService = Provider.of<AuthenticationService>(context, listen: false);
-
-    var userUuid = await authenticationService.login(emailController.text, passwordController.text);
-    if (userUuid != null) {
-      widget.logger.i('starting to fetch user data');
-      var userData = await authenticationService.fetchUserData(userUuid);
-      if (userData == null) {
-        widget.logger.e('User data was null');
-        return;
-      }
-      if (context.mounted) {
-        Provider.of<UserProvider>(context, listen: false).setUser(userData);
-        Navigator.of(context).popUntil(ModalRoute.withName(HomePage.route));
-      }
-    } else {
-      showToast('Wrong email or password.');
-      if (context.mounted) {
-        Navigator.pop(context);
-      }
-    }
+    ref.read(authStateNotiferProvider.notifier).login(
+          emailController.text,
+          passwordController.text,
+        );
   }
 
   void showLoadingSpinner() {

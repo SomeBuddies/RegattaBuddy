@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:provider/provider.dart' as p;
 import 'package:regatta_buddy/firebase_options.dart';
 import 'package:regatta_buddy/pages/event_creation/event_creation.dart';
 import 'package:regatta_buddy/pages/home.dart';
@@ -12,8 +11,7 @@ import 'package:regatta_buddy/pages/regatta_details.dart';
 import 'package:regatta_buddy/pages/register_page.dart';
 import 'package:regatta_buddy/pages/search.dart';
 import 'package:regatta_buddy/pages/user_regattas.dart';
-import 'package:regatta_buddy/providers/user_provider.dart';
-import 'package:regatta_buddy/services/authentication_service.dart';
+import 'package:regatta_buddy/providers/auth/auth_state_notifier.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,28 +19,22 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  AuthenticationService authenticationService = AuthenticationService();
-
   runApp(
-    ProviderScope(
-      child: p.MultiProvider(
-        providers: [
-          p.Provider(create: (context) => authenticationService),
-          p.ChangeNotifierProvider(create: (context) => UserProvider(authenticationService)),
-        ],
-        child: const RegattaBuddy(),
-      ),
+    const ProviderScope(
+      child: RegattaBuddy(),
     ),
   );
 }
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-class RegattaBuddy extends StatelessWidget {
+class RegattaBuddy extends ConsumerWidget {
   const RegattaBuddy({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.read(authStateNotiferProvider.notifier).checkIfLoggedIn();
+
     return MaterialApp(
       title: 'RegattaBuddy',
       navigatorKey: navigatorKey,
