@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:regatta_buddy/models/event.dart';
 
 import 'package:regatta_buddy/pages/event_creation/event_form.dart';
@@ -9,16 +10,16 @@ import 'package:regatta_buddy/pages/home.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/models/complex_marker.dart';
 
-class EventCreationPage extends StatefulWidget {
+class EventCreationPage extends ConsumerStatefulWidget {
   static const String route = '/eventCreation';
 
   const EventCreationPage({super.key});
 
   @override
-  State<EventCreationPage> createState() => _EventCreationPageState();
+  ConsumerState<EventCreationPage> createState() => _EventCreationPageState();
 }
 
-class _EventCreationPageState extends State<EventCreationPage> {
+class _EventCreationPageState extends ConsumerState<EventCreationPage> {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final List<ComplexMarker> markers = [];
 
@@ -86,9 +87,9 @@ class _EventCreationPageState extends State<EventCreationPage> {
     }
   }
 
-  void finishEventCreation() {
+  void finishEventCreation() async {
     Event event = Event(
-      hostId: "TEMP VALUE CHANGE LATER",
+      hostId: "xd",
       route: markers.map((e) => e.marker.point).toList(),
       location: markers[0].marker.point,
       date: eventDate!,

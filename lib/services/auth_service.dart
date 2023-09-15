@@ -88,7 +88,7 @@ class AuthService {
   /// Checks if user was already logged in.
   ///
   /// Returns the [User] object or [None] if not logged in.
-  Future<Option<User>> checkIfLoggedIn() async {
+  Option<User> checkIfLoggedIn() {
     // There is absolutely no reason for this to use Option instead of User?
     // This is just because the other methods user Either and I wanted it to be similar.
     final user = optionOf(_firebaseAuth.currentUser);

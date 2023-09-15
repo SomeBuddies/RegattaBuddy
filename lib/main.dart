@@ -33,7 +33,9 @@ class RegattaBuddy extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.read(authStateNotiferProvider.notifier).checkIfLoggedIn();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) => ref.read(authStateNotiferProvider.notifier).checkIfLoggedIn(),
+    );
 
     return MaterialApp(
       title: 'RegattaBuddy',

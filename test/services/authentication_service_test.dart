@@ -125,7 +125,7 @@ void main() {
       when(() => mockFirebaseAuth.currentUser).thenReturn(mockUser);
       when(() => mockUser.uid).thenReturn(userUid);
       await mockFirebaseFirestore.collection('users').doc(userUid).set(firebaseUserData);
-      await container.read(authStateNotiferProvider.notifier).checkIfLoggedIn();
+      container.read(authStateNotiferProvider.notifier).checkIfLoggedIn();
 
       final result = container.read(currentUserDataProvider);
 

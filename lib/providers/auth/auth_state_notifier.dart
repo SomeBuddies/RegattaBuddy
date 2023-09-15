@@ -31,11 +31,8 @@ class AuthStateNotifer extends _$AuthStateNotifer {
     );
   }
 
-  Future<void> checkIfLoggedIn() async {
-    //This has to be a future even though you can check current user without async
-    //because we don't want this to execute during the build function (and break the state mid-build)
-
-    final response = await ref.watch(authServiceProvider).checkIfLoggedIn();
+  void checkIfLoggedIn() {
+    final response = ref.watch(authServiceProvider).checkIfLoggedIn();
     state = response.fold(
       () => state,
       (user) => AuthState.authenticated(user: user),

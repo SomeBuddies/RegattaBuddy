@@ -6,7 +6,6 @@ import 'package:regatta_buddy/pages/event_creation/event_creation.dart';
 import 'package:regatta_buddy/pages/regatta_details.dart';
 import 'package:regatta_buddy/pages/search.dart';
 import 'package:regatta_buddy/pages/user_regattas.dart';
-import 'package:regatta_buddy/providers/auth/auth_state_notifier.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -21,7 +20,6 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
-    ref.read(authStateNotiferProvider.notifier).checkIfLoggedIn();
     return Scaffold(
       appBar: const AppHeader(),
       body: Container(
