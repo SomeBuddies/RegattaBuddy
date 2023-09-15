@@ -109,8 +109,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Future signIn() async {
     showLoadingSpinner();
     ref.read(authStateNotiferProvider.notifier).login(
-          emailController.text,
-          passwordController.text,
+          email: emailController.text,
+          password: passwordController.text,
         );
   }
 

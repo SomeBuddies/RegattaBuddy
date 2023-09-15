@@ -12,7 +12,7 @@ class AuthStateNotifer extends _$AuthStateNotifer {
     return const AuthState.initial();
   }
 
-  Future<void> login(String email, String password) async {
+  Future<void> login({required String email, required String password}) async {
     state = const AuthState.loading();
     final response = await ref.watch(authServiceProvider).login(email: email, password: password);
 

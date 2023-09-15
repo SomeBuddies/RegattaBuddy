@@ -1,11 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:regatta_buddy/extensions/string_extension.dart';
 import 'package:regatta_buddy/models/registration_data.dart';
 import 'package:regatta_buddy/models/user_data.dart';
-import 'package:regatta_buddy/services/authentication_service.dart';
+import 'package:regatta_buddy/providers/auth/auth_state_notifier.dart';
+import 'package:regatta_buddy/providers/firebase_providers.dart';
+import 'package:regatta_buddy/providers/user_provider.dart';
 
 class MockFirebaseAuth extends Mock implements FirebaseAuth {}
 
@@ -16,15 +20,19 @@ class MockUser extends Mock implements User {}
 class MockedFirebaseFirestore extends FakeFirebaseFirestore {
   @override
   CollectionReference<Map<String, dynamic>> collection(String collectionPath) {
-    throw Exception('Firestore exception');
+    throw FirebaseException(
+      plugin: "firestore",
+      message: "Firestore Exception",
+    );
   }
 }
 
 void main() {
   group('AuthenticationService Tests', () {
-    late AuthenticationService authService;
+    late ProviderContainer container;
+    //late AuthService authService;
     late MockFirebaseAuth mockFirebaseAuth;
-    late FakeFirebaseFirestore fakeFirebaseFirestore;
+    late FakeFirebaseFirestore mockFirebaseFirestore;
     late MockUser mockUser;
 
     const email = 'test@somebuddies.com';
@@ -33,48 +41,72 @@ void main() {
 
     setUp(() {
       mockFirebaseAuth = MockFirebaseAuth();
-      fakeFirebaseFirestore = FakeFirebaseFirestore();
-      authService = AuthenticationService.custom(
-        firebaseAuth: mockFirebaseAuth,
-        firestore: fakeFirebaseFirestore,
-      );
+      mockFirebaseFirestore = FakeFirebaseFirestore();
       mockUser = MockUser();
+      container = ProviderContainer(
+        overrides: [
+          firebaseAuthProvider.overrideWithValue(mockFirebaseAuth),
+          firebaseFirestoreProvider.overrideWithValue(mockFirebaseFirestore),
+        ],
+      );
+      //authService = container.read(authServiceProvider);
     });
 
     test('Successful login', () async {
       when(() => mockFirebaseAuth.currentUser).thenReturn(mockUser);
       when(() => mockUser.uid).thenReturn(userUid);
 
-      when(() => mockFirebaseAuth.signInWithEmailAndPassword(
-            email: email,
-            password: password,
-          )).thenAnswer((_) => Future.value(MockUserCredential()));
+      when(
+        () => mockFirebaseAuth.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        ),
+      ).thenAnswer((_) => Future.value(MockUserCredential()));
 
-      final result = await authService.login(email, password);
+      await container
+          .read(authStateNotiferProvider.notifier)
+          .login(email: email, password: password);
 
-      verify(() => mockFirebaseAuth.signInWithEmailAndPassword(
-            email: email,
-            password: password,
-          )).called(1);
+      verify(
+        () => mockFirebaseAuth.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        ),
+      ).called(1);
 
-      expect(result, userUid);
+      container.read(authStateNotiferProvider).maybeWhen(
+            orElse: () => fail('Unknown error'),
+            unauthenticated: (message) => fail(message),
+            authenticated: (user) => expect(user.uid, userUid),
+          );
     });
 
     test('Failed login', () async {
       when(() => mockFirebaseAuth.currentUser).thenReturn(mockUser);
       when(() => mockUser.uid).thenReturn(userUid);
-      when(() => mockFirebaseAuth.signInWithEmailAndPassword(
-            email: email,
-            password: password,
-          )).thenThrow(FirebaseAuthException(code: 'user-not-found'));
+      when(
+        () => mockFirebaseAuth.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        ),
+      ).thenThrow(FirebaseAuthException(code: 'user-not-found'));
 
-      final result = await authService.login(email, password);
+      await container
+          .read(authStateNotiferProvider.notifier)
+          .login(email: email, password: password);
 
-      verify(() => mockFirebaseAuth.signInWithEmailAndPassword(
-            email: email,
-            password: password,
-          )).called(1);
-      expect(result, isNull);
+      verify(
+        () => mockFirebaseAuth.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        ),
+      ).called(1);
+
+      container.read(authStateNotiferProvider).maybeWhen(
+            orElse: () => fail('Unknown error'),
+            unauthenticated: (message) => expect(message, "No user found for email: $email"),
+            authenticated: (user) => fail("method shouldn't return user object"),
+          );
     });
 
     test('Successful fetch current user data', () async {
@@ -92,26 +124,33 @@ void main() {
 
       when(() => mockFirebaseAuth.currentUser).thenReturn(mockUser);
       when(() => mockUser.uid).thenReturn(userUid);
-      await fakeFirebaseFirestore
-          .collection('users')
-          .doc(userUid)
-          .set(firebaseUserData);
+      await mockFirebaseFirestore.collection('users').doc(userUid).set(firebaseUserData);
+      await container.read(authStateNotiferProvider.notifier).checkIfLoggedIn();
 
-      final result = await authService.fetchCurrentUserData();
+      final result = container.read(currentUserDataProvider);
 
-      verify(() => mockFirebaseAuth.currentUser).called(1);
-      expect(result?.firstName, expectedUserData.firstName);
-      expect(result?.lastName, expectedUserData.lastName);
-      expect(result?.email, expectedUserData.email);
+      result.whenOrNull(
+        data: (value) {
+          verify(() => mockFirebaseAuth.currentUser).called(1);
+          expect(value.firstName, expectedUserData.firstName);
+          expect(value.lastName, expectedUserData.lastName);
+          expect(value.email, expectedUserData.email);
+        },
+        error: (error, stackTrace) => fail(error.toString()),
+      );
     });
 
     test('Failed fetch current user data', () async {
       when(() => mockFirebaseAuth.currentUser).thenReturn(null);
 
-      final result = await authService.fetchCurrentUserData();
+      final result = container.read(currentUserDataProvider);
 
-      verify(() => mockFirebaseAuth.currentUser).called(1);
-      expect(result, isNull);
+      result.whenOrNull(
+        data: (data) => fail('Should not return a User'),
+        error: (error, stackTrace) {
+          expect(error.toString(), "Exception: User not logged in");
+        },
+      );
     });
 
     test('Successful fetch user data', () async {
@@ -127,16 +166,18 @@ void main() {
         lastName: 'Tester',
       );
 
-      await fakeFirebaseFirestore
-          .collection('users')
-          .doc(userUid)
-          .set(firebaseUserData);
+      await mockFirebaseFirestore.collection('users').doc(userUid).set(firebaseUserData);
 
-      final result = await authService.fetchUserData(userUid);
+      final result = container.read(userDataProvider(userUid));
 
-      expect(result?.firstName, expectedUserData.firstName);
-      expect(result?.lastName, expectedUserData.lastName);
-      expect(result?.email, expectedUserData.email);
+      result.whenOrNull(
+        data: (data) {
+          expect(data.firstName, expectedUserData.firstName);
+          expect(data.lastName, expectedUserData.lastName);
+          expect(data.email, expectedUserData.email.toTitleCase());
+        },
+        error: (error, stackTrace) => fail(error.toString()),
+      );
     });
 
     test('Successful signup', () async {
@@ -150,32 +191,39 @@ void main() {
         lastName: 'Testowy',
       );
 
-      when(() => mockFirebaseAuth.createUserWithEmailAndPassword(
-            email: email,
-            password: password,
-          )).thenAnswer((_) => Future.value(MockUserCredential()));
+      when(
+        () => mockFirebaseAuth.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        ),
+      ).thenAnswer((_) => Future.value(MockUserCredential()));
 
-      final result = await authService.signUp(registrationData);
+      await container.read(authStateNotiferProvider.notifier).signup(registrationData);
 
-      verify(() => mockFirebaseAuth.createUserWithEmailAndPassword(
-            email: email,
-            password: password,
-          )).called(1);
+      verify(
+        () => mockFirebaseAuth.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        ),
+      ).called(1);
 
-      var newUserData =
-          await fakeFirebaseFirestore.collection('users').doc(userUid).get();
+      var newUserData = await mockFirebaseFirestore.collection('users').doc(userUid).get();
       const expectedFirestoreUserData = {
         'email': email,
         'firstName': 'Krysiu',
         'lastName': 'Testowy',
       };
 
-      expect(result, userUid);
+      container.read(authStateNotiferProvider).maybeWhen(
+            orElse: () => fail('Unknown error'),
+            unauthenticated: (message) => fail(message),
+            authenticated: (user) => expect(user.uid, userUid),
+          );
+
       expect(newUserData.data(), expectedFirestoreUserData);
     });
 
-    test('Failed signup - createUserWithEmailAndPassword throws exception',
-        () async {
+    test('Failed signup - createUserWithEmailAndPassword throws exception', () async {
       RegistrationData registrationData = RegistrationData(
         email: email,
         password: password,
@@ -188,26 +236,29 @@ void main() {
             password: password,
           )).thenThrow(FirebaseAuthException(code: 'email-already-in-use'));
 
-      final result = await authService.signUp(registrationData);
+      await container.read(authStateNotiferProvider.notifier).signup(registrationData);
 
       verify(() => mockFirebaseAuth.createUserWithEmailAndPassword(
             email: email,
             password: password,
           )).called(1);
 
-      var newUserData =
-          await fakeFirebaseFirestore.collection('users').doc(userUid).get();
+      var newUserData = await mockFirebaseFirestore.collection('users').doc(userUid).get();
 
-      expect(result, isNull);
+      container.read(authStateNotiferProvider).maybeWhen(
+            orElse: () => fail('Unknown error'),
+            unauthenticated: (message) => expect(message, "Unknown Error when creating user"),
+            authenticated: (user) => fail("method shouldn't return user object"),
+          );
+
       expect(newUserData.data(), isNull);
     });
 
-    test('Failed signup - saving user data to firestore throws exception',
-        () async {
-      authService = AuthenticationService.custom(
-        firebaseAuth: mockFirebaseAuth,
-        firestore: MockedFirebaseFirestore(),
-      );
+    test('Failed signup - saving user data to firestore throws exception', () async {
+      container.updateOverrides([
+        firebaseAuthProvider.overrideWithValue(mockFirebaseAuth),
+        firebaseFirestoreProvider.overrideWithValue(MockedFirebaseFirestore()),
+      ]);
 
       RegistrationData registrationData = RegistrationData(
         email: email,
@@ -216,19 +267,25 @@ void main() {
         lastName: 'Testowy',
       );
 
-      when(() => mockFirebaseAuth.createUserWithEmailAndPassword(
-            email: email,
-            password: password,
-          )).thenAnswer((_) => Future.value(MockUserCredential()));
+      when(
+        () => mockFirebaseAuth.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        ),
+      ).thenAnswer((_) => Future.value(MockUserCredential()));
 
-      final result = await authService.signUp(registrationData);
+      await container.read(authStateNotiferProvider.notifier).signup(registrationData);
 
       verify(() => mockFirebaseAuth.createUserWithEmailAndPassword(
             email: email,
             password: password,
           )).called(1);
 
-      expect(result, isNull);
+      container.read(authStateNotiferProvider).maybeWhen(
+            orElse: () => fail('Unknown error'),
+            unauthenticated: (message) => expect(message, "Firestore Exception"),
+            authenticated: (user) => fail("method shouldn't return user object"),
+          );
     });
   });
 }
