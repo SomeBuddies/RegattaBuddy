@@ -6,12 +6,14 @@ class EventFormSubPage extends StatefulWidget {
   final void Function(String) nameSubmitHandler;
   final void Function(String) descriptionSubmitHandler;
   final void Function(DateTime) dateSubmitHandler;
+  final void Function(TimeOfDay) timeSubmitHandler;
 
   const EventFormSubPage(
     this._formKey,
     this.nameSubmitHandler,
     this.descriptionSubmitHandler,
-    this.dateSubmitHandler, {
+    this.dateSubmitHandler,
+    this.timeSubmitHandler, {
     super.key,
   });
 
@@ -23,6 +25,7 @@ class _EventFormSubPageState extends State<EventFormSubPage> {
   final eventNameController = TextEditingController();
   final eventDescriptionController = TextEditingController();
   final eventDateController = TextEditingController();
+  final eventTimeController = TextEditingController();
 
   @override
   void initState() {
@@ -58,7 +61,12 @@ class _EventFormSubPageState extends State<EventFormSubPage> {
             label: 'Event date',
             controller: eventDateController,
             handler: widget.dateSubmitHandler,
-          )
+          ),
+          RBRequiredTimeFormField(
+            label: 'Event time',
+            controller: eventTimeController,
+            handler: widget.timeSubmitHandler,
+          ),
         ],
       ),
     );
