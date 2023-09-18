@@ -1,31 +1,30 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:regatta_buddy/pages/home.dart';
-import 'package:regatta_buddy/pages/login_page.dart';
+import 'package:regatta_buddy/providers/auth/auth_state_notifier.dart';
 import 'package:regatta_buddy/providers/user_provider.dart';
+import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:regatta_buddy/utils/notification_helper.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 
-class ProfilePage extends StatefulWidget {
+class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});
 
   static const String route = '/profile';
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  ConsumerState<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends ConsumerState<ProfilePage> {
   @override
   Widget build(BuildContext context) {
-    verifyUserIsAuthenticated();
-    final userProvider = Provider.of<UserProvider>(context);
-    final userData = userProvider.user;
+    final userData = ref.watch(currentUserDataProvider);
 
-    if (userData == null) {
-      showNotificationToast(context, "User not found");
-    }
+    userData.whenOrNull(error: (error, stackTrace) {
+      getLogger("Profile Page").i(error);
+      showNotificationToast(context, error.toString());
+    });
 
     return Scaffold(
       appBar: const AppHeader.hideAuthButton(),
@@ -38,8 +37,10 @@ class _ProfilePageState extends State<ProfilePage> {
             children: <Widget>[
               const Text("Profile", style: TextStyle(fontSize: 30)),
               const SizedBox(height: 20),
-              Text("user: ${userData?.email}", style: const TextStyle(fontSize: 20)),
-              Text("name: ${userData?.firstName}", style: const TextStyle(fontSize: 20)),
+              Text("user: ${userData.asData?.value.email ?? "Loading..."}",
+                  style: const TextStyle(fontSize: 20)),
+              Text("name: ${userData.asData?.value.firstName ?? "Loading..."} ",
+                  style: const TextStyle(fontSize: 20)),
               const SizedBox(height: 20),
               Card(
                 shape: const StadiumBorder(),
@@ -47,13 +48,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 clipBehavior: Clip.antiAlias,
                 elevation: 1,
                 child: ListTile(
-                  onTap: () async => {
-                    showLoadingSpinner(),
-                    await FirebaseAuth.instance.signOut(),
-                    if (context.mounted)
-                      {
-                        Navigator.of(context).popUntil(ModalRoute.withName(HomePage.route)),
-                      }
+                  onTap: () {
+                    showLoadingSpinner();
+                    Navigator.of(context).popUntil(ModalRoute.withName(HomePage.route));
+                    ref.read(authStateNotiferProvider.notifier).signout();
                   },
                   contentPadding: const EdgeInsets.only(
                     left: 30,
@@ -73,12 +71,5 @@ class _ProfilePageState extends State<ProfilePage> {
       builder: (context) => const Center(child: CircularProgressIndicator()),
       barrierDismissible: false,
     );
-  }
-
-  void verifyUserIsAuthenticated() {
-    var user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      Navigator.pushNamed(context, LoginPage.route);
-    }
   }
 }

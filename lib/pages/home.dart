@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quickalert/quickalert.dart';
 
 import 'package:regatta_buddy/pages/event_creation/event_creation.dart';
@@ -7,7 +8,16 @@ import 'package:regatta_buddy/pages/search.dart';
 import 'package:regatta_buddy/pages/user_regattas.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 
-class _HomePageState extends State<HomePage> {
+class HomePage extends ConsumerStatefulWidget {
+  static const String route = '/';
+
+  const HomePage({super.key});
+
+  @override
+  ConsumerState<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -132,13 +142,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-}
-
-class HomePage extends StatefulWidget {
-  static const String route = '/';
-
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
 }

@@ -1,23 +1,22 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:regatta_buddy/models/registration_data.dart';
 import 'package:regatta_buddy/pages/home.dart';
-import 'package:regatta_buddy/providers/user_provider.dart';
-import 'package:regatta_buddy/services/authentication_service.dart';
+import 'package:regatta_buddy/providers/auth/auth_state_notifier.dart';
 import 'package:regatta_buddy/utils/validations.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 
-class RegisterPage extends StatefulWidget {
+class RegisterPage extends ConsumerStatefulWidget {
   const RegisterPage({super.key});
 
   static const String route = '/register';
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  ConsumerState<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _RegisterPageState extends ConsumerState<RegisterPage> {
   final emailController = TextEditingController();
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
@@ -37,6 +36,21 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(
+      authStateNotiferProvider,
+      (previous, next) {
+        next.whenOrNull(
+          authenticated: (user) {
+            Navigator.of(context).popUntil(ModalRoute.withName(HomePage.route));
+          },
+          unauthenticated: (message) {
+            showToast(message);
+            Navigator.pop(context);
+          },
+        );
+      },
+    );
+
     return Scaffold(
         appBar: const AppHeader.hideAuthButton(),
         body: Container(
@@ -111,7 +125,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Future signUp(BuildContext context) async {
     showLoadingSpinner();
-    final authenticationService = Provider.of<AuthenticationService>(context, listen: false);
+
     var registrationData = RegistrationData(
       email: emailController.text,
       password: passwordController.text,
@@ -119,16 +133,7 @@ class _RegisterPageState extends State<RegisterPage> {
       lastName: lastNameController.text,
     );
 
-    var newUserUid = await authenticationService.signUp(registrationData);
-
-    if (newUserUid == null) {
-      showToast('Error when creating user');
-      if (context.mounted) Navigator.pop(context);
-      return;
-    }
-
-    if (context.mounted) await Provider.of<UserProvider>(context, listen: false).loadUserData();
-    if (context.mounted) Provider.of(context).popUntil(ModalRoute.withName(HomePage.route));
+    ref.read(authStateNotiferProvider.notifier).signup(registrationData);
   }
 
   void showLoadingSpinner() {

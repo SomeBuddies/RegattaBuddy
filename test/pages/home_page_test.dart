@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:regatta_buddy/pages/event_creation/event_creation.dart';
@@ -42,7 +43,7 @@ void main() {
   };
 
   testWidgets('finds all available buttons', (tester) async {
-    await tester.pumpWidget(const MaterialApp(home: HomePage()));
+    await tester.pumpWidget(const ProviderScope(child: MaterialApp(home: HomePage())));
 
     expect(find.text('Join'), findsOneWidget);
     expect(find.text('Your regattas'), findsOneWidget);
@@ -52,10 +53,15 @@ void main() {
 
   testWidgets("Navigates to SearchPage on search button click", (tester) async {
     final mockObserver = MockNavigatorObserver();
-    await tester.pumpWidget(MaterialApp(
-        home: const HomePage(),
-        routes: mockedRoutes,
-        navigatorObservers: [mockObserver]));
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(
+          home: const HomePage(),
+          routes: mockedRoutes,
+          navigatorObservers: [mockObserver],
+        ),
+      ),
+    );
 
     expect(find.text('mockedSearchPage'), findsNothing);
 
@@ -66,13 +72,17 @@ void main() {
     expect(find.text('mockedSearchPage'), findsOneWidget);
   });
 
-  testWidgets("Navigates to UserRegattasPage on your regattas button click",
-      (tester) async {
+  testWidgets("Navigates to UserRegattasPage on your regattas button click", (tester) async {
     final mockObserver = MockNavigatorObserver();
-    await tester.pumpWidget(MaterialApp(
-        home: const HomePage(),
-        routes: mockedRoutes,
-        navigatorObservers: [mockObserver]));
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(
+          home: const HomePage(),
+          routes: mockedRoutes,
+          navigatorObservers: [mockObserver],
+        ),
+      ),
+    );
 
     expect(find.text('mockedUserRegattasPage'), findsNothing);
 
@@ -83,13 +93,17 @@ void main() {
     expect(find.text('mockedUserRegattasPage'), findsOneWidget);
   });
 
-  testWidgets("Navigates to CreatePage on create button click and confirmation",
-      (tester) async {
+  testWidgets("Navigates to CreatePage on create button click and confirmation", (tester) async {
     final mockObserver = MockNavigatorObserver();
-    await tester.pumpWidget(MaterialApp(
-        home: const HomePage(),
-        routes: mockedRoutes,
-        navigatorObservers: [mockObserver]));
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(
+          home: const HomePage(),
+          routes: mockedRoutes,
+          navigatorObservers: [mockObserver],
+        ),
+      ),
+    );
 
     expect(find.text('mockedCreatePage'), findsNothing);
 
@@ -103,15 +117,18 @@ void main() {
     expect(find.text('mockedCreatePage'), findsOneWidget);
   });
 
-  testWidgets(
-      "Navigates to RegattaDetailsPage after joining and using correct code",
+  testWidgets("Navigates to RegattaDetailsPage after joining and using correct code",
       (tester) async {
     final mockObserver = MockNavigatorObserver();
-    await tester.pumpWidget(MaterialApp(
-        home: const HomePage(),
-        routes: mockedRoutes,
-        navigatorObservers: [mockObserver]));
-
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(
+          home: const HomePage(),
+          routes: mockedRoutes,
+          navigatorObservers: [mockObserver],
+        ),
+      ),
+    );
     expect(find.text('mockedRegattaDetailsPage'), findsNothing);
     await tester.tap(find.text('Join'));
     await tester.pumpAndSettle();
@@ -129,10 +146,15 @@ void main() {
 
   testWidgets("Shows error message on invalid regatta code", (tester) async {
     final mockObserver = MockNavigatorObserver();
-    await tester.pumpWidget(MaterialApp(
-        home: const HomePage(),
-        routes: mockedRoutes,
-        navigatorObservers: [mockObserver]));
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(
+          home: const HomePage(),
+          routes: mockedRoutes,
+          navigatorObservers: [mockObserver],
+        ),
+      ),
+    );
 
     expect(find.text('mockedRegattaDetailsPage'), findsNothing);
     await tester.tap(find.text('Join'));

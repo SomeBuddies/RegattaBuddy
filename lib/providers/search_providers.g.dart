@@ -6,7 +6,7 @@ part of 'search_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$firestoreEventsHash() => r'e2bdeffc2c333c6b7249ca642700bc22d8435aae';
+String _$firestoreEventsHash() => r'3e99ec0fed956eeb3ac41a4e4d9bbf6d334a0a3a';
 
 /// See also [firestoreEvents].
 @ProviderFor(firestoreEvents)
