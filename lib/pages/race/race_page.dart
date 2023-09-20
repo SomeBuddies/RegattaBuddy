@@ -107,11 +107,6 @@ class _RacePageState extends State<RacePage> {
         .listen((Position? position) {
       if (position != null) {
         print(
-            '${position.latitude.toString()}, ${position.longitude.toString()} ${position.timestamp.toString()}');
-        // databaseReference.once().then((snapshot) {
-        //   print('Data: ${snapshot.snapshot.value}');
-        // });
-
         databaseReference
             .child('traces')
             .child('uniqueEventID')
