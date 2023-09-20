@@ -106,7 +106,6 @@ class _RacePageState extends State<RacePage> {
     Geolocator.getPositionStream(locationSettings: locationSettings)
         .listen((Position? position) {
       if (position != null) {
-        print(
         databaseReference
             .child('traces')
             .child('uniqueEventID')
