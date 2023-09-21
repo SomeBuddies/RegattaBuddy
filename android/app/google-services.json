@@ -30,6 +30,13 @@
             {
               "client_id": "73358650827-8jk8rtt9duqcp7l32p0libq8jkcla710.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "73358650827-50m177n4tc6ri4shah386cq517ei7a7j.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.regattaBuddy"
+              }
             }
           ]
         }
