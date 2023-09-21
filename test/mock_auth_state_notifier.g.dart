@@ -1,26 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'auth_state_notifier.dart';
+part of 'mock_auth_state_notifier.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$authStateNotiferHash() => r'cb8b9c16d469a00da00c6618716a17665da4e38b';
+String _$mockAuthStateNotifierHash() =>
+    r'3fd3059e9f425d004d78700ccb042c71fab0b049';
 
-/// See also [AuthStateNotifer].
-@ProviderFor(AuthStateNotifer)
-final authStateNotiferProvider =
-    NotifierProvider<AuthStateNotifer, AuthState>.internal(
-  AuthStateNotifer.new,
-  name: r'authStateNotiferProvider',
+/// See also [MockAuthStateNotifier].
+@ProviderFor(MockAuthStateNotifier)
+final mockAuthStateNotifierProvider =
+    NotifierProvider<MockAuthStateNotifier, AuthState>.internal(
+  MockAuthStateNotifier.new,
+  name: r'mockAuthStateNotifierProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$authStateNotiferHash,
+      : _$mockAuthStateNotifierHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$AuthStateNotifer = Notifier<AuthState>;
+typedef _$MockAuthStateNotifier = Notifier<AuthState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

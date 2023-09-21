@@ -34,7 +34,7 @@ class AuthStateNotifer extends _$AuthStateNotifer {
   void checkIfLoggedIn() {
     final response = ref.watch(authServiceProvider).checkIfLoggedIn();
     state = response.fold(
-      () => state,
+      () => const AuthState.unauthenticated(message: "User not logged in"),
       (user) => AuthState.authenticated(user: user),
     );
   }

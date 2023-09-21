@@ -11,7 +11,6 @@ import 'package:regatta_buddy/pages/regatta_details.dart';
 import 'package:regatta_buddy/pages/register_page.dart';
 import 'package:regatta_buddy/pages/search.dart';
 import 'package:regatta_buddy/pages/user_regattas.dart';
-import 'package:regatta_buddy/providers/auth/auth_state_notifier.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,10 +32,6 @@ class RegattaBuddy extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) => ref.read(authStateNotiferProvider.notifier).checkIfLoggedIn(),
-    );
-
     return MaterialApp(
       title: 'RegattaBuddy',
       navigatorKey: navigatorKey,

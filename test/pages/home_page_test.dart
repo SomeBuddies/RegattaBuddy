@@ -1,3 +1,4 @@
+// ignore_for_file: scoped_providers_should_specify_dependencies
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,8 +9,10 @@ import 'package:regatta_buddy/pages/home.dart';
 import 'package:regatta_buddy/pages/regatta_details.dart';
 import 'package:regatta_buddy/pages/search.dart';
 import 'package:regatta_buddy/pages/user_regattas.dart';
+import 'package:regatta_buddy/providers/auth/auth_state_notifier.dart';
 
 import '../firebase_mock.dart';
+import '../mock_auth_state_notifier.dart';
 
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
@@ -43,7 +46,18 @@ void main() {
   };
 
   testWidgets('finds all available buttons', (tester) async {
-    await tester.pumpWidget(const ProviderScope(child: MaterialApp(home: HomePage())));
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authStateNotiferProvider.overrideWith(
+            () => MockAuthStateNotifier(),
+          ),
+        ],
+        child: const MaterialApp(
+          home: HomePage(),
+        ),
+      ),
+    );
 
     expect(find.text('Join'), findsOneWidget);
     expect(find.text('Your regattas'), findsOneWidget);
@@ -55,6 +69,11 @@ void main() {
     final mockObserver = MockNavigatorObserver();
     await tester.pumpWidget(
       ProviderScope(
+        overrides: [
+          authStateNotiferProvider.overrideWith(
+            () => MockAuthStateNotifier(),
+          ),
+        ],
         child: MaterialApp(
           home: const HomePage(),
           routes: mockedRoutes,
@@ -76,6 +95,11 @@ void main() {
     final mockObserver = MockNavigatorObserver();
     await tester.pumpWidget(
       ProviderScope(
+        overrides: [
+          authStateNotiferProvider.overrideWith(
+            () => MockAuthStateNotifier(),
+          ),
+        ],
         child: MaterialApp(
           home: const HomePage(),
           routes: mockedRoutes,
@@ -97,6 +121,11 @@ void main() {
     final mockObserver = MockNavigatorObserver();
     await tester.pumpWidget(
       ProviderScope(
+        overrides: [
+          authStateNotiferProvider.overrideWith(
+            () => MockAuthStateNotifier(),
+          ),
+        ],
         child: MaterialApp(
           home: const HomePage(),
           routes: mockedRoutes,
@@ -122,6 +151,11 @@ void main() {
     final mockObserver = MockNavigatorObserver();
     await tester.pumpWidget(
       ProviderScope(
+        overrides: [
+          authStateNotiferProvider.overrideWith(
+            () => MockAuthStateNotifier(),
+          ),
+        ],
         child: MaterialApp(
           home: const HomePage(),
           routes: mockedRoutes,
@@ -148,6 +182,11 @@ void main() {
     final mockObserver = MockNavigatorObserver();
     await tester.pumpWidget(
       ProviderScope(
+        overrides: [
+          authStateNotiferProvider.overrideWith(
+            () => MockAuthStateNotifier(),
+          ),
+        ],
         child: MaterialApp(
           home: const HomePage(),
           routes: mockedRoutes,
