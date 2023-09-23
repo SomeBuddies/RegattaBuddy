@@ -42,14 +42,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           orElse: () => null,
           authenticated: (user) {
             if (!hasNavigated) {
-              Navigator.of(context).pushReplacementNamed(HomePage.route);
+              Navigator.of(context).pushNamedAndRemoveUntil(HomePage.route, (Route route) => false);
+
               hasNavigated = true;
             }
           },
           unauthenticated: (message) {
             if (!hasNavigated) {
               showToast(message);
-              Navigator.of(context).pop(); //Removes loading spinner
+              //Removes loading spinner
+              showOnlyLoginScreen(context);
             }
           },
         );
@@ -118,6 +120,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         ),
       ),
     );
+  }
+
+  void showOnlyLoginScreen(BuildContext context) {
+    Navigator.of(context).popUntil((route) => route.settings.name == LoginPage.route);
   }
 
   Future signIn() async {
