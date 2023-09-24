@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:regatta_buddy/pages/admin/race_moderator_page.dart';
 import 'package:regatta_buddy/pages/race/race_page.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 
@@ -16,10 +17,18 @@ class _UserRegattasPageState extends State<UserRegattasPage> {
     return Scaffold(
       appBar: const AppHeader(),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () => Navigator.pushNamed(context, RacePage.route),
-          child: const Text('Page with regattas that user is participating in'),
-        ),
+        child: Column(
+          children: [
+            ElevatedButton(
+              onPressed: () => Navigator.pushNamed(context, RacePage.route),
+              child: const Text('Race participant page'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pushNamed(context, RaceModeratorPage.route),
+              child: const Text('Race moderator page'),
+            ),
+          ],
+        )
       ),
     );
   }

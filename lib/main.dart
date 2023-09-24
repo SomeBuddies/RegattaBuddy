@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:regatta_buddy/firebase_options.dart';
+import 'package:regatta_buddy/pages/admin/race_moderator_page.dart';
 import 'package:regatta_buddy/pages/event_creation/event_creation.dart';
 import 'package:regatta_buddy/pages/home.dart';
 import 'package:regatta_buddy/pages/login_page.dart';
@@ -41,11 +42,12 @@ class RegattaBuddy extends ConsumerWidget {
         RegattaDetailsPage.route: (context) => const RegattaDetailsPage(),
         UserRegattasPage.route: (context) => const UserRegattasPage(),
         SearchPage.route: (context) => const SearchPage(),
-        EventCreationPage.route: (context) => const EventCreationPage(),
+        EventCreationPage.route: (context) => EventCreationPage(),
         RacePage.route: (context) => const RacePage(),
         LoginPage.route: (context) => LoginPage(),
         RegisterPage.route: (context) => const RegisterPage(),
         ProfilePage.route: (context) => const ProfilePage(),
+        RaceModeratorPage.route: (context) => RaceModeratorPage()
       },
     );
   }
