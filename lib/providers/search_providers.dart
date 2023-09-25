@@ -53,7 +53,11 @@ Future<List<Event>> firestoreEvents(FirestoreEventsRef ref) async {
       )
       .get();
 
+<<<<<<< HEAD
   return query.docs.map((doc) => Event.fromJson(doc.data()).copyWith(id: doc.id)).toList();
+=======
+  return query.docs.map((doc) => Event.fromDocument(doc)).toList();
+>>>>>>> 8a6f12b (Create event repository)
 }
 
 @riverpod

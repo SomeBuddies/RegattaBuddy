@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
 import 'package:regatta_buddy/models/event.dart';
-import 'package:regatta_buddy/pages/admin/race_moderator_page.dart';
+import 'package:regatta_buddy/pages/regatta_details.dart';
 import 'package:regatta_buddy/widgets/icon_with_text.dart';
 
 class SearchItem extends StatelessWidget {
@@ -82,8 +82,11 @@ class SearchItem extends StatelessWidget {
                             label: DateFormat("HH:mm").format(event.date),
                           ),
                           ElevatedButton(
-                            onPressed: () {},
-                            child: const Text("Join"),
+                            onPressed: () => Navigator.of(context).pushNamed(
+                              RegattaDetailsPage.route,
+                              arguments: event,
+                            ),
+                            child: const Text("Details"),
                           )
                         ],
                       ),

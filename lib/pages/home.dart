@@ -5,7 +5,7 @@ import 'package:quickalert/quickalert.dart';
 import 'package:regatta_buddy/pages/event_creation/event_creation.dart';
 import 'package:regatta_buddy/pages/login_page.dart';
 import 'package:regatta_buddy/pages/regatta_details.dart';
-import 'package:regatta_buddy/pages/search.dart';
+import 'package:regatta_buddy/pages/search_page.dart';
 import 'package:regatta_buddy/pages/user_regattas.dart';
 import 'package:regatta_buddy/providers/auth/auth_state_notifier.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';

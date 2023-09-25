@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:regatta_buddy/extensions/datetime_extension.dart';
@@ -8,6 +7,7 @@ import 'package:regatta_buddy/pages/event_creation/event_form.dart';
 import 'package:regatta_buddy/pages/event_creation/event_route.dart';
 import 'package:regatta_buddy/pages/event_creation/event_social.dart';
 import 'package:regatta_buddy/pages/home.dart';
+import 'package:regatta_buddy/providers/repository_providers.dart';
 import 'package:regatta_buddy/providers/user_provider.dart';
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
@@ -25,7 +25,6 @@ class EventCreationPage extends ConsumerStatefulWidget {
 }
 
 class _EventCreationPageState extends ConsumerState<EventCreationPage> {
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final List<ComplexMarker> markers = [];
 
   String? eventName;
@@ -110,8 +109,11 @@ class _EventCreationPageState extends ConsumerState<EventCreationPage> {
               name: eventName!,
               description: eventDescription!,
             );
-            widget.logger.i("Event creation finished, saving following event to firebase: ${event.toJson()}");
-            firestore.collection('events').add(event.toJson());
+            widget.logger.i(
+              "Event creation finished, saving following event to firebase: ${event.toJson()}",
+            );
+
+            ref.read(eventRepositoryProvider).addEvent(event);
 
             Navigator.pushReplacementNamed(context, HomePage.route);
           },

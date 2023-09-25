@@ -7,7 +7,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:regatta_buddy/pages/event_creation/event_creation.dart';
 import 'package:regatta_buddy/pages/home.dart';
 import 'package:regatta_buddy/pages/regatta_details.dart';
-import 'package:regatta_buddy/pages/search.dart';
+import 'package:regatta_buddy/pages/search_page.dart';
 import 'package:regatta_buddy/pages/user_regattas.dart';
 import 'package:regatta_buddy/providers/auth/auth_state_notifier.dart';
 

@@ -10,7 +10,7 @@ import 'package:regatta_buddy/pages/profile_page.dart';
 import 'package:regatta_buddy/pages/race/race_page.dart';
 import 'package:regatta_buddy/pages/regatta_details.dart';
 import 'package:regatta_buddy/pages/register_page.dart';
-import 'package:regatta_buddy/pages/search.dart';
+import 'package:regatta_buddy/pages/search_page.dart';
 import 'package:regatta_buddy/pages/user_regattas.dart';
 
 void main() async {
