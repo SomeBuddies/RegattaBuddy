@@ -9,13 +9,16 @@ import 'package:regatta_buddy/pages/event_creation/event_route.dart';
 import 'package:regatta_buddy/pages/event_creation/event_social.dart';
 import 'package:regatta_buddy/pages/home.dart';
 import 'package:regatta_buddy/providers/user_provider.dart';
+import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/models/complex_marker.dart';
 
 class EventCreationPage extends ConsumerStatefulWidget {
+  final logger = getLogger('EventCreationPage');
+
   static const String route = '/eventCreation';
 
-  const EventCreationPage({super.key});
+  EventCreationPage({super.key});
 
   @override
   ConsumerState<EventCreationPage> createState() => _EventCreationPageState();
@@ -107,7 +110,7 @@ class _EventCreationPageState extends ConsumerState<EventCreationPage> {
               name: eventName!,
               description: eventDescription!,
             );
-
+            widget.logger.i("Event creation finished, saving following event to firebase: ${event.toJson()}");
             firestore.collection('events').add(event.toJson());
 
             Navigator.pushReplacementNamed(context, HomePage.route);

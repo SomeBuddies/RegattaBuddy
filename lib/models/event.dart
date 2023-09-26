@@ -8,6 +8,7 @@ part 'event.g.dart';
 @freezed
 class Event with _$Event {
   const factory Event({
+    @JsonKey(includeFromJson: false, includeToJson: false) @Default('') String id,
     required String hostId,
     @LatLngConverter() required List<LatLng> route,
     @LatLngConverter() required LatLng location,

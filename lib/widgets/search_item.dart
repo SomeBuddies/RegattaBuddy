@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
-
 import 'package:regatta_buddy/models/event.dart';
+import 'package:regatta_buddy/pages/admin/race_moderator_page.dart';
 import 'package:regatta_buddy/widgets/icon_with_text.dart';
 
 class SearchItem extends StatelessWidget {

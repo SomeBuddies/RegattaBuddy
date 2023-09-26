@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'firebase_providers.g.dart';
@@ -14,4 +15,7 @@ FirebaseFirestore firebaseFirestore(FirebaseFirestoreRef ref) {
   return FirebaseFirestore.instance;
 }
 
-// todo: add provider for realtime storage
+@Riverpod(keepAlive: true)
+DatabaseReference firebaseDb(FirebaseDbRef ref) {
+  return FirebaseDatabase.instance.ref();
+}

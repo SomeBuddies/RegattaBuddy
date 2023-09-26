@@ -53,7 +53,7 @@ Future<List<Event>> firestoreEvents(FirestoreEventsRef ref) async {
       )
       .get();
 
-  return query.docs.map((doc) => Event.fromJson(doc.data())).toList();
+  return query.docs.map((doc) => Event.fromJson(doc.data()).copyWith(id: doc.id)).toList();
 }
 
 @riverpod
