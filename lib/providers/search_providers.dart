@@ -93,3 +93,12 @@ Future<List<Event>> eventList(EventListRef ref, {String? query}) async {
       },
     );
 }
+
+// Might uncomment at some point - look in event_details_item.dart
+// @riverpod
+// FutureOr<List<Placemark>> placemark(PlacemarkRef ref, LatLng location) {
+//   return placemarkFromCoordinates(
+//     location.latitude,
+//     location.longitude,
+//   );
+// }

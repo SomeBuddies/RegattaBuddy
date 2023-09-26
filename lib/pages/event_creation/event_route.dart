@@ -5,7 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'package:regatta_buddy/utils/constants.dart' as constants;
-import 'package:regatta_buddy/utils/external_api_constants.dart';
+import 'package:regatta_buddy/utils/external_api_constants.dart' as ext_constants;
 import 'package:regatta_buddy/models/complex_marker.dart';
 
 class EventRouteSubPage extends StatefulWidget {
@@ -76,8 +76,8 @@ class _EventRouteSubPageState extends State<EventRouteSubPage> {
             ],
             children: [
               TileLayer(
-                urlTemplate: tileLayerUrl,
-                userAgentPackageName: tileLayerUserAgent,
+                urlTemplate: ext_constants.tileLayerUrl,
+                userAgentPackageName: ext_constants.tileLayerUserAgent,
               ),
               PolylineLayer(
                 polylines: [

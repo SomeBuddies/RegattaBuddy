@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:regatta_buddy/models/event.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
+import 'package:regatta_buddy/widgets/event_details_item.dart';
 
 class RegattaDetailsPage extends StatefulWidget {
   const RegattaDetailsPage({super.key});
@@ -17,7 +18,11 @@ class _RegattaDetailsPageState extends State<RegattaDetailsPage> {
 
     return Scaffold(
       appBar: const AppHeader(),
-      body: Text("Event id: ${args.id}"),
+      body: Column(
+        children: [
+          EventDetailsItem(args),
+        ],
+      ),
     );
   }
 }
