@@ -61,13 +61,13 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
     // Event event = ModalRoute.of(context)?.settings.arguments as Event;
     // widget.logger.i('initializing RaceModeratorPage with eventId: ${event.id}');
 
-    // TODO: remove this mock after implementing participant position tracking
+    // todo: remove this mock after implementing participant position tracking
     widget.logger.w('TEMPORARILY HARDCODED EVENT WITH ID: uniqueEventID');
     Event mockedEvent = Event(
         id: 'uniqueEventID',
         hostId: 'hostId',
         route: [],
-        location: LatLng(0, 0),
+        location: const LatLng(0, 0),
         date: DateTime.now(),
         name: 'name',
         description: 'desc');
@@ -83,10 +83,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
     super.initState();
 
     raceActions = [
-      ActionButton(
-          iconData: Icons.control_point,
-          title: "Add points",
-          onTap: addPointsHandler),
+      ActionButton(iconData: Icons.control_point, title: "Add points", onTap: addPointsHandler),
       ActionButton(
         iconData: Icons.question_answer,
         title: "Send message",
@@ -134,13 +131,11 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
                         if (processedScores.isNotEmpty) {
                           return ListView.builder(
                             itemBuilder: (context, index) {
-                              final teamId =
-                                  processedScores.keys.elementAt(index);
+                              final teamId = processedScores.keys.elementAt(index);
                               return ListTile(
                                 dense: true,
                                 title: Text("Team ${index + 1} : $teamId"),
-                                subtitle:
-                                    Text('Points: ${processedScores[teamId]}'),
+                                subtitle: Text('Points: ${processedScores[teamId]}'),
                               );
                             },
                             itemCount: processedScores.keys.length,

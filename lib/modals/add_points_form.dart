@@ -40,8 +40,7 @@ class _AddPointsFormState extends ConsumerState<AddPointsForm> {
           const Text("Select a team and add points"),
           DropdownButton<String>(
             value: selectedTeam,
-            items: widget.selectOptions
-                .map<DropdownMenuItem<String>>((String value) {
+            items: widget.selectOptions.map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
                 child: Text(
@@ -76,9 +75,7 @@ class _AddPointsFormState extends ConsumerState<AddPointsForm> {
           ElevatedButton(
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
-                final response = await ref
-                    .watch(firebaseWriterServiceProvider)
-                    .setPointsToTeam(
+                final response = await ref.watch(firebaseWriterServiceProvider).setPointsToTeam(
                       widget.eventId,
                       selectedTeam,
                       widget.round,
@@ -90,6 +87,8 @@ class _AddPointsFormState extends ConsumerState<AddPointsForm> {
                   (success) =>
                       "Successfully added ${pointsController.value.text} points to $selectedTeam",
                 );
+
+                if (!context.mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(responseText)),
                 );

@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
 import 'package:regatta_buddy/models/event.dart';
-import 'package:regatta_buddy/pages/admin/race_moderator_page.dart';
+import 'package:regatta_buddy/pages/regatta_details.dart';
 import 'package:regatta_buddy/widgets/icon_with_text.dart';
+import 'package:regatta_buddy/widgets/route_preview_map.dart';
 
 class SearchItem extends StatelessWidget {
   final Event event;
@@ -24,10 +25,11 @@ class SearchItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
-                child: Container(
-                  color: Colors.lightBlue,
-                  child: const Center(
-                    child: Text("Nw może tu dać podgląd trasy?"),
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: RoutePreviewMap(
+                    event.route,
+                    smallMode: true,
                   ),
                 ),
               ),
@@ -82,8 +84,11 @@ class SearchItem extends StatelessWidget {
                             label: DateFormat("HH:mm").format(event.date),
                           ),
                           ElevatedButton(
-                            onPressed: () {},
-                            child: const Text("Join"),
+                            onPressed: () => Navigator.of(context).pushNamed(
+                              RegattaDetailsPage.route,
+                              arguments: event,
+                            ),
+                            child: const Text("Details"),
                           )
                         ],
                       ),
