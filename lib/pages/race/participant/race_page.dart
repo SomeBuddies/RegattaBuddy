@@ -6,7 +6,7 @@ import 'package:geolocator/geolocator.dart';
 
 import 'package:regatta_buddy/modals/action_button.dart';
 import 'package:regatta_buddy/modals/actions_dialog.dart' as actions_dialog;
-import 'package:regatta_buddy/pages/race/race_statistics.dart';
+import 'package:regatta_buddy/pages/race/participant/race_statistics.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/widgets/rb_notification.dart';
 import 'package:uuid/uuid.dart';
@@ -106,24 +106,17 @@ class _RacePageState extends State<RacePage> {
     Geolocator.getPositionStream(locationSettings: locationSettings)
         .listen((Position? position) {
       if (position != null) {
-        databaseReference
+        DatabaseReference teamReference = databaseReference
             .child('traces')
             .child('uniqueEventID')
-            .child('teamX')
-            .child('0')
-            .update({
-          'score': 10,
+            .child('teamX');
+
+        teamReference.update({
           'lastUpdate': position.timestamp.toString(),
           'lastPosition':
               '${position.latitude.toString()}, ${position.longitude.toString()}'
         });
-        databaseReference
-            .child('traces')
-            .child('uniqueEventID')
-            .child('teamX')
-            .child('0')
-            .child('positions')
-            .update({
+        teamReference.child('positions').child('rounds').child('0').update({
           position.timestamp!.millisecondsSinceEpoch.toString():
               '${position.latitude.toString()}, ${position.longitude.toString()}',
         });
