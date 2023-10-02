@@ -106,24 +106,17 @@ class _RacePageState extends State<RacePage> {
     Geolocator.getPositionStream(locationSettings: locationSettings)
         .listen((Position? position) {
       if (position != null) {
-        databaseReference
+        DatabaseReference teamReference = databaseReference
             .child('traces')
             .child('uniqueEventID')
-            .child('teamX')
-            .child('0')
-            .update({
-          'score': 10,
+            .child('teamX');
+
+        teamReference.update({
           'lastUpdate': position.timestamp.toString(),
           'lastPosition':
               '${position.latitude.toString()}, ${position.longitude.toString()}'
         });
-        databaseReference
-            .child('traces')
-            .child('uniqueEventID')
-            .child('teamX')
-            .child('0')
-            .child('positions')
-            .update({
+        teamReference.child('positions').child('rounds').child('0').update({
           position.timestamp!.millisecondsSinceEpoch.toString():
               '${position.latitude.toString()}, ${position.longitude.toString()}',
         });
