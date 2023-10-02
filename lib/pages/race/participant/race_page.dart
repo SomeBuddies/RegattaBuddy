@@ -6,7 +6,7 @@ import 'package:geolocator/geolocator.dart';
 
 import 'package:regatta_buddy/modals/action_button.dart';
 import 'package:regatta_buddy/modals/actions_dialog.dart' as actions_dialog;
-import 'package:regatta_buddy/pages/race/race_statistics.dart';
+import 'package:regatta_buddy/pages/race/participant/race_statistics.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/widgets/rb_notification.dart';
 import 'package:uuid/uuid.dart';
