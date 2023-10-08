@@ -37,7 +37,7 @@ class _AddPointsFormState extends ConsumerState<AddPointsForm> {
       key: _formKey,
       child: Column(
         children: [
-          const Text("Select a team and add points"),
+          const Text("Select a team and set points"),
           DropdownButton<String>(
             value: selectedTeam,
             items: widget.selectOptions.map<DropdownMenuItem<String>>((String value) {
@@ -83,9 +83,9 @@ class _AddPointsFormState extends ConsumerState<AddPointsForm> {
                     );
 
                 String responseText = response.fold(
-                  (error) => "Failed to add points",
+                  (error) => "Failed to set points",
                   (success) =>
-                      "Successfully added ${pointsController.value.text} points to $selectedTeam",
+                      "Successfully set ${pointsController.value.text} points to $selectedTeam",
                 );
 
                 if (!context.mounted) return;

@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:regatta_buddy/models/round.dart';
 import 'package:regatta_buddy/providers/firebase_providers.dart';
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -38,4 +41,72 @@ Stream<Map<String, List<int>>> teamScores(TeamScoresRef ref, String eventId) {
     controller.close();
   });
   return controller.stream;
+}
+
+// TODO change to immutable map
+class TeamPositionNotifier extends StateNotifier<Map<String, LatLng>> {
+  final DatabaseReference firebaseDb;
+
+  TeamPositionNotifier(this.firebaseDb, String eventId, List<String> teams) : super(<String, LatLng>{}) {
+    final logger = getLogger("TeamPositionNotifier");
+    logger.i("initializing a TeamPositionNotifier provider");
+
+    for (final team in teams) {
+      final dbRef = firebaseDb.child('traces').child(eventId).child(team).child('lastPosition');
+      dbRef.onValue.listen((DatabaseEvent event) {
+        final data = event.snapshot.value as String;
+        logger.i("updating $team position: ${data.toString()}");
+        final latlong = data.split(', ');
+        var latitude = double.parse(latlong[0]);
+        var longitude = double.parse(latlong[1]);
+        var newMap = Map.of(state);
+        newMap[team] = LatLng(latitude, longitude);
+        state = newMap;
+      });
+    }
+  }
+
+}
+
+final teamPositionProvider = StateNotifierProvider<TeamPositionNotifier, Map<String, LatLng>>((ref) {
+  final db = ref.read(firebaseDbProvider);
+  return TeamPositionNotifier(db, "uniqueEventID", ["teamX"]);
+});
+
+@riverpod
+class CurrentRound extends _$CurrentRound {
+  @override
+  int build() {
+    // TODO should be synced with db
+    return 0;
+  }
+
+  void set(int type) {
+    state = type;
+  }
+
+  void increment() {
+    state = state + 1;
+  }
+}
+
+@riverpod
+class CurrentRoundStatus extends _$CurrentRoundStatus {
+  @override
+  RoundStatus build() {
+    return RoundStatus.NOT_STARTED;
+  }
+
+  void set(RoundStatus status) {
+    state = status;
+  }
+
+  void start() {
+    state = RoundStatus.STARTED;
+  }
+
+  void finish() {
+    state = RoundStatus.FINISHED;
+  }
+
 }
