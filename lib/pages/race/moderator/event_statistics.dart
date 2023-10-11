@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:regatta_buddy/models/round.dart';
+import 'package:regatta_buddy/providers/race_events.dart';
 import 'package:regatta_buddy/utils/constants.dart' as constants;
+import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 
-class EventStatistics extends StatelessWidget {
-  final int round;
+class EventStatistics extends ConsumerWidget {
+  EventStatistics({super.key});
 
-  const EventStatistics(
-    this.round, {
-    super.key,
-    this.height = 50,
-  });
-
-  final double height;
+  final logger = getLogger("EventStatistics");
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentRound = ref.watch(currentRoundProvider);
+    final currentRoundStatus = ref.watch(currentRoundStatusProvider);
+
+
     return Container(
-      height: height,
-      width: MediaQuery.of(context).size.width,
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
@@ -25,7 +25,7 @@ class EventStatistics extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20),
+        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 5, top: 5),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -71,30 +71,67 @@ class EventStatistics extends StatelessWidget {
                 ),
               ],
             ),
-            Column(
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  "Round",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Round",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      "${currentRound} / 5",
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
-                Text(
-                  "$round / 5",
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [getActionForRound(ref, currentRoundStatus)],
                 ),
               ],
             ),
           ],
         ),
       ),
+    );
+  }
+
+  GestureDetector getActionForRound(WidgetRef ref, RoundStatus roundStatus) {
+    if (roundStatus == RoundStatus.STARTED) {
+      return GestureDetector(
+        child: const Icon(
+          Icons.pause,
+          size: 40,
+        ),
+        onTap: () {
+          ref.read(currentRoundStatusProvider.notifier).finish();
+          logger.i("Round finished");
+          // TODO send event to server
+        },
+      );
+    }
+    return GestureDetector(
+      child: const Icon(
+        Icons.play_arrow,
+        size: 40,
+      ),
+      onTap: () {
+        ref.read(currentRoundProvider.notifier).increment();
+        ref.read(currentRoundStatusProvider.notifier).start();
+        logger.i("Round started");
+        // TODO send event to server
+      },
     );
   }
 }

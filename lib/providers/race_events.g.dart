@@ -156,5 +156,38 @@ class _TeamScoresProviderElement
   @override
   String get eventId => (origin as TeamScoresProvider).eventId;
 }
+
+String _$currentRoundHash() => r'0086d1ff9f86f190952f6230b69d6cb475960cc7';
+
+/// See also [CurrentRound].
+@ProviderFor(CurrentRound)
+final currentRoundProvider =
+    AutoDisposeNotifierProvider<CurrentRound, int>.internal(
+  CurrentRound.new,
+  name: r'currentRoundProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$currentRoundHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$CurrentRound = AutoDisposeNotifier<int>;
+String _$currentRoundStatusHash() =>
+    r'a1e8eb333a55c298bec8cea89bf98eef72f68ec6';
+
+/// See also [CurrentRoundStatus].
+@ProviderFor(CurrentRoundStatus)
+final currentRoundStatusProvider =
+    AutoDisposeNotifierProvider<CurrentRoundStatus, RoundStatus>.internal(
+  CurrentRoundStatus.new,
+  name: r'currentRoundStatusProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$currentRoundStatusHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$CurrentRoundStatus = AutoDisposeNotifier<RoundStatus>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
