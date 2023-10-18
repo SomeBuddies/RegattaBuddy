@@ -13,7 +13,7 @@ import 'package:regatta_buddy/widgets/custom_error.dart';
 import 'package:regatta_buddy/widgets/rb_notification.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../utils/constants.dart';
+import '../../../services/locator.dart';
 
 class RacePage extends StatefulWidget {
   const RacePage({super.key});
@@ -25,6 +25,7 @@ class RacePage extends StatefulWidget {
 }
 
 class _RacePageState extends State<RacePage> {
+  Locator? locator;
   late final String eventId;
   late final String teamId;
   late StreamSubscription<Position> subscription;
@@ -48,7 +49,7 @@ class _RacePageState extends State<RacePage> {
     });
     Future.delayed(
       Duration(seconds: _notificationTimeInSeconds),
-      () => {removeNotification(uuid), setState(() {})},
+          () => {removeNotification(uuid), setState(() {})},
     );
   }
 
@@ -58,22 +59,15 @@ class _RacePageState extends State<RacePage> {
     });
   }
 
-  void onError(String errorMessage) => setState(() {
-        isError = true;
-        this.errorMessage = errorMessage;
-      });
-
   @override
   void initState() {
     super.initState();
 
-    ensureLocatorPermissions().then((_) {
-      runGeolocator();
-    }).catchError(
-      (err) {
-        onError(err);
-      },
-    );
+    locator = Locator((error) => setState(() {
+          errorMessage = error;
+          isError = true;
+        }));
+    locator!.start(onPosition);
     raceActions = [
       ActionButton(
         iconData: Icons.help_outline,
@@ -107,56 +101,24 @@ class _RacePageState extends State<RacePage> {
     super.didChangeDependencies();
   }
 
-  Future<String> ensureLocatorPermissions() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+  void onPosition(Position position) {
+    DatabaseReference teamReference =
+        databaseReference.child('traces').child(eventId).child(teamId);
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error(
-          'Location services are disabled. Please enable them.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions. You can change that in your phone settings');
-    }
-
-    return Future.value("Required permissions are allowed");
-  }
-
-  void runGeolocator() {
-    subscription =
-        Geolocator.getPositionStream(locationSettings: kLocationSettings)
-            .listen((Position? position) {
-      if (position != null) {
-        DatabaseReference teamReference =
-            databaseReference.child('traces').child(eventId).child(teamId);
-
-        teamReference.update({
-          'lastUpdate': position.timestamp.toString(),
-          'lastPosition':
-              '${position.latitude.toString()}, ${position.longitude.toString()}'
-        });
-        teamReference.child('positions').child('rounds').child('0').update({
-          position.timestamp!.millisecondsSinceEpoch.toString():
-              '${position.latitude.toString()}, ${position.longitude.toString()}',
-        });
-      }
+    teamReference.update({
+      'lastUpdate': position.timestamp.toString(),
+      'lastPosition':
+          '${position.latitude.toString()}, ${position.longitude.toString()}'
+    });
+    teamReference.child('positions').child('rounds').child('0').update({
+      position.timestamp!.millisecondsSinceEpoch.toString():
+          '${position.latitude.toString()}, ${position.longitude.toString()}',
     });
   }
 
   @override
   void dispose() {
-    subscription.cancel();
+    if (locator != null) locator!.stop();
     super.dispose();
   }
 
@@ -171,25 +133,25 @@ class _RacePageState extends State<RacePage> {
       appBar: const AppHeader(),
       body: !isError
           ? Column(
+        children: [
+          const RaceStatistics(),
+          Flexible(
+            child: Stack(
               children: [
-                const RaceStatistics(),
-                Flexible(
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        top: 85,
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Column(
-                            children: activeNotifications,
-                          ),
-                        ),
-                      ),
-                    ],
+                Positioned(
+                  top: 85,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Column(
+                      children: activeNotifications,
+                    ),
                   ),
                 ),
               ],
-            )
+            ),
+          ),
+        ],
+      )
           : CustomErrorWidget(errorMessage),
     );
   }

@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:regatta_buddy/pages/race/participant/race_page.dart';
+import 'package:regatta_buddy/pages/race/participant/race_page_arguments.dart';
 
 import '../../firebase_mock.dart';
 
@@ -15,7 +16,12 @@ void main() {
   });
 
   testWidgets('Statistics are visible', (tester) async {
-    await tester.pumpWidget(const MaterialApp(home: RacePage()));
+    await tester.pumpWidget(MaterialApp(
+      onGenerateRoute: (settings) => MaterialPageRoute(
+          settings: const RouteSettings(
+              arguments: RacePageArguments("uniqueId", "teamX")),
+          builder: (context) => const RacePage()),
+    ));
 
     expect(find.text('Distance'), findsOneWidget);
     expect(find.text('Time'), findsOneWidget);
@@ -23,7 +29,12 @@ void main() {
   });
 
   testWidgets('Can open actions modal', (tester) async {
-    await tester.pumpWidget(const MaterialApp(home: RacePage()));
+    await tester.pumpWidget(MaterialApp(
+      onGenerateRoute: (settings) => MaterialPageRoute(
+          settings: const RouteSettings(
+              arguments: RacePageArguments("uniqueId", "teamX")),
+          builder: (context) => const RacePage()),
+    ));
 
     expect(find.byIcon(Icons.warning_amber_rounded), findsOneWidget);
 
@@ -38,7 +49,12 @@ void main() {
 
   testWidgets('Clicking action triggers notification which disappears after some time', (tester) async {
     const int notificationVisibilityDuration = 10;
-    await tester.pumpWidget(const MaterialApp(home: RacePage()));
+    await tester.pumpWidget(MaterialApp(
+      onGenerateRoute: (settings) => MaterialPageRoute(
+          settings: const RouteSettings(
+              arguments: RacePageArguments("uniqueId", "teamX")),
+          builder: (context) => const RacePage()),
+    ));
 
     expect(find.byIcon(Icons.warning_amber_rounded), findsOneWidget);
 
