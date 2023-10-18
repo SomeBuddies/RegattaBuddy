@@ -6,10 +6,14 @@ import 'package:geolocator/geolocator.dart';
 
 import 'package:regatta_buddy/modals/action_button.dart';
 import 'package:regatta_buddy/modals/actions_dialog.dart' as actions_dialog;
+import 'package:regatta_buddy/pages/race/participant/race_page_arguments.dart';
 import 'package:regatta_buddy/pages/race/participant/race_statistics.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
+import 'package:regatta_buddy/widgets/custom_error.dart';
 import 'package:regatta_buddy/widgets/rb_notification.dart';
 import 'package:uuid/uuid.dart';
+
+import '../../../services/locator.dart';
 
 class RacePage extends StatefulWidget {
   const RacePage({super.key});
@@ -21,7 +25,13 @@ class RacePage extends StatefulWidget {
 }
 
 class _RacePageState extends State<RacePage> {
+  Locator? locator;
+  late final String eventId;
+  late final String teamId;
+  late StreamSubscription<Position> subscription;
   final int _notificationTimeInSeconds = 10;
+  bool isError = false;
+  String errorMessage = "";
   List<RBNotification> activeNotifications = [];
   List<ActionButton> raceActions = [];
   final databaseReference = FirebaseDatabase.instance.ref();
@@ -52,7 +62,12 @@ class _RacePageState extends State<RacePage> {
   @override
   void initState() {
     super.initState();
-    runGeolocator();
+
+    locator = Locator((error) => setState(() {
+          errorMessage = error;
+          isError = true;
+        }));
+    locator!.start(onPosition);
     raceActions = [
       ActionButton(
         iconData: Icons.help_outline,
@@ -77,51 +92,34 @@ class _RacePageState extends State<RacePage> {
     ];
   }
 
-  void runGeolocator() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+  @override
+  void didChangeDependencies() {
+    final args =
+        ModalRoute.of(context)!.settings.arguments as RacePageArguments;
+    eventId = args.eventId;
+    teamId = args.teamId;
+    super.didChangeDependencies();
+  }
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
+  void onPosition(Position position) {
+    DatabaseReference teamReference =
+        databaseReference.child('traces').child(eventId).child(teamId);
 
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-    LocationSettings locationSettings = const LocationSettings(
-      accuracy: LocationAccuracy.high,
-      distanceFilter: 5,
-    );
-
-    Geolocator.getPositionStream(locationSettings: locationSettings)
-        .listen((Position? position) {
-      if (position != null) {
-        DatabaseReference teamReference = databaseReference
-            .child('traces')
-            .child('uniqueEventID')
-            .child('teamX');
-
-        teamReference.update({
-          'lastUpdate': position.timestamp.toString(),
-          'lastPosition':
-              '${position.latitude.toString()}, ${position.longitude.toString()}'
-        });
-        teamReference.child('positions').child('rounds').child('0').update({
-          position.timestamp!.millisecondsSinceEpoch.toString():
-              '${position.latitude.toString()}, ${position.longitude.toString()}',
-        });
-      }
+    teamReference.update({
+      'lastUpdate': position.timestamp.toString(),
+      'lastPosition':
+          '${position.latitude.toString()}, ${position.longitude.toString()}'
     });
+    teamReference.child('positions').child('rounds').child('0').update({
+      position.timestamp!.millisecondsSinceEpoch.toString():
+          '${position.latitude.toString()}, ${position.longitude.toString()}',
+    });
+  }
+
+  @override
+  void dispose() {
+    if (locator != null) locator!.stop();
+    super.dispose();
   }
 
   @override
@@ -133,7 +131,8 @@ class _RacePageState extends State<RacePage> {
         child: const Icon(Icons.warning_amber_rounded, size: 35),
       ),
       appBar: const AppHeader(),
-      body: Column(
+      body: !isError
+          ? Column(
         children: [
           const RaceStatistics(),
           Flexible(
@@ -152,7 +151,8 @@ class _RacePageState extends State<RacePage> {
             ),
           ),
         ],
-      ),
+      )
+          : CustomErrorWidget(errorMessage),
     );
   }
 }

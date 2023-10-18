@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:regatta_buddy/extensions/datetime_extension.dart';
@@ -17,6 +16,28 @@ class RBTextFormFieldDecoration extends InputDecoration {
           border: const OutlineInputBorder(),
           labelStyle: const TextStyle(fontSize: 20),
         );
+}
+
+class RBInputFormField extends StatelessWidget {
+  final String label;
+  final TextEditingController controller;
+
+  const RBInputFormField({
+    required this.label,
+    required this.controller,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: TextFormField(
+        decoration: RBTextFormFieldDecoration(labelText: label),
+        controller: controller,
+      ),
+    );
+  }
 }
 
 class RBRequiredInputFormField extends StatelessWidget {
