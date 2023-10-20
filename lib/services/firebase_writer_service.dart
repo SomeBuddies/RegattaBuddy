@@ -34,4 +34,25 @@ class FirebaseWriterService {
       return left("Error");
     }
   }
+
+  Future<bool> initializeScoreForTeam(String eventId, String teamId) async {
+    logger.i('initializing score for team: $teamId');
+    try {
+      await _firebaseDatabase
+          .child('scores')
+          .child(eventId)
+          .child(teamId)
+          .child('0')
+          .set(
+        {
+          'score': 0,
+        },
+      );
+      return true;
+    } on FirebaseException catch (e) {
+      final msg = e.message ?? 'Unknown Error when initializing score';
+      logger.e(msg);
+      return false;
+    }
+  }
 }
