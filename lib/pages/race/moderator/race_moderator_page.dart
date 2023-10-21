@@ -88,7 +88,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
     raceActions = [
       ActionButton(
           iconData: Icons.control_point,
-          title: "Set points",
+          title: "Add points",
           onTap: addPointsHandler),
       ActionButton(
         iconData: Icons.question_answer,
@@ -206,7 +206,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
         onPressed: () => actions_dialog.showActionsDialog(context, [
           ActionButton(
               iconData: Icons.control_point,
-              title: "Set points",
+              title: "Add points",
               onTap: () => addPointsHandler(processedScores.keys.toList())),
           ActionButton(
             iconData: Icons.question_answer,
