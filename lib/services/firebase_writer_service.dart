@@ -1,6 +1,6 @@
-import 'package:dartz/dartz.dart';
 import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:logger/logger.dart';
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 

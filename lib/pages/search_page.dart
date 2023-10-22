@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:regatta_buddy/enums/sort_enums.dart';
 import 'package:regatta_buddy/extensions/string_extension.dart';
-import 'package:regatta_buddy/providers/search_providers.dart';
+import 'package:regatta_buddy/providers/search/search_providers.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/widgets/search_item.dart';
 

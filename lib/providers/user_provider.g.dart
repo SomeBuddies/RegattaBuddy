@@ -6,7 +6,7 @@ part of 'user_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$userDataHash() => r'81993a9b5e39e164ebe68c659b20b285c8662a38';
+String _$userDataHash() => r'e20ec8f2ebd445d52cbe0937a8300cb1bdf40307';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -154,7 +154,7 @@ class _UserDataProviderElement extends FutureProviderElement<UserData>
   String get uid => (origin as UserDataProvider).uid;
 }
 
-String _$currentUserDataHash() => r'c5dced9def708645958fb87a93d17514e9fd0c95';
+String _$currentUserDataHash() => r'42c968c61d2b29ab9b8008ff88d058e9ec61ae32';
 
 /// See also [CurrentUserData].
 @ProviderFor(CurrentUserData)

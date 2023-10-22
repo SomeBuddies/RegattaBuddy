@@ -1,34 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:geocoding/geocoding.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:latlong2/latlong.dart';
 
 import 'package:regatta_buddy/models/event.dart';
+import 'package:regatta_buddy/providers/event_details/placemark_provider.dart';
 import 'package:regatta_buddy/widgets/icon_with_text.dart';
 import 'package:regatta_buddy/widgets/route_preview_map.dart';
 
-// This is the syntax without generator - I didn't want any generated files
-// inside of the widgets folder, might move it out later.
-final _placemarkProvider =
-    FutureProvider.autoDispose.family<List<Placemark>, LatLng>((ref, location) async {
-  return placemarkFromCoordinates(
-    location.latitude,
-    location.longitude,
-  );
-});
-
-class EventDetailsItem extends ConsumerWidget {
+class EventDetailsDisplay extends ConsumerWidget {
   final Event event;
 
-  const EventDetailsItem(
+  const EventDetailsDisplay(
     this.event, {
     super.key,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final placemark = ref.watch(_placemarkProvider(event.location));
+    final placemark = ref.watch(placemarkProvider(event.location));
 
     return Card(
       shape: RoundedRectangleBorder(
@@ -94,7 +83,7 @@ class EventDetailsItem extends ConsumerWidget {
                     icon: const Icon(Icons.pin_drop),
                     label: data.first.locality ?? event.location.toString(),
                   ),
-                  error: (error, stackTrace) => Text(error.toString()),
+                  error: (error, stackTrace) => Text(event.location.toString()),
                   loading: () => const Center(
                     child: CircularProgressIndicator(),
                   ),

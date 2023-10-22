@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:regatta_buddy/modals/action_button.dart';
 import 'package:regatta_buddy/modals/actions_dialog.dart' as actions_dialog;
@@ -86,10 +86,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
     super.initState();
 
     raceActions = [
-      ActionButton(
-          iconData: Icons.control_point,
-          title: "Add points",
-          onTap: addPointsHandler),
+      ActionButton(iconData: Icons.control_point, title: "Add points", onTap: addPointsHandler),
       ActionButton(
         iconData: Icons.question_answer,
         title: "Send message",
@@ -105,8 +102,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
       ActionButton(
         iconData: Icons.close_outlined,
         title: "Cancel",
-        onTap: () => {
-        },
+        onTap: () => {},
       ),
     ];
   }
@@ -118,6 +114,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
   @override
   Widget build(BuildContext context) {
     final teamScores = ref.watch(teamScoresProvider(event.id));
+    // ignore: unused_local_variable
     final currentRound = ref.watch(currentRoundProvider);
     Map<String, LatLng> teamPositions = ref.watch(teamPositionProvider);
 
@@ -142,8 +139,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
                         if (processedScores.isNotEmpty) {
                           return ListView.builder(
                             itemBuilder: (context, index) {
-                              final teamId =
-                                  processedScores.keys.elementAt(index);
+                              final teamId = processedScores.keys.elementAt(index);
                               return ListTile(
                                 dense: true,
                                 leading: IconButton(
@@ -155,22 +151,22 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
                                   ]),
                                   color: drawing_utils.getColorForString(teamId),
                                   iconSize: 40.0,
+                                  onPressed: () {},
+                                ),
+                                trailing: IconButton(
+                                  icon: const Icon(Icons.my_location),
                                   onPressed: () {
+                                    if (teamPositions[teamId] != null) {
+                                      mapController.move(
+                                          teamPositions[teamId]!, mapController.zoom);
+                                    } else {
+                                      widget.logger.w(
+                                          'Team $teamId has no position data | PROBABLY IT IS MOCKED');
+                                    }
                                   },
                                 ),
-                                  trailing: IconButton(
-                                    icon: const Icon(Icons.my_location),
-                                    onPressed: () {
-                                      if (teamPositions[teamId] != null) {
-                                        mapController.move(teamPositions[teamId]!, mapController.zoom);
-                                      } else {
-                                        widget.logger.w('Team $teamId has no position data | PROBABLY IT IS MOCKED');
-                                      }
-                                    },
-                                  ),
                                 title: Text("Team ${index + 1} : $teamId"),
-                                subtitle:
-                                    Text('Points: ${processedScores[teamId]}'),
+                                subtitle: Text('Points: ${processedScores[teamId]}'),
                               );
                             },
                             itemCount: processedScores.keys.length,

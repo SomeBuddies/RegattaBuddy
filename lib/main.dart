@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:regatta_buddy/firebase_options.dart';
 import 'package:regatta_buddy/pages/race/moderator/race_moderator_page.dart';
 import 'package:regatta_buddy/pages/event_creation/event_creation.dart';
