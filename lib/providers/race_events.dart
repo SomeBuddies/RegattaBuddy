@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:regatta_buddy/models/round.dart';
+import 'package:regatta_buddy/enums/round_status.dart';
 import 'package:regatta_buddy/providers/firebase_providers.dart';
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -62,7 +62,7 @@ class TeamPositionNotifier extends StateNotifier<Map<String, LatLng>> {
       for (final team in teamsAndScores.keys.toList()) {
         final dbRef = firebaseDb.child('traces').child(eventId).child(team).child('lastPosition');
         dbRef.onValue.listen((DatabaseEvent event) {
-          if(event.snapshot.value == null) {
+          if (event.snapshot.value == null) {
             return;
           }
           final data = event.snapshot.value as String;
@@ -79,14 +79,14 @@ class TeamPositionNotifier extends StateNotifier<Map<String, LatLng>> {
   }
 }
 
-final teamPositionProvider = StateNotifierProvider<TeamPositionNotifier, Map<String, LatLng>>((ref) {
+final teamPositionProvider =
+    StateNotifierProvider<TeamPositionNotifier, Map<String, LatLng>>((ref) {
   const eventId = "uniqueEventID";
 
   final db = ref.read(firebaseDbProvider);
 
   return TeamPositionNotifier(db, eventId);
 });
-
 
 @riverpod
 class CurrentRound extends _$CurrentRound {
@@ -109,7 +109,7 @@ class CurrentRound extends _$CurrentRound {
 class CurrentRoundStatus extends _$CurrentRoundStatus {
   @override
   RoundStatus build() {
-    return RoundStatus.NOT_STARTED;
+    return RoundStatus.pending;
   }
 
   void set(RoundStatus status) {
@@ -117,11 +117,10 @@ class CurrentRoundStatus extends _$CurrentRoundStatus {
   }
 
   void start() {
-    state = RoundStatus.STARTED;
+    state = RoundStatus.started;
   }
 
   void finish() {
-    state = RoundStatus.FINISHED;
+    state = RoundStatus.finished;
   }
-
 }

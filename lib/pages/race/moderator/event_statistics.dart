@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:regatta_buddy/models/round.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import 'package:regatta_buddy/enums/round_status.dart';
 import 'package:regatta_buddy/providers/race_events.dart';
 import 'package:regatta_buddy/utils/constants.dart' as constants;
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
@@ -14,7 +15,6 @@ class EventStatistics extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentRound = ref.watch(currentRoundProvider);
     final currentRoundStatus = ref.watch(currentRoundStatusProvider);
-
 
     return Container(
       decoration: const BoxDecoration(
@@ -86,7 +86,7 @@ class EventStatistics extends ConsumerWidget {
                       ),
                     ),
                     Text(
-                      "${currentRound} / 5",
+                      "$currentRound / 5",
                       style: const TextStyle(
                         color: Colors.black,
                         fontSize: 20,
@@ -108,7 +108,7 @@ class EventStatistics extends ConsumerWidget {
   }
 
   GestureDetector getActionForRound(WidgetRef ref, RoundStatus roundStatus) {
-    if (roundStatus == RoundStatus.STARTED) {
+    if (roundStatus == RoundStatus.started) {
       return GestureDetector(
         child: const Icon(
           Icons.pause,

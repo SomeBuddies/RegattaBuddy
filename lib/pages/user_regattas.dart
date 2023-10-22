@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:regatta_buddy/pages/race/moderator/race_moderator_page.dart';
 import 'package:regatta_buddy/pages/race/participant/race_page.dart';
 import 'package:regatta_buddy/pages/race/participant/race_page_arguments.dart';
@@ -51,17 +51,18 @@ class _UserRegattasPageState extends ConsumerState<UserRegattasPage> {
           ),
           ElevatedButton(
             onPressed: () async {
-            // TODO move team score initialization to team creation flow
-              await dbRef.initializeScoreForTeam(eventIdController.text, teamController.text);
-              Navigator.pushNamed(context, RacePage.route,
-                arguments: RacePageArguments(
-                  eventIdController.text, teamController.text));
+              // TODO move team score initialization to team creation flow
+              dbRef.initializeScoreForTeam(eventIdController.text, teamController.text);
+
+              if (context.mounted) {
+                Navigator.pushNamed(context, RacePage.route,
+                    arguments: RacePageArguments(eventIdController.text, teamController.text));
+              }
             },
             child: const Text('Race participant page'),
           ),
           ElevatedButton(
-            onPressed: () =>
-                Navigator.pushNamed(context, RaceModeratorPage.route),
+            onPressed: () => Navigator.pushNamed(context, RaceModeratorPage.route),
             child: const Text('Race moderator page'),
           ),
         ],

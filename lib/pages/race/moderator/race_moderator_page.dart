@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:regatta_buddy/extensions/string_extension.dart';
 import 'package:regatta_buddy/modals/action_button.dart';
 import 'package:regatta_buddy/modals/actions_dialog.dart' as actions_dialog;
 import 'package:regatta_buddy/modals/actions_dialog.dart';
@@ -10,7 +11,6 @@ import 'package:regatta_buddy/pages/race/moderator/event_statistics.dart';
 import 'package:regatta_buddy/pages/race/moderator/race_map.dart';
 import 'package:regatta_buddy/providers/race_events.dart';
 import 'package:regatta_buddy/utils/data_processing_helper.dart' as data_helper;
-import 'package:regatta_buddy/utils/drawing_utils.dart' as drawing_utils;
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/widgets/rb_notification.dart';
@@ -149,7 +149,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
                                       color: Colors.black,
                                     ),
                                   ]),
-                                  color: drawing_utils.getColorForString(teamId),
+                                  color: teamId.toSeededColor(),
                                   iconSize: 40.0,
                                   onPressed: () {},
                                 ),
