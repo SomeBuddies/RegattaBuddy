@@ -35,6 +35,30 @@ class FirebaseWriterService {
     }
   }
 
+  Future<Either<String, int>> getTeamScore(
+      String eventId, String teamId, int round) async {
+    logger.i('getting score of $teamId team in $round round');
+    try {
+      final event = await _firebaseDatabase
+          .child('scores')
+          .child(eventId)
+          .child(teamId)
+          .child(round.toString())
+          .once();
+
+      if (event.snapshot.value != null) {
+        var data = event.snapshot.value as Map;
+        return right(data['score']);
+      } else {
+        return left('No score found');
+      }
+    } on FirebaseException catch (e) {
+      final msg = e.message ?? 'Unknown Error when getting score';
+      logger.e(msg);
+      return left(msg);
+    }
+  }
+
   Future<bool> initializeScoreForTeam(String eventId, String teamId) async {
     logger.i('initializing score for team: $teamId');
     try {

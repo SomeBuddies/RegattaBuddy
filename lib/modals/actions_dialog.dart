@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:regatta_buddy/modals/action_button.dart';
-import 'package:regatta_buddy/modals/add_points_form.dart';
+import 'package:regatta_buddy/modals/add_score_form.dart';
 import 'package:regatta_buddy/utils/constants.dart' as constants;
 
 Future<void> showActionsDialog(
@@ -72,8 +72,8 @@ Future<void> showSelectWithInputDialog(
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: SizedBox(
-                  height: 200,
-                  child: AddPointsForm(options, eventId, round),
+                  height: 270,
+                  child: AddScoreForm(options, eventId, round),
                 ),
               ),
             ),
