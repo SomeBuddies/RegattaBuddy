@@ -1,7 +1,7 @@
 // ignore_for_file: scoped_providers_should_specify_dependencies
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:regatta_buddy/pages/event_creation/event_creation.dart';

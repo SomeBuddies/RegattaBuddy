@@ -1,5 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:regatta_buddy/models/event.dart';
+import 'package:regatta_buddy/providers/repository_providers.dart';
+import 'package:regatta_buddy/services/event_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:regatta_buddy/enums/sort_enums.dart';
 
@@ -44,16 +45,9 @@ class ShowPastEvents extends _$ShowPastEvents {
 @riverpod
 Future<List<Event>> firestoreEvents(FirestoreEventsRef ref) async {
   final bool showPastEvents = ref.watch(showPastEventsProvider);
+  final EventRepository repo = ref.watch(eventRepositoryProvider);
 
-  final query = await FirebaseFirestore.instance
-      .collection('events')
-      .where(
-        "date",
-        isGreaterThan: showPastEvents ? null : DateTime.timestamp().toIso8601String(),
-      )
-      .get();
-
-  return query.docs.map((doc) => Event.fromDocument(doc)).toList();
+  return showPastEvents ? await repo.getEvents() : await repo.getFutureEvents();
 }
 
 @riverpod

@@ -64,7 +64,7 @@ class SearchItem extends StatelessWidget {
                                       )
                                     : IconWithText(
                                         icon: const Icon(Icons.pin_drop),
-                                        label: snapshot.data!.first.locality ??
+                                        label: snapshot.data?.first.locality ??
                                             event.location.toString(),
                                       ),
                           )

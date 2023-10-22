@@ -1,7 +1,7 @@
-import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:regatta_buddy/providers/firebase_writer_service_provider.dart';
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 
@@ -62,8 +62,7 @@ class _AddScoreFormState extends ConsumerState<AddScoreForm> {
           TextFormField(
             keyboardType: TextInputType.number,
             inputFormatters: [
-              FilteringTextInputFormatter.allow(
-                  allowNegativeAndPositiveNumbersRegExp),
+              FilteringTextInputFormatter.allow(allowNegativeAndPositiveNumbersRegExp),
             ],
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
@@ -82,21 +81,13 @@ class _AddScoreFormState extends ConsumerState<AddScoreForm> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               SuggestedPointsButton(
-                  pointsController: pointsController,
-                  points: "-10",
-                  color: Colors.red),
+                  pointsController: pointsController, points: "-10", color: Colors.red),
               SuggestedPointsButton(
-                  pointsController: pointsController,
-                  points: "-5",
-                  color: Colors.red),
+                  pointsController: pointsController, points: "-5", color: Colors.red),
               SuggestedPointsButton(
-                  pointsController: pointsController,
-                  points: "5",
-                  color: Colors.green),
+                  pointsController: pointsController, points: "5", color: Colors.green),
               SuggestedPointsButton(
-                  pointsController: pointsController,
-                  points: "10",
-                  color: Colors.green),
+                  pointsController: pointsController, points: "10", color: Colors.green),
             ],
           ),
           const SizedBox(height: 10),
@@ -105,8 +96,7 @@ class _AddScoreFormState extends ConsumerState<AddScoreForm> {
               if (_formKey.currentState!.validate()) {
                 Either<String, String> response = await updateTeamPoints();
 
-                String responseText =
-                    response.fold((error) => "Failed to add points", (success) {
+                String responseText = response.fold((error) => "Failed to add points", (success) {
                   // TODO send event to db about points change
                   return "Successfully added ${pointsController.value.text} points to $selectedTeam";
                 });
@@ -120,8 +110,7 @@ class _AddScoreFormState extends ConsumerState<AddScoreForm> {
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.all(15),
             ),
-            child: const Text("ADD",
-                style: TextStyle(fontWeight: FontWeight.bold)),
+            child: const Text("ADD", style: TextStyle(fontWeight: FontWeight.bold)),
           ),
         ],
       ),
