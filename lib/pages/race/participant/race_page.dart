@@ -13,6 +13,7 @@ import 'package:regatta_buddy/widgets/custom_error.dart';
 import 'package:regatta_buddy/widgets/rb_notification.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../models/message.dart';
 import '../../../services/locator.dart';
 
 class RacePage extends StatefulWidget {
@@ -35,6 +36,7 @@ class _RacePageState extends State<RacePage> {
   List<RBNotification> activeNotifications = [];
   List<ActionButton> raceActions = [];
   final databaseReference = FirebaseDatabase.instance.ref();
+  bool eventStarted = false;
 
   void addNotification(String title) {
     String uuid = const Uuid().v4();
@@ -67,7 +69,6 @@ class _RacePageState extends State<RacePage> {
           errorMessage = error;
           isError = true;
         }));
-    locator!.start(onPosition);
     raceActions = [
       ActionButton(
         iconData: Icons.help_outline,
@@ -116,6 +117,18 @@ class _RacePageState extends State<RacePage> {
     });
   }
 
+  void onMessage(Message message) {
+    if (message.receiverType == MessageReceiverType.all ||
+        (message.receiverType == MessageReceiverType.team &&
+            message.teamId == teamId)) {
+      if (message.type == MessageType.startEvent) {
+        setState(() {
+          eventStarted = true;
+        });
+      }
+    }
+  }
+
   @override
   void dispose() {
     if (locator != null) locator!.stop();
@@ -124,34 +137,39 @@ class _RacePageState extends State<RacePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (eventStarted && !locator!.isOn) locator!.start(onPosition);
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         elevation: 10,
         onPressed: () => actions_dialog.showActionsDialog(context, raceActions),
+        // onPressed: () => onMessage(Message(
+        //     type: MessageType.startEvent,
+        //     receiverType: MessageReceiverType.all)),
         child: const Icon(Icons.warning_amber_rounded, size: 35),
       ),
       appBar: const AppHeader(),
       body: !isError
           ? Column(
-        children: [
-          const RaceStatistics(),
-          Flexible(
-            child: Stack(
               children: [
-                Positioned(
-                  top: 85,
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Column(
-                      children: activeNotifications,
-                    ),
+                const RaceStatistics(),
+                Flexible(
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        top: 85,
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Column(
+                            children: activeNotifications,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
-            ),
-          ),
-        ],
-      )
+            )
           : CustomErrorWidget(errorMessage),
     );
   }
