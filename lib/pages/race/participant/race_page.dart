@@ -8,11 +8,13 @@ import 'package:regatta_buddy/modals/action_button.dart';
 import 'package:regatta_buddy/modals/actions_dialog.dart' as actions_dialog;
 import 'package:regatta_buddy/pages/race/participant/race_page_arguments.dart';
 import 'package:regatta_buddy/pages/race/participant/race_statistics.dart';
+import 'package:regatta_buddy/services/event_message_handler.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/widgets/custom_error.dart';
 import 'package:regatta_buddy/widgets/rb_notification.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../models/message.dart';
 import '../../../services/locator.dart';
 
 class RacePage extends StatefulWidget {
@@ -26,6 +28,7 @@ class RacePage extends StatefulWidget {
 
 class _RacePageState extends State<RacePage> {
   Locator? locator;
+  EventMessageHandler? messageHandler;
   late final String eventId;
   late final String teamId;
   late StreamSubscription<Position> subscription;
@@ -35,6 +38,7 @@ class _RacePageState extends State<RacePage> {
   List<RBNotification> activeNotifications = [];
   List<ActionButton> raceActions = [];
   final databaseReference = FirebaseDatabase.instance.ref();
+  bool eventStarted = false;
 
   void addNotification(String title) {
     String uuid = const Uuid().v4();
@@ -63,11 +67,16 @@ class _RacePageState extends State<RacePage> {
   void initState() {
     super.initState();
 
+    messageHandler = EventMessageHandler(
+        eventId: 'uniqueEventID',
+        teamId: 'teamX',
+        onStartEventMessage: onStartEventMessage)
+      ..start();
+
     locator = Locator((error) => setState(() {
           errorMessage = error;
           isError = true;
         }));
-    locator!.start(onPosition);
     raceActions = [
       ActionButton(
         iconData: Icons.help_outline,
@@ -116,14 +125,23 @@ class _RacePageState extends State<RacePage> {
     });
   }
 
+  void onStartEventMessage(Message message) {
+    setState(() {
+      eventStarted = true;
+    });
+  }
+
   @override
   void dispose() {
-    if (locator != null) locator!.stop();
+    locator?.stop();
+    messageHandler?.stop();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (eventStarted && !locator!.isOn) locator!.start(onPosition);
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         elevation: 10,
@@ -133,25 +151,25 @@ class _RacePageState extends State<RacePage> {
       appBar: const AppHeader(),
       body: !isError
           ? Column(
-        children: [
-          const RaceStatistics(),
-          Flexible(
-            child: Stack(
               children: [
-                Positioned(
-                  top: 85,
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Column(
-                      children: activeNotifications,
-                    ),
+                const RaceStatistics(),
+                Flexible(
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        top: 85,
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Column(
+                            children: activeNotifications,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
-            ),
-          ),
-        ],
-      )
+            )
           : CustomErrorWidget(errorMessage),
     );
   }

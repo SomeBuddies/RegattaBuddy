@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -7,6 +8,7 @@ import 'package:regatta_buddy/modals/action_button.dart';
 import 'package:regatta_buddy/modals/actions_dialog.dart' as actions_dialog;
 import 'package:regatta_buddy/modals/actions_dialog.dart';
 import 'package:regatta_buddy/models/event.dart';
+import 'package:regatta_buddy/models/message.dart';
 import 'package:regatta_buddy/pages/race/moderator/event_statistics.dart';
 import 'package:regatta_buddy/pages/race/moderator/race_map.dart';
 import 'package:regatta_buddy/providers/race_events.dart';
@@ -200,6 +202,25 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
       floatingActionButton: FloatingActionButton(
         elevation: 10,
         onPressed: () => actions_dialog.showActionsDialog(context, [
+          ActionButton(
+            iconData: Icons.start,
+            title: "Start event",
+            onTap: () {
+              String timestamp =
+                  DateTime.now().millisecondsSinceEpoch.toString();
+              final databaseReference = FirebaseDatabase.instance.ref();
+              DatabaseReference messagesRefference = databaseReference
+                  .child('messages')
+                  .child('uniqueEventID')
+                  .child(timestamp);
+
+              Message message = Message(
+                  type: MessageType.startEvent,
+                  receiverType: MessageReceiverType.all);
+
+              messagesRefference.set(message.toJson());
+            },
+          ),
           ActionButton(
               iconData: Icons.control_point,
               title: "Add points",

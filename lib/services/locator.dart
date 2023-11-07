@@ -7,6 +7,7 @@ import '../utils/constants.dart';
 class Locator {
   void Function(String) setErrorMessage;
   StreamSubscription<Position>? positionStream;
+  bool isOn = false;
 
   Locator(this.setErrorMessage);
 
@@ -41,6 +42,7 @@ class Locator {
       setErrorMessage(error);
       return false;
     });
+    isOn = true;
     positionStream =
         Geolocator.getPositionStream(locationSettings: kLocationSettings)
             .listen((Position? position) {
@@ -52,5 +54,6 @@ class Locator {
 
   void stop() {
     if (positionStream != null) positionStream!.cancel();
+    isOn = false;
   }
 }
