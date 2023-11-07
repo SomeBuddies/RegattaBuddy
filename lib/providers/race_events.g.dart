@@ -173,7 +173,7 @@ final currentRoundProvider =
 
 typedef _$CurrentRound = AutoDisposeNotifier<int>;
 String _$currentRoundStatusHash() =>
-    r'a1e8eb333a55c298bec8cea89bf98eef72f68ec6';
+    r'016d8ed69a427df774434fb87f89cd0934c4c927';
 
 /// See also [CurrentRoundStatus].
 @ProviderFor(CurrentRoundStatus)

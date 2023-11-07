@@ -8,6 +8,7 @@ import 'package:regatta_buddy/modals/action_button.dart';
 import 'package:regatta_buddy/modals/actions_dialog.dart' as actions_dialog;
 import 'package:regatta_buddy/pages/race/participant/race_page_arguments.dart';
 import 'package:regatta_buddy/pages/race/participant/race_statistics.dart';
+import 'package:regatta_buddy/services/event_message_handler.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/widgets/custom_error.dart';
 import 'package:regatta_buddy/widgets/rb_notification.dart';
@@ -27,6 +28,7 @@ class RacePage extends StatefulWidget {
 
 class _RacePageState extends State<RacePage> {
   Locator? locator;
+  EventMessageHandler? messageHandler;
   late final String eventId;
   late final String teamId;
   late StreamSubscription<Position> subscription;
@@ -64,6 +66,12 @@ class _RacePageState extends State<RacePage> {
   @override
   void initState() {
     super.initState();
+
+    messageHandler = EventMessageHandler(
+        eventId: 'uniqueEventID',
+        teamId: 'teamX',
+        onStartEventMessage: onStartEventMessage)
+      ..start();
 
     locator = Locator((error) => setState(() {
           errorMessage = error;
@@ -117,21 +125,16 @@ class _RacePageState extends State<RacePage> {
     });
   }
 
-  void onMessage(Message message) {
-    if (message.receiverType == MessageReceiverType.all ||
-        (message.receiverType == MessageReceiverType.team &&
-            message.teamId == teamId)) {
-      if (message.type == MessageType.startEvent) {
-        setState(() {
-          eventStarted = true;
-        });
-      }
-    }
+  void onStartEventMessage(Message message) {
+    setState(() {
+      eventStarted = true;
+    });
   }
 
   @override
   void dispose() {
-    if (locator != null) locator!.stop();
+    locator?.stop();
+    messageHandler?.stop();
     super.dispose();
   }
 
@@ -143,9 +146,6 @@ class _RacePageState extends State<RacePage> {
       floatingActionButton: FloatingActionButton(
         elevation: 10,
         onPressed: () => actions_dialog.showActionsDialog(context, raceActions),
-        // onPressed: () => onMessage(Message(
-        //     type: MessageType.startEvent,
-        //     receiverType: MessageReceiverType.all)),
         child: const Icon(Icons.warning_amber_rounded, size: 35),
       ),
       appBar: const AppHeader(),
