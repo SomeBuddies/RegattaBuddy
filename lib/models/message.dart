@@ -25,6 +25,14 @@ class Message {
     if (value != null) json['value'] = value!;
     return json;
   }
+
+  bool isForAll() {
+    return receiverType == MessageReceiverType.all;
+  }
+
+  bool isForTeam(String? id) {
+    return receiverType == MessageReceiverType.team && teamId == id;
+  }
 }
 
 enum MessageType {

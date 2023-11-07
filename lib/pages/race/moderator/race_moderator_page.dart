@@ -1,4 +1,3 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -7,8 +6,6 @@ import 'package:regatta_buddy/extensions/string_extension.dart';
 import 'package:regatta_buddy/modals/action_button.dart';
 import 'package:regatta_buddy/modals/actions_dialog.dart' as actions_dialog;
 import 'package:regatta_buddy/modals/actions_dialog.dart';
-import 'package:regatta_buddy/models/event.dart';
-import 'package:regatta_buddy/models/message.dart';
 import 'package:regatta_buddy/pages/race/moderator/event_statistics.dart';
 import 'package:regatta_buddy/pages/race/moderator/race_map.dart';
 import 'package:regatta_buddy/providers/race_events.dart';
@@ -17,6 +14,8 @@ import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/widgets/rb_notification.dart';
 import 'package:uuid/uuid.dart';
+
+import '../../../services/event_message_sender.dart';
 
 class RaceModeratorPage extends ConsumerStatefulWidget {
   final logger = getLogger('RaceModeratorPage');
@@ -31,7 +30,7 @@ class RaceModeratorPage extends ConsumerStatefulWidget {
 
 class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
   final int _notificationTimeInSeconds = 10;
-  late final Event event;
+  late final String eventId;
   List<RBNotification> activeNotifications = [];
   List<ActionButton> raceActions = [];
   int round = 1;
@@ -63,62 +62,19 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
 
   @override
   void didChangeDependencies() {
-    // Event event = ModalRoute.of(context)?.settings.arguments as Event;
-    // widget.logger.i('initializing RaceModeratorPage with eventId: ${event.id}');
-
-    // todo: remove this mock after implementing participant position tracking
-    widget.logger.w('TEMPORARILY HARDCODED EVENT WITH ID: uniqueEventID');
-    Event mockedEvent = Event(
-        id: 'uniqueEventID',
-        hostId: 'hostId',
-        route: [],
-        location: const LatLng(0, 0),
-        date: DateTime.now(),
-        name: 'name',
-        description: 'desc');
-
-    setState(() {
-      event = mockedEvent;
-    });
+    eventId = ModalRoute.of(context)?.settings.arguments as String;
+    print(eventId);
     super.didChangeDependencies();
   }
 
-  @override
-  void initState() {
-    super.initState();
-
-    raceActions = [
-      ActionButton(
-          iconData: Icons.control_point,
-          title: "Add points",
-          onTap: addPointsHandler),
-      ActionButton(
-        iconData: Icons.question_answer,
-        title: "Send message",
-        onTap: () => addNotification("NOT IMPLEMENTED"),
-      ),
-      ActionButton(
-        iconData: Icons.format_list_bulleted_outlined,
-        title: "Show events",
-        onTap: () => {
-          ref.read(currentRoundProvider.notifier).increment(),
-        },
-      ),
-      ActionButton(
-        iconData: Icons.close_outlined,
-        title: "Cancel",
-        onTap: () => {},
-      ),
-    ];
-  }
-
   addPointsHandler(List<String> teams) async {
-    await showSelectWithInputDialog(context, teams, event.id, round);
+    await showSelectWithInputDialog(context, teams, eventId, round);
   }
 
   @override
   Widget build(BuildContext context) {
-    final teamScores = ref.watch(teamScoresProvider(event.id));
+    final teamScores = ref.watch(teamScoresProvider(eventId));
+    // todo do something with below
     // ignore: unused_local_variable
     final currentRound = ref.watch(currentRoundProvider);
     Map<String, LatLng> teamPositions = ref.watch(teamPositionProvider);
@@ -211,19 +167,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
             iconData: Icons.start,
             title: "Start event",
             onTap: () {
-              String timestamp =
-                  DateTime.now().millisecondsSinceEpoch.toString();
-              final databaseReference = FirebaseDatabase.instance.ref();
-              DatabaseReference messagesRefference = databaseReference
-                  .child('messages')
-                  .child('uniqueEventID')
-                  .child(timestamp);
-
-              Message message = Message(
-                  type: MessageType.startEvent,
-                  receiverType: MessageReceiverType.all);
-
-              messagesRefference.set(message.toJson());
+              EventMessageSender.startEvent(eventId);
             },
           ),
           ActionButton(

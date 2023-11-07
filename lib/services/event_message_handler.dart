@@ -12,10 +12,6 @@ class EventMessageHandler {
   EventMessageHandler(
       {required this.eventId, this.teamId, this.onStartEventMessage});
 
-  bool _isReferee() {
-    return teamId == null;
-  }
-
   void start() {
     final databaseReference = FirebaseDatabase.instance.ref();
     DatabaseReference messRef =
@@ -25,13 +21,11 @@ class EventMessageHandler {
       final messageData = Map<String, String>.from(
           event.snapshot.value as Map<Object?, Object?>);
       final message = Message.fromJson(messageData);
-      print(message);
 
-      if (message.receiverType == MessageReceiverType.all ||
-          (message.receiverType == MessageReceiverType.team &&
-              message.teamId == teamId)) {
-        if (message.type == MessageType.startEvent) {
-          onStartEventMessage?.call(message);
+      if (message.isForAll() || message.isForTeam(teamId)) {
+        switch (message.type) {
+          case MessageType.startEvent:
+            onStartEventMessage?.call(message);
         }
       }
     });
