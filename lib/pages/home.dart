@@ -59,7 +59,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                   context: context,
                   type: QuickAlertType.confirm,
                   title: 'New regatta',
-                  text: 'Are you sure you want to start creating a new regatta?',
+                  text:
+                      'Are you sure you want to start creating a new regatta?',
                   onConfirmBtnTap: () {
                     Navigator.of(context).pop();
                     Navigator.pushNamed(context, EventCreationPage.route);
@@ -120,7 +121,8 @@ class _HomePageState extends ConsumerState<HomePage> {
           title: '{Regatta Name}',
           text: "You successfully joined the regatta!",
         );
-        if (context.mounted) Navigator.pushNamed(context, RegattaDetailsPage.route);
+        if (context.mounted)
+          Navigator.pushNamed(context, RegattaDetailsPage.route);
       },
     );
   }

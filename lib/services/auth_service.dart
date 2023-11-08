@@ -37,7 +37,10 @@ class AuthService {
       'Successfully created user with email: ${registrationData.email}. Now storing user info...',
     );
     try {
-      await _firestore.collection('users').doc(_firebaseAuth.currentUser!.uid).set(
+      await _firestore
+          .collection('users')
+          .doc(_firebaseAuth.currentUser!.uid)
+          .set(
         {
           'firstName': registrationData.firstName,
           'lastName': registrationData.lastName,
@@ -57,7 +60,8 @@ class AuthService {
   /// Tries to login with the provided [email] and [password].
   ///
   /// Returns either the [User] object or a [String] with the error message.
-  Future<Either<String, User>> login({required String email, required String password}) async {
+  Future<Either<String, User>> login(
+      {required String email, required String password}) async {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
         email: email,

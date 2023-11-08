@@ -3,7 +3,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:regatta_buddy/extensions/latlng_bounds_extension.dart';
 
-import 'package:regatta_buddy/utils/external_api_constants.dart' as ext_constants;
+import 'package:regatta_buddy/utils/external_api_constants.dart'
+    as ext_constants;
 import 'package:regatta_buddy/utils/constants.dart' as constants;
 
 class RoutePreviewMap extends StatelessWidget {

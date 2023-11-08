@@ -54,7 +54,8 @@ class DefaultFirebaseOptions {
     appId: '1:73358650827:android:f1278ba855f7b02ee79a4e',
     messagingSenderId: '73358650827',
     projectId: 'regattabuddy',
-    databaseURL: 'https://regattabuddy-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL:
+        'https://regattabuddy-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'regattabuddy.appspot.com',
   );
 
@@ -63,9 +64,11 @@ class DefaultFirebaseOptions {
     appId: '1:73358650827:ios:e8da848108c7fe15e79a4e',
     messagingSenderId: '73358650827',
     projectId: 'regattabuddy',
-    databaseURL: 'https://regattabuddy-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL:
+        'https://regattabuddy-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'regattabuddy.appspot.com',
-    iosClientId: '73358650827-50m177n4tc6ri4shah386cq517ei7a7j.apps.googleusercontent.com',
+    iosClientId:
+        '73358650827-50m177n4tc6ri4shah386cq517ei7a7j.apps.googleusercontent.com',
     iosBundleId: 'com.example.regattaBuddy',
   );
 }

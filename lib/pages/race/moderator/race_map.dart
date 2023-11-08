@@ -7,7 +7,8 @@ import 'package:regatta_buddy/extensions/string_extension.dart';
 import 'package:regatta_buddy/providers/race_events.dart';
 
 import 'package:regatta_buddy/utils/constants.dart' as constants;
-import 'package:regatta_buddy/utils/external_api_constants.dart' as api_constants;
+import 'package:regatta_buddy/utils/external_api_constants.dart'
+    as api_constants;
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 
 class RaceMap extends StatelessWidget {
@@ -57,7 +58,9 @@ class RaceMarkerLayer extends ConsumerWidget {
           Marker(
             width: 40.0,
             height: 40.0,
-            point: teamPositions[team] == null ? constants.startingPosition : teamPositions[team]!,
+            point: teamPositions[team] == null
+                ? constants.startingPosition
+                : teamPositions[team]!,
             builder: (ctx) => IconButton(
               icon: const Icon(
                 Icons.sailing,

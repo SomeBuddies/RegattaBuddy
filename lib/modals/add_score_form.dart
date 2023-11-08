@@ -23,7 +23,8 @@ class AddScoreForm extends ConsumerStatefulWidget {
 }
 
 class _AddScoreFormState extends ConsumerState<AddScoreForm> {
-  static final RegExp allowNegativeAndPositiveNumbersRegExp = RegExp(r'^-?\d{0,5}');
+  static final RegExp allowNegativeAndPositiveNumbersRegExp =
+      RegExp(r'^-?\d{0,5}');
   late String selectedTeam;
 
   final pointsController = TextEditingController();
@@ -44,7 +45,8 @@ class _AddScoreFormState extends ConsumerState<AddScoreForm> {
           const Text("Select a team and add points"),
           DropdownButton<String>(
             value: selectedTeam,
-            items: widget.selectOptions.map<DropdownMenuItem<String>>((String value) {
+            items: widget.selectOptions
+                .map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
                 child: Text(
@@ -62,7 +64,8 @@ class _AddScoreFormState extends ConsumerState<AddScoreForm> {
           TextFormField(
             keyboardType: TextInputType.number,
             inputFormatters: [
-              FilteringTextInputFormatter.allow(allowNegativeAndPositiveNumbersRegExp),
+              FilteringTextInputFormatter.allow(
+                  allowNegativeAndPositiveNumbersRegExp),
             ],
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
@@ -81,13 +84,21 @@ class _AddScoreFormState extends ConsumerState<AddScoreForm> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               SuggestedPointsButton(
-                  pointsController: pointsController, points: "-10", color: Colors.red),
+                  pointsController: pointsController,
+                  points: "-10",
+                  color: Colors.red),
               SuggestedPointsButton(
-                  pointsController: pointsController, points: "-5", color: Colors.red),
+                  pointsController: pointsController,
+                  points: "-5",
+                  color: Colors.red),
               SuggestedPointsButton(
-                  pointsController: pointsController, points: "5", color: Colors.green),
+                  pointsController: pointsController,
+                  points: "5",
+                  color: Colors.green),
               SuggestedPointsButton(
-                  pointsController: pointsController, points: "10", color: Colors.green),
+                  pointsController: pointsController,
+                  points: "10",
+                  color: Colors.green),
             ],
           ),
           const SizedBox(height: 10),
@@ -96,7 +107,8 @@ class _AddScoreFormState extends ConsumerState<AddScoreForm> {
               if (_formKey.currentState!.validate()) {
                 Either<String, String> response = await updateTeamPoints();
 
-                String responseText = response.fold((error) => "Failed to add points", (success) {
+                String responseText =
+                    response.fold((error) => "Failed to add points", (success) {
                   // TODO send event to db about points change
                   return "Successfully added ${pointsController.value.text} points to $selectedTeam";
                 });
@@ -110,7 +122,8 @@ class _AddScoreFormState extends ConsumerState<AddScoreForm> {
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.all(15),
             ),
-            child: const Text("ADD", style: TextStyle(fontWeight: FontWeight.bold)),
+            child: const Text("ADD",
+                style: TextStyle(fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -131,7 +144,8 @@ class _AddScoreFormState extends ConsumerState<AddScoreForm> {
 
       currentScoreResponse.fold(
         (error) {
-          widget.logger.e("Score update failed, couldn't get current score: $error");
+          widget.logger
+              .e("Score update failed, couldn't get current score: $error");
           return left("Score update failed, couldn't get current score");
         },
         (score) {

@@ -128,7 +128,8 @@ class RBRequiredTimeFormField extends StatelessWidget {
           );
 
           if (pickedTime != null) {
-            controller.text = DateFormat("HH:mm").format(DateTime.now().withTimeOfDay(pickedTime));
+            controller.text = DateFormat("HH:mm")
+                .format(DateTime.now().withTimeOfDay(pickedTime));
           }
         },
         onSaved: (newValue) {

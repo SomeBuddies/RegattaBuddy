@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:regatta_buddy/pages/race/moderator/race_moderator_page.dart';
 import 'package:regatta_buddy/pages/race/participant/race_page.dart';
@@ -7,33 +8,16 @@ import 'package:regatta_buddy/providers/firebase_writer_service_provider.dart';
 import 'package:regatta_buddy/utils/form_utils.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 
-class UserRegattasPage extends ConsumerStatefulWidget {
+class UserRegattasPage extends HookConsumerWidget {
   const UserRegattasPage({super.key});
 
   static const String route = '/userRegattas';
 
   @override
-  ConsumerState<UserRegattasPage> createState() => _UserRegattasPageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final eventIdController = useTextEditingController(text: "uniqueEventID");
+    final teamController = useTextEditingController(text: "teamX");
 
-class _UserRegattasPageState extends ConsumerState<UserRegattasPage> {
-  final eventIdController = TextEditingController(text: "uniqueEventID");
-  final teamController = TextEditingController(text: "teamX");
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    eventIdController.dispose();
-    teamController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     final dbRef = ref.watch(firebaseWriterServiceProvider);
 
     return Scaffold(
@@ -52,17 +36,20 @@ class _UserRegattasPageState extends ConsumerState<UserRegattasPage> {
           ElevatedButton(
             onPressed: () async {
               // TODO move team score initialization to team creation flow
-              dbRef.initializeScoreForTeam(eventIdController.text, teamController.text);
+              dbRef.initializeScoreForTeam(
+                  eventIdController.text, teamController.text);
 
               if (context.mounted) {
                 Navigator.pushNamed(context, RacePage.route,
-                    arguments: RacePageArguments(eventIdController.text, teamController.text));
+                    arguments: RacePageArguments(
+                        eventIdController.text, teamController.text));
               }
             },
             child: const Text('Race participant page'),
           ),
           ElevatedButton(
-            onPressed: () => Navigator.pushNamed(context, RaceModeratorPage.route),
+            onPressed: () =>
+                Navigator.pushNamed(context, RaceModeratorPage.route),
             child: const Text('Race moderator page'),
           ),
         ],

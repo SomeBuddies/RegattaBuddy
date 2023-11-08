@@ -84,7 +84,8 @@ class CreateTeamButton extends HookConsumerWidget {
                     key: formKey,
                     child: TextFormField(
                       controller: controller,
-                      decoration: const InputDecoration(hintText: "Enter a team name"),
+                      decoration:
+                          const InputDecoration(hintText: "Enter a team name"),
                       validator: (value) {
                         if (value == null || value.characters.length < 3) {
                           return "Team name needs to be at least 3 characters";
@@ -98,7 +99,8 @@ class CreateTeamButton extends HookConsumerWidget {
                       onPressed: () async {
                         if (!formKey.currentState!.validate()) return;
 
-                        final response = await teamRepository.createTeamFromName(controller.text);
+                        final response = await teamRepository
+                            .createTeamFromName(controller.text);
                         response.fold(
                           (error) => ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(error)),
@@ -133,7 +135,8 @@ class TeamCard extends ConsumerWidget {
   final List<Team> teams;
   final BuildContext parentContext;
 
-  const TeamCard(this.team, this.event, this.teams, this.parentContext, {super.key});
+  const TeamCard(this.team, this.event, this.teams, this.parentContext,
+      {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -175,19 +178,23 @@ class TeamCard extends ConsumerWidget {
                   // this is costing us a lot of reads just to check usernames
                   ref.watch(userDataProvider(team.members[index])).when(
                         data: (data) => Text(data.firstName),
-                        error: (error, stackTrace) => const Text("Unknown User"),
+                        error: (error, stackTrace) =>
+                            const Text("Unknown User"),
                         loading: () => const CircularProgressIndicator(),
                       ),
                   if (userId == team.members[index] && userId != team.captainId)
                     ElevatedButton(
                       onPressed: () async {
-                        final response = await teamRepository.leaveTeam(team.id);
+                        final response =
+                            await teamRepository.leaveTeam(team.id);
                         response.fold(
                           (error) => ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(error)),
                           ),
-                          (success) => ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Left the team ${team.name}!")),
+                          (success) =>
+                              ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text("Left the team ${team.name}!")),
                           ),
                         );
                       },
@@ -196,13 +203,18 @@ class TeamCard extends ConsumerWidget {
                   if (userId == team.members[index] && userId == team.captainId)
                     ElevatedButton(
                       onPressed: () async {
-                        final response = await teamRepository.disbandTeam(team.id);
+                        final response =
+                            await teamRepository.disbandTeam(team.id);
                         response.fold(
-                          (error) => ScaffoldMessenger.of(parentContext).showSnackBar(
+                          (error) =>
+                              ScaffoldMessenger.of(parentContext).showSnackBar(
                             SnackBar(content: Text(error)),
                           ),
-                          (success) => ScaffoldMessenger.of(parentContext).showSnackBar(
-                            SnackBar(content: Text("Deleted the team ${team.name}!")),
+                          (success) =>
+                              ScaffoldMessenger.of(parentContext).showSnackBar(
+                            SnackBar(
+                                content:
+                                    Text("Deleted the team ${team.name}!")),
                           ),
                         );
                       },

@@ -58,7 +58,8 @@ class SearchItem extends StatelessWidget {
                               event.location.longitude,
                             ),
                             builder: (context, snapshot) =>
-                                (snapshot.connectionState == ConnectionState.waiting)
+                                (snapshot.connectionState ==
+                                        ConnectionState.waiting)
                                     ? const Center(
                                         child: CircularProgressIndicator(),
                                       )

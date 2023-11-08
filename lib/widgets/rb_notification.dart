@@ -27,7 +27,8 @@ class RBNotification extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(constants.elementsBorderRadius)),
+        borderRadius:
+            BorderRadius.all(Radius.circular(constants.elementsBorderRadius)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

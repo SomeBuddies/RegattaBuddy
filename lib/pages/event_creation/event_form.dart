@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:regatta_buddy/utils/form_utils.dart';
 
-class EventFormSubPage extends StatefulWidget {
+class EventFormSubPage extends HookWidget {
   final GlobalKey<FormState> _formKey;
   final void Function(String) nameSubmitHandler;
   final void Function(String) descriptionSubmitHandler;
@@ -18,54 +19,36 @@ class EventFormSubPage extends StatefulWidget {
   });
 
   @override
-  State<EventFormSubPage> createState() => _EventFormSubPageState();
-}
-
-class _EventFormSubPageState extends State<EventFormSubPage> {
-  final eventNameController = TextEditingController();
-  final eventDescriptionController = TextEditingController();
-  final eventDateController = TextEditingController();
-  final eventTimeController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    eventNameController.dispose();
-    eventDescriptionController.dispose();
-    eventDateController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final eventNameController = useTextEditingController();
+    final eventDescriptionController = useTextEditingController();
+    final eventDateController = useTextEditingController();
+    final eventTimeController = useTextEditingController();
+
     return Form(
-      key: widget._formKey,
+      key: _formKey,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           RBRequiredInputFormField(
             label: 'Event name',
             controller: eventNameController,
-            handler: widget.nameSubmitHandler,
+            handler: nameSubmitHandler,
           ),
           RBRequiredTextAreaFormField(
             label: 'Event description',
             controller: eventDescriptionController,
-            handler: widget.descriptionSubmitHandler,
+            handler: descriptionSubmitHandler,
           ),
           RBRequiredDateFormField(
             label: 'Event date',
             controller: eventDateController,
-            handler: widget.dateSubmitHandler,
+            handler: dateSubmitHandler,
           ),
           RBRequiredTimeFormField(
             label: 'Event time',
             controller: eventTimeController,
-            handler: widget.timeSubmitHandler,
+            handler: timeSubmitHandler,
           ),
         ],
       ),
