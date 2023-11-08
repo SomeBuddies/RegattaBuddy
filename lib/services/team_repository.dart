@@ -18,12 +18,17 @@ class TeamRepository {
   FirebaseFirestore get _firestore => _ref.read(firebaseFirestoreProvider);
 
   Future<String> addTeam(Team team) async {
-    final docRef = await _firestore.collection('events/${event.id}/teams').add(team.toJson());
+    final docRef = await _firestore
+        .collection('events/${event.id}/teams')
+        .add(team.toJson());
     return docRef.id;
   }
 
   void updateTeam(String teamId, Team team) {
-    _firestore.collection('events/${event.id}/teams').doc(teamId).update(team.toJson());
+    _firestore
+        .collection('events/${event.id}/teams')
+        .doc(teamId)
+        .update(team.toJson());
   }
 
   void deleteTeam(String teamId) {
@@ -31,7 +36,8 @@ class TeamRepository {
   }
 
   Future<Team> getTeam(String id) async {
-    final doc = await _firestore.collection('events/${event.id}/teams').doc(id).get();
+    final doc =
+        await _firestore.collection('events/${event.id}/teams').doc(id).get();
     return Team.fromDocument(doc);
   }
 
@@ -50,7 +56,9 @@ class TeamRepository {
     if (event.hostId == uid) return left("Cannot participate as event host.");
 
     return await _firestore.runTransaction((transaction) async {
-      if (await _ref.read(userRepositoryProvider).isUserInEvent(userId: uid, eventId: event.id)) {
+      if (await _ref
+          .read(userRepositoryProvider)
+          .isUserInEvent(userId: uid, eventId: event.id)) {
         return left("User is already in a team.");
       }
 
@@ -85,7 +93,9 @@ class TeamRepository {
     if (event.hostId == uid) return left("Cannot participate as event host.");
 
     return await _firestore.runTransaction((transaction) async {
-      if (await _ref.read(userRepositoryProvider).isUserInEvent(userId: uid, eventId: event.id)) {
+      if (await _ref
+          .read(userRepositoryProvider)
+          .isUserInEvent(userId: uid, eventId: event.id)) {
         return left("User is already in a team.");
       }
 
@@ -122,10 +132,15 @@ class TeamRepository {
     return _firestore.runTransaction((transaction) async {
       final team = await getTeam(teamId);
       if (!team.members.contains(uid)) return left("User was not in the team.");
-      if (team.captainId == uid) return left("Team captain can't leave their own team.");
+      if (team.captainId == uid) {
+        return left("Team captain can't leave their own team.");
+      }
 
-      updateTeam(teamId, team.copyWith(members: [...team.members]..remove(uid)));
-      _ref.read(userRepositoryProvider).removeEventFromJoinedEvents(userId: uid, eventId: event.id);
+      updateTeam(
+          teamId, team.copyWith(members: [...team.members]..remove(uid)));
+      _ref
+          .read(userRepositoryProvider)
+          .removeEventFromJoinedEvents(userId: uid, eventId: event.id);
 
       Future.delayed(
         const Duration(milliseconds: 100),

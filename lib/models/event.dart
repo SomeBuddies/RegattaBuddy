@@ -11,7 +11,9 @@ class Event with _$Event {
   const Event._();
 
   const factory Event({
-    @JsonKey(includeFromJson: false, includeToJson: false) @Default('') String id,
+    @JsonKey(includeFromJson: false, includeToJson: false)
+    @Default('')
+    String id,
     required String hostId,
     @LatLngConverter() required List<LatLng> route,
     @LatLngConverter() required LatLng location,
@@ -25,7 +27,8 @@ class Event with _$Event {
   factory Event.fromDocument(DocumentSnapshot doc) {
     if (doc.data() == null) throw Exception("Document data was null");
 
-    return Event.fromJson(doc.data() as Map<String, Object?>).copyWith(id: doc.id);
+    return Event.fromJson(doc.data() as Map<String, Object?>)
+        .copyWith(id: doc.id);
   }
 }
 

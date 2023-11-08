@@ -5,7 +5,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'package:regatta_buddy/utils/constants.dart' as constants;
-import 'package:regatta_buddy/utils/external_api_constants.dart' as ext_constants;
+import 'package:regatta_buddy/utils/external_api_constants.dart'
+    as ext_constants;
 import 'package:regatta_buddy/models/complex_marker.dart';
 
 class EventRouteSubPage extends StatefulWidget {
@@ -82,15 +83,18 @@ class _EventRouteSubPageState extends State<EventRouteSubPage> {
               PolylineLayer(
                 polylines: [
                   Polyline(
-                    points:
-                        widget.markers.map((complexMarker) => complexMarker.marker.point).toList(),
+                    points: widget.markers
+                        .map((complexMarker) => complexMarker.marker.point)
+                        .toList(),
                     isDotted: true,
                     color: Colors.red,
                     strokeWidth: 3,
                   )
                 ],
               ),
-              MarkerLayer(markers: widget.markers.map((complex) => complex.marker).toList()),
+              MarkerLayer(
+                  markers:
+                      widget.markers.map((complex) => complex.marker).toList()),
             ],
           ),
         ),

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:regatta_buddy/models/registration_data.dart';
 import 'package:regatta_buddy/pages/home.dart';
@@ -7,7 +8,7 @@ import 'package:regatta_buddy/providers/auth/auth_state_notifier.dart';
 import 'package:regatta_buddy/utils/validations.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 
-class RegisterPage extends ConsumerStatefulWidget {
+class RegisterPage extends StatefulHookConsumerWidget {
   const RegisterPage({super.key});
 
   static const String route = '/register';
@@ -17,25 +18,16 @@ class RegisterPage extends ConsumerStatefulWidget {
 }
 
 class _RegisterPageState extends ConsumerState<RegisterPage> {
-  final emailController = TextEditingController();
-  final firstNameController = TextEditingController();
-  final lastNameController = TextEditingController();
-  final passwordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
-  void dispose() {
-    emailController.dispose();
-    firstNameController.dispose();
-    lastNameController.dispose();
-    passwordController.dispose();
-    confirmPasswordController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final emailController = useTextEditingController();
+    final firstNameController = useTextEditingController();
+    final lastNameController = useTextEditingController();
+    final passwordController = useTextEditingController();
+    final confirmPasswordController = useTextEditingController();
+
     ref.listen(
       authStateNotiferProvider,
       (previous, next) {
@@ -63,14 +55,16 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                   children: <Widget>[
                     TextFormField(
                       controller: firstNameController,
-                      validator: (firstName) => validateShortTextInput(firstName, 'first name'),
+                      validator: (firstName) =>
+                          validateShortTextInput(firstName, 'first name'),
                       decoration: const InputDecoration(
                         labelText: 'First Name',
                       ),
                     ),
                     TextFormField(
                       controller: lastNameController,
-                      validator: (firstName) => validateShortTextInput(firstName, 'last name'),
+                      validator: (firstName) =>
+                          validateShortTextInput(firstName, 'last name'),
                       decoration: const InputDecoration(
                         labelText: 'Last Name',
                       ),
@@ -93,8 +87,8 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                     TextFormField(
                       controller: confirmPasswordController,
                       obscureText: true,
-                      validator: (confirmPassword) =>
-                          validateConfirmPassword(confirmPassword, passwordController.text),
+                      validator: (confirmPassword) => validateConfirmPassword(
+                          confirmPassword, passwordController.text),
                       decoration: const InputDecoration(
                         labelText: 'Confirm Password',
                       ),
@@ -104,7 +98,14 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            signUp(context);
+                            var registrationData = RegistrationData(
+                              email: emailController.text,
+                              password: passwordController.text,
+                              firstName: firstNameController.text,
+                              lastName: lastNameController.text,
+                            );
+
+                            signUp(context, registrationData);
                           }
                         },
                         child: const Text('Sign Up'),
@@ -123,17 +124,10 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
             )));
   }
 
-  Future signUp(BuildContext context) async {
+  Future signUp(BuildContext context, RegistrationData data) async {
     showLoadingSpinner();
 
-    var registrationData = RegistrationData(
-      email: emailController.text,
-      password: passwordController.text,
-      firstName: firstNameController.text,
-      lastName: lastNameController.text,
-    );
-
-    ref.read(authStateNotiferProvider.notifier).signup(registrationData);
+    ref.read(authStateNotiferProvider.notifier).signup(data);
   }
 
   void showLoadingSpinner() {

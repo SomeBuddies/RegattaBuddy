@@ -1,7 +1,8 @@
-
 String? validateEmail(String? email) {
   // RFC 5322 compliant regex | https://html.spec.whatwg.org/multipage/input.html#e-mail-state-%28type=email%29
-  if (!RegExp(r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$").hasMatch(email ?? '')) {
+  if (!RegExp(
+          r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
+      .hasMatch(email ?? '')) {
     return 'Please enter a valid email address';
   }
   return null;

@@ -46,12 +46,8 @@ Future<void> showActionsDialog(
   }
 }
 
-Future<void> showSelectWithInputDialog(
-  BuildContext context,
-  List<String> options,
-    String eventId,
-    int round
-) async {
+Future<void> showSelectWithInputDialog(BuildContext context,
+    List<String> options, String eventId, int round) async {
   await Future.delayed(const Duration(seconds: 0));
 
   if (context.mounted) {

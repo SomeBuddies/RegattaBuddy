@@ -53,7 +53,7 @@ class _RacePageState extends State<RacePage> {
     });
     Future.delayed(
       Duration(seconds: _notificationTimeInSeconds),
-          () => {removeNotification(uuid), setState(() {})},
+      () => {removeNotification(uuid), setState(() {})},
     );
   }
 

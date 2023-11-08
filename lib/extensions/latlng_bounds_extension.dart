@@ -12,8 +12,10 @@ extension LatLngBoundsExtension on LatLngBounds {
     final diagonal = distance.as(LengthUnit.Meter, southWest, northEast);
     final extension_dist = diagonal * (ratio - 1) / 2;
 
-    final sw2 = distance.offset(southWest, extension_dist, distance.bearing(northEast, southWest));
-    final ne2 = distance.offset(northEast, extension_dist, distance.bearing(southWest, northEast));
+    final sw2 = distance.offset(
+        southWest, extension_dist, distance.bearing(northEast, southWest));
+    final ne2 = distance.offset(
+        northEast, extension_dist, distance.bearing(southWest, northEast));
 
     extendBounds(LatLngBounds(sw2, ne2));
   }

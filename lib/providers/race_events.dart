@@ -47,7 +47,8 @@ Stream<Map<String, List<int>>> teamScores(TeamScoresRef ref, String eventId) {
 class TeamPositionNotifier extends StateNotifier<Map<String, LatLng>> {
   final DatabaseReference firebaseDb;
 
-  TeamPositionNotifier(this.firebaseDb, String eventId) : super(<String, LatLng>{}) {
+  TeamPositionNotifier(this.firebaseDb, String eventId)
+      : super(<String, LatLng>{}) {
     final logger = getLogger("TeamPositionNotifier");
     logger.i("initializing a TeamPositionNotifier provider");
 
@@ -57,10 +58,15 @@ class TeamPositionNotifier extends StateNotifier<Map<String, LatLng>> {
     dbScoresRef.onValue.listen((event) {
       final teamsAndScores = event.snapshot.value as Map<dynamic, dynamic>;
 
-      logger.i("getting new scores data from firebase: ${teamsAndScores.toString()}");
+      logger.i(
+          "getting new scores data from firebase: ${teamsAndScores.toString()}");
 
       for (final team in teamsAndScores.keys.toList()) {
-        final dbRef = firebaseDb.child('traces').child(eventId).child(team).child('lastPosition');
+        final dbRef = firebaseDb
+            .child('traces')
+            .child(eventId)
+            .child(team)
+            .child('lastPosition');
         dbRef.onValue.listen((DatabaseEvent event) {
           if (event.snapshot.value == null) {
             return;

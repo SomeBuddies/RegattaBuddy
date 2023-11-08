@@ -14,7 +14,9 @@ class AuthStateNotifer extends _$AuthStateNotifer {
 
   Future<void> login({required String email, required String password}) async {
     state = const AuthState.loading();
-    final response = await ref.watch(authServiceProvider).login(email: email, password: password);
+    final response = await ref
+        .watch(authServiceProvider)
+        .login(email: email, password: password);
 
     state = response.fold(
       (error) => AuthState.unauthenticated(message: error),
@@ -24,7 +26,8 @@ class AuthStateNotifer extends _$AuthStateNotifer {
 
   Future<void> signup(RegistrationData registrationData) async {
     state = const AuthState.loading();
-    final response = await ref.watch(authServiceProvider).signup(registrationData);
+    final response =
+        await ref.watch(authServiceProvider).signup(registrationData);
     state = response.fold(
       (error) => AuthState.unauthenticated(message: error),
       (user) => AuthState.authenticated(user: user),

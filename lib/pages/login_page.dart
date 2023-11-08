@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:regatta_buddy/pages/home.dart';
 import 'package:regatta_buddy/pages/register_page.dart';
@@ -9,7 +10,7 @@ import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:regatta_buddy/utils/validations.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 
-class LoginPage extends ConsumerStatefulWidget {
+class LoginPage extends StatefulHookConsumerWidget {
   LoginPage({super.key});
   static const String route = '/login';
 
@@ -20,21 +21,15 @@ class LoginPage extends ConsumerStatefulWidget {
 }
 
 class _LoginPageState extends ConsumerState<LoginPage> {
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   bool hasNavigated = false;
 
   @override
-  void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final emailController = useTextEditingController();
+    final passwordController = useTextEditingController();
+
     ref.listen(
       authStateNotiferProvider,
       (previous, next) {
@@ -42,7 +37,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           orElse: () => null,
           authenticated: (user) {
             if (!hasNavigated) {
-              Navigator.of(context).pushNamedAndRemoveUntil(HomePage.route, (Route route) => false);
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                  HomePage.route, (Route route) => false);
 
               hasNavigated = true;
             }
@@ -87,7 +83,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      signIn();
+                      signIn(emailController.text, passwordController.text);
                     }
                   },
                   child: const Text('Login'),
@@ -102,7 +98,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         text: 'Sign up',
                         style: const TextStyle(color: Colors.blue),
                         recognizer: TapGestureRecognizer()
-                          ..onTap = () => Navigator.pushNamed(context, RegisterPage.route))
+                          ..onTap = () =>
+                              Navigator.pushNamed(context, RegisterPage.route))
                   ],
                 ),
               ),
@@ -123,14 +120,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   }
 
   void showOnlyLoginScreen(BuildContext context) {
-    Navigator.of(context).popUntil((route) => route.settings.name == LoginPage.route);
+    Navigator.of(context)
+        .popUntil((route) => route.settings.name == LoginPage.route);
   }
 
-  Future signIn() async {
+  Future signIn(String email, String password) async {
     showLoadingSpinner();
     ref.read(authStateNotiferProvider.notifier).login(
-          email: emailController.text,
-          password: passwordController.text,
+          email: email,
+          password: password,
         );
   }
 

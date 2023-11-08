@@ -41,7 +41,8 @@ class _EventCreationPageState extends ConsumerState<EventCreationPage> {
   void initState() {
     super.initState();
     pages = [
-      () => EventFormSubPage(_formKey, changeName, changeDescription, changeDate, changeTime),
+      () => EventFormSubPage(
+          _formKey, changeName, changeDescription, changeDate, changeTime),
       () => EventRouteSubPage(markers, addMarker, deleteMarker),
       () => const EventSocialSubPage(),
     ];
@@ -151,8 +152,8 @@ class _EventCreationPageState extends ConsumerState<EventCreationPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       TextButton(
-                        onPressed: () =>
-                            Navigator.of(context).popUntil(ModalRoute.withName(HomePage.route)),
+                        onPressed: () => Navigator.of(context)
+                            .popUntil(ModalRoute.withName(HomePage.route)),
                         child: const Text("Cancel"),
                       ),
                       Row(

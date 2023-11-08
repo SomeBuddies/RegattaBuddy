@@ -52,8 +52,12 @@ class UserRepository {
   }
 
   /// Checks if user is already participating in the event.
-  Future<bool> isUserInEvent({required String userId, required String eventId}) async {
-    final doc = await _firestore.collection('users/$userId/joinedEvents').doc(eventId).get();
+  Future<bool> isUserInEvent(
+      {required String userId, required String eventId}) async {
+    final doc = await _firestore
+        .collection('users/$userId/joinedEvents')
+        .doc(eventId)
+        .get();
     return doc.exists;
   }
 
@@ -73,7 +77,10 @@ class UserRepository {
     // maybe have a collection called private with a single doc containing
     // the event list?
 
-    _firestore.collection('users/$userId/joinedEvents').doc(eventId).set({'teamId': teamId});
+    _firestore
+        .collection('users/$userId/joinedEvents')
+        .doc(eventId)
+        .set({'teamId': teamId});
   }
 
   /// Removes an event from the list of joined events

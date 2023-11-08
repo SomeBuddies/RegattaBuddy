@@ -88,7 +88,10 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
     super.initState();
 
     raceActions = [
-      ActionButton(iconData: Icons.control_point, title: "Add points", onTap: addPointsHandler),
+      ActionButton(
+          iconData: Icons.control_point,
+          title: "Add points",
+          onTap: addPointsHandler),
       ActionButton(
         iconData: Icons.question_answer,
         title: "Send message",
@@ -141,7 +144,8 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
                         if (processedScores.isNotEmpty) {
                           return ListView.builder(
                             itemBuilder: (context, index) {
-                              final teamId = processedScores.keys.elementAt(index);
+                              final teamId =
+                                  processedScores.keys.elementAt(index);
                               return ListTile(
                                 dense: true,
                                 leading: IconButton(
@@ -159,8 +163,8 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
                                   icon: const Icon(Icons.my_location),
                                   onPressed: () {
                                     if (teamPositions[teamId] != null) {
-                                      mapController.move(
-                                          teamPositions[teamId]!, mapController.zoom);
+                                      mapController.move(teamPositions[teamId]!,
+                                          mapController.zoom);
                                     } else {
                                       widget.logger.w(
                                           'Team $teamId has no position data | PROBABLY IT IS MOCKED');
@@ -168,7 +172,8 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
                                   },
                                 ),
                                 title: Text("Team ${index + 1} : $teamId"),
-                                subtitle: Text('Points: ${processedScores[teamId]}'),
+                                subtitle:
+                                    Text('Points: ${processedScores[teamId]}'),
                               );
                             },
                             itemCount: processedScores.keys.length,

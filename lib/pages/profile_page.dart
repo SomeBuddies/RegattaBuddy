@@ -7,7 +7,7 @@ import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:regatta_buddy/utils/notification_helper.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 
-class ProfilePage extends ConsumerStatefulWidget {
+class ProfilePage extends StatefulHookConsumerWidget {
   const ProfilePage({super.key});
 
   static const String route = '/profile';
@@ -50,7 +50,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 child: ListTile(
                   onTap: () {
                     showLoadingSpinner();
-                    Navigator.of(context).popUntil(ModalRoute.withName(HomePage.route));
+                    Navigator.of(context)
+                        .popUntil(ModalRoute.withName(HomePage.route));
                     ref.read(authStateNotiferProvider.notifier).signout();
                   },
                   contentPadding: const EdgeInsets.only(
