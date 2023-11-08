@@ -63,7 +63,6 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
   @override
   void didChangeDependencies() {
     eventId = ModalRoute.of(context)?.settings.arguments as String;
-    print(eventId);
     super.didChangeDependencies();
   }
 
@@ -77,7 +76,8 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
     // todo do something with below
     // ignore: unused_local_variable
     final currentRound = ref.watch(currentRoundProvider);
-    Map<String, LatLng> teamPositions = ref.watch(teamPositionProvider);
+    Map<String, LatLng> teamPositions =
+        ref.watch(teamPositionProvider(eventId));
 
     return Scaffold(
       appBar: const AppHeader(),
@@ -90,10 +90,12 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
                   EventStatistics(),
                   SizedBox(
                     height: 300,
-                    child: RaceMap(mapController: mapController),
+                    child: RaceMap(
+                      mapController: mapController,
+                      eventId: eventId,
+                    ),
                   ),
                   Expanded(
-                    // height: 200,
                     child: teamScores.when(
                       data: (data) {
                         processedScores = data_helper.processScoresData(data);

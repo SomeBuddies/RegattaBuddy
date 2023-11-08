@@ -85,14 +85,13 @@ class TeamPositionNotifier extends StateNotifier<Map<String, LatLng>> {
   }
 }
 
-final teamPositionProvider =
-    StateNotifierProvider<TeamPositionNotifier, Map<String, LatLng>>((ref) {
-  const eventId = "uniqueEventID";
+StateNotifierProvider<TeamPositionNotifier, Map<String, LatLng>>
+    teamPositionProvider(String eventId) =>
+        StateNotifierProvider<TeamPositionNotifier, Map<String, LatLng>>((ref) {
+          final db = ref.read(firebaseDbProvider);
 
-  final db = ref.read(firebaseDbProvider);
-
-  return TeamPositionNotifier(db, eventId);
-});
+          return TeamPositionNotifier(db, eventId);
+        });
 
 @riverpod
 class CurrentRound extends _$CurrentRound {

@@ -15,6 +15,7 @@ class UserRegattasPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // todo to be removed in REG-71
     final eventIdController = useTextEditingController(text: "uniqueEventID");
     final teamController = useTextEditingController(text: "teamX");
 
