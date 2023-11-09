@@ -1,12 +1,11 @@
 import 'logging/logger_helper.dart';
 
 // processes event scores data and returns sorted total score for each team in map. Key is teamId, value is total score
-Map<String, int> processScoresData(dynamic scoresData) {
+Map<String, int> processScoresData(Map<String, List<int>> scores) {
   final logger = getLogger("DataProcessingHelper");
   final Map<String, int> teamScores = {};
-  logger.d("processing the following scores data: $scoresData");
+  logger.d("processing the following scores data: $scores");
   try {
-    final scores = scoresData as Map<String, List<int>>;
     scores.forEach((key, value) {
       final teamId = key;
       final scores = value;

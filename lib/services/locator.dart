@@ -1,15 +1,16 @@
 import 'dart:async';
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../utils/constants.dart';
 
-class Locator {
+class LocationSender {
   void Function(String) setErrorMessage;
   StreamSubscription<Position>? positionStream;
   bool isOn = false;
 
-  Locator(this.setErrorMessage);
+  LocationSender(this.setErrorMessage);
 
   Future<bool> _ensurePermissions() async {
     bool serviceEnabled;
@@ -37,7 +38,7 @@ class Locator {
     return Future.value(true);
   }
 
-  void start(void Function(Position) onLocation) async {
+  void start(String eventId, String teamId) async {
     await _ensurePermissions().catchError((error) {
       setErrorMessage(error);
       return false;
@@ -47,7 +48,22 @@ class Locator {
         Geolocator.getPositionStream(locationSettings: kLocationSettings)
             .listen((Position? position) {
       if (position != null) {
-        onLocation(position);
+        DatabaseReference teamReference = FirebaseDatabase.instance
+            .ref()
+            .child('traces')
+            .child(eventId)
+            .child(teamId);
+
+        teamReference.update({
+          'lastUpdate': position.timestamp.toString(),
+          'lastPosition':
+              '${position.latitude.toString()}, ${position.longitude.toString()}'
+        });
+        // todo remove round mock when message nextRound created
+        teamReference.child('positions').child('rounds').child('0').update({
+          position.timestamp!.millisecondsSinceEpoch.toString():
+              '${position.latitude.toString()}, ${position.longitude.toString()}',
+        });
       }
     });
   }

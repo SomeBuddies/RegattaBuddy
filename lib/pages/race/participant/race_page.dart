@@ -27,7 +27,7 @@ class RacePage extends StatefulWidget {
 }
 
 class _RacePageState extends State<RacePage> {
-  Locator? locator;
+  LocationSender? locator;
   EventMessageHandler? messageHandler;
   late final String eventId;
   late final String teamId;
@@ -40,6 +40,7 @@ class _RacePageState extends State<RacePage> {
   final databaseReference = FirebaseDatabase.instance.ref();
   bool eventStarted = false;
 
+  // todo check if it is possible to move notifications to separate file
   void addNotification(String title) {
     String uuid = const Uuid().v4();
     setState(() {
@@ -67,13 +68,7 @@ class _RacePageState extends State<RacePage> {
   void initState() {
     super.initState();
 
-    messageHandler = EventMessageHandler(
-        eventId: 'uniqueEventID',
-        teamId: 'teamX',
-        onStartEventMessage: onStartEventMessage)
-      ..start();
-
-    locator = Locator((error) => setState(() {
+    locator = LocationSender((error) => setState(() {
           errorMessage = error;
           isError = true;
         }));
@@ -107,22 +102,12 @@ class _RacePageState extends State<RacePage> {
         ModalRoute.of(context)!.settings.arguments as RacePageArguments;
     eventId = args.eventId;
     teamId = args.teamId;
+    messageHandler = EventMessageHandler(
+        eventId: eventId,
+        teamId: teamId,
+        onStartEventMessage: onStartEventMessage)
+      ..start();
     super.didChangeDependencies();
-  }
-
-  void onPosition(Position position) {
-    DatabaseReference teamReference =
-        databaseReference.child('traces').child(eventId).child(teamId);
-
-    teamReference.update({
-      'lastUpdate': position.timestamp.toString(),
-      'lastPosition':
-          '${position.latitude.toString()}, ${position.longitude.toString()}'
-    });
-    teamReference.child('positions').child('rounds').child('0').update({
-      position.timestamp!.millisecondsSinceEpoch.toString():
-          '${position.latitude.toString()}, ${position.longitude.toString()}',
-    });
   }
 
   void onStartEventMessage(Message message) {
@@ -140,7 +125,7 @@ class _RacePageState extends State<RacePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (eventStarted && !locator!.isOn) locator!.start(onPosition);
+    if (eventStarted && !locator!.isOn) locator?.start(eventId, teamId);
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(

@@ -13,8 +13,10 @@ import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 
 class RaceMap extends StatelessWidget {
   final MapController mapController;
+  final String eventId;
 
-  const RaceMap({super.key, required this.mapController});
+  const RaceMap(
+      {super.key, required this.mapController, required this.eventId});
 
   @override
   Widget build(BuildContext context) {
@@ -35,20 +37,21 @@ class RaceMap extends StatelessWidget {
           userAgentPackageName: api_constants.tileLayerUserAgent,
         ),
         CurrentLocationLayer(),
-        const RaceMarkerLayer()
+        RaceMarkerLayer(eventId: eventId)
       ],
     );
   }
 }
 
 class RaceMarkerLayer extends ConsumerWidget {
-  const RaceMarkerLayer({
-    super.key,
-  });
+  const RaceMarkerLayer({super.key, required this.eventId});
+
+  final String eventId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    Map<String, LatLng> teamPositions = ref.watch(teamPositionProvider);
+    Map<String, LatLng> teamPositions =
+        ref.watch(teamPositionProvider(eventId));
     var logger = getLogger("RaceMarkerLayer");
     logger.i("building a RaceMarkerLayer widget");
 

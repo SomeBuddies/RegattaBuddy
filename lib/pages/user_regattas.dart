@@ -15,6 +15,7 @@ class UserRegattasPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // todo to be removed in REG-71
     final eventIdController = useTextEditingController(text: "uniqueEventID");
     final teamController = useTextEditingController(text: "teamX");
 
@@ -39,17 +40,16 @@ class UserRegattasPage extends HookConsumerWidget {
               dbRef.initializeScoreForTeam(
                   eventIdController.text, teamController.text);
 
-              if (context.mounted) {
                 Navigator.pushNamed(context, RacePage.route,
-                    arguments: RacePageArguments(
-                        eventIdController.text, teamController.text));
-              }
+                    arguments: RacePageArguments(eventIdController.text, teamController.text));
             },
             child: const Text('Race participant page'),
           ),
           ElevatedButton(
-            onPressed: () =>
-                Navigator.pushNamed(context, RaceModeratorPage.route),
+            onPressed: () {
+              Navigator.pushNamed(context, RaceModeratorPage.route,
+                  arguments: eventIdController.text);
+            },
             child: const Text('Race moderator page'),
           ),
         ],
