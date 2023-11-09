@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:logger/logger.dart';
+import 'package:regatta_buddy/extensions/transaction_extension.dart';
 import 'package:regatta_buddy/models/auth_state.dart';
 import 'package:regatta_buddy/providers/auth/auth_state_notifier.dart';
 import 'package:regatta_buddy/providers/firebase_providers.dart';
@@ -52,42 +53,46 @@ class UserRepository {
   }
 
   /// Checks if user is already participating in the event.
-  Future<bool> isUserInEvent(
-      {required String userId, required String eventId}) async {
-    final doc = await _firestore
-        .collection('users/$userId/joinedEvents')
-        .doc(eventId)
-        .get();
-    return doc.exists;
+  Future<bool> isUserInEvent({
+    required String userId,
+    required String eventId,
+    Transaction? transaction,
+  }) async {
+    final docRef =
+        _firestore.collection('users/$userId/joinedEvents').doc(eventId);
+
+    if (transaction == null) {
+      final doc = await docRef.get();
+      return doc.exists;
+    } else {
+      final doc = await transaction.get(docRef);
+      return doc.exists;
+    }
   }
 
   /// Adds an event to the list of joined events along with information,
   /// which team the user is on.
-  void addEventToJoinedEvents({
+  void addToJoinedEvents({
     required String userId,
     required String eventId,
     required String teamId,
+    Transaction? transaction,
   }) {
-    //todo: rename this. help me out when i post this pr.
+    final docRef =
+        _firestore.collection('users/$userId/joinedEvents').doc(eventId);
 
-    // The reason this a collection is because I want to keep it private
-    // when accessing the top level user data.
-    //
-    // However we could reconsider using an entire collection and instead
-    // maybe have a collection called private with a single doc containing
-    // the event list?
-
-    _firestore
-        .collection('users/$userId/joinedEvents')
-        .doc(eventId)
-        .set({'teamId': teamId});
+    transaction.maybeSet(docRef, {'teamId': teamId});
   }
 
   /// Removes an event from the list of joined events
-  void removeEventFromJoinedEvents({
+  void removeFromJoinedEvents({
     required String userId,
     required String eventId,
+    Transaction? transaction,
   }) {
-    _firestore.collection('users/$userId/joinedEvents').doc(eventId).delete();
+    final docRef =
+        _firestore.collection('users/$userId/joinedEvents').doc(eventId);
+
+    transaction.maybeDelete(docRef);
   }
 }
