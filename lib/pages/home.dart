@@ -121,8 +121,9 @@ class _HomePageState extends ConsumerState<HomePage> {
           title: '{Regatta Name}',
           text: "You successfully joined the regatta!",
         );
-        if (context.mounted)
+        if (context.mounted) {
           Navigator.pushNamed(context, RegattaDetailsPage.route);
+        }
       },
     );
   }
