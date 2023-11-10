@@ -56,87 +56,102 @@ class TeamRepository {
   /// Function fails is user is already in a team or is the event host.
   /// Note that we do not sanitise the team name in any way.
   Future<Either<String, Unit>> createTeamFromName(String name) async {
-    final uid = _ref.read(firebaseAuthProvider).currentUser?.uid;
+    final user = await _userRepo.getCurrentUserData();
 
-    if (uid == null) return left("User is not logged in.");
-    if (event.hostId == uid) return left("Cannot participate as event host.");
+    return user.fold(
+      (error) => left(error),
+      (user) async {
+        if (event.hostId == user.uid) {
+          return left("Cannot participate as event host.");
+        }
 
-    return await _firestore.runTransaction((transaction) async {
-      if (await _userRepo.isUserInEvent(
-        userId: uid,
-        eventId: event.id,
-        transaction: transaction,
-      )) {
-        return left("User is already in a team.");
-      }
+        return await _firestore.runTransaction((transaction) async {
+          if (await _userRepo.isUserInEvent(
+            userId: user.uid,
+            eventId: event.id,
+            transaction: transaction,
+          )) {
+            return left("User is already in a team.");
+          }
 
-      final teamId = await addTeam(
-        Team(
-          name: name,
-          captainId: uid,
-          members: [uid],
-        ),
-        transaction: transaction,
-      );
+          final teamId = await addTeam(
+            Team(
+              name: name,
+              captainId: user.uid,
+              members: [TeamMember(id: user.uid, name: user.firstName)],
+            ),
+            transaction: transaction,
+          );
 
-      _userRepo.addToJoinedEvents(
-        userId: uid,
-        eventId: event.id,
-        teamId: teamId,
-        transaction: transaction,
-      );
+          _userRepo.addToJoinedEvents(
+            userId: user.uid,
+            eventId: event.id,
+            teamId: teamId,
+            transaction: transaction,
+          );
 
-      Future.delayed(
-        const Duration(milliseconds: 100),
-        () => _ref.invalidate(teamsProvider(event)),
-      );
-      return right(unit);
-    });
+          Future.delayed(
+            const Duration(milliseconds: 100),
+            () => _ref.invalidate(teamsProvider(event)),
+          );
+          return right(unit);
+        });
+      },
+    );
   }
 
   /// Adds a user to a team as a team member.
   /// Function fails is user is already in a team or is the event host.
   Future<Either<String, Unit>> joinTeam(String teamId) async {
-    final uid = _ref.read(firebaseAuthProvider).currentUser?.uid;
+    final user = await _userRepo.getCurrentUserData();
 
-    if (uid == null) return left("User is not logged in.");
-    if (event.hostId == uid) return left("Cannot participate as event host.");
+    return user.fold(
+      (error) => left(error),
+      (user) async {
+        if (event.hostId == user.uid) {
+          return left("Cannot participate as event host.");
+        }
 
-    return await _firestore.runTransaction((transaction) async {
-      if (await _userRepo.isUserInEvent(
-        userId: uid,
-        eventId: event.id,
-        transaction: transaction,
-      )) {
-        return left("User is already in a team.");
-      }
+        return await _firestore.runTransaction((transaction) async {
+          if (await _userRepo.isUserInEvent(
+            userId: user.uid,
+            eventId: event.id,
+            transaction: transaction,
+          )) {
+            return left("User is already in a team.");
+          }
 
-      // update the team
+          // update the team
 
-      // This step is a bit tricky because it implies any user has security access to the team.
-      // Not really sure how to avoid it locally BUT we could use cloud function to update the team
-      // on the backend maybe? (also we get to write about cloud functions as inżynierka padding)
-      final team = await getTeam(teamId, transaction: transaction);
-      updateTeam(
-        teamId,
-        team.copyWith(members: [...team.members, uid]),
-        transaction: transaction,
-      );
+          // This step is a bit tricky because it implies any user has security access to the team.
+          // Not really sure how to avoid it locally BUT we could use cloud function to update the team
+          // on the backend maybe? (also we get to write about cloud functions as inżynierka padding)
+          final team = await getTeam(teamId, transaction: transaction);
+          updateTeam(
+            teamId,
+            team.copyWith(members: [
+              ...team.members,
+              TeamMember(id: user.uid, name: user.firstName),
+            ]),
+            transaction: transaction,
+          );
 
-      // update the user joined events list
-      _userRepo.addToJoinedEvents(
-        userId: uid,
-        eventId: event.id,
-        teamId: teamId,
-        transaction: transaction,
-      );
+          // update the user joined events list
+          _userRepo.addToJoinedEvents(
+            userId: user.uid,
+            eventId: event.id,
+            teamId: teamId,
+            transaction: transaction,
+          );
 
-      Future.delayed(
-        const Duration(milliseconds: 100),
-        () => _ref.invalidate(teamsProvider(event)),
-      );
-      return right(unit);
-    });
+          Future.delayed(
+            const Duration(milliseconds: 100),
+            () => _ref.invalidate(teamsProvider(event)),
+          );
+          return right(unit);
+        });
+      },
+    );
   }
 
   /// Removes a user from a team.
@@ -148,14 +163,18 @@ class TeamRepository {
 
     return _firestore.runTransaction((transaction) async {
       final team = await getTeam(teamId, transaction: transaction);
-      if (!team.members.contains(uid)) return left("User was not in the team.");
+      if (!team.members.map((e) => e.id).contains(uid)) {
+        return left("User was not in the team.");
+      }
       if (team.captainId == uid) {
         return left("Team captain can't leave their own team.");
       }
 
       updateTeam(
         teamId,
-        team.copyWith(members: [...team.members]..remove(uid)),
+        team.copyWith(
+            members: [...team.members]
+              ..removeWhere((element) => element.id == uid)),
         transaction: transaction,
       );
       _userRepo.removeFromJoinedEvents(
@@ -187,9 +206,9 @@ class TeamRepository {
       // maybe you can make a security rule that lets team captain change which
       // event user can participate in but that sounds difficult
       // would be easier to just handle this in the backend
-      for (String memberId in team.members) {
+      for (TeamMember member in team.members) {
         _userRepo.removeFromJoinedEvents(
-          userId: memberId,
+          userId: member.id,
           eventId: event.id,
           transaction: transaction,
         );
