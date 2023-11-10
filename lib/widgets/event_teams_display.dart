@@ -6,11 +6,14 @@ import 'package:regatta_buddy/models/team.dart';
 import 'package:regatta_buddy/providers/event_details/teams_provider.dart';
 import 'package:regatta_buddy/providers/firebase_providers.dart';
 import 'package:regatta_buddy/providers/repository_providers.dart';
-import 'package:regatta_buddy/providers/user_provider.dart';
 
 // Local version so we don't call the database unless needed
 bool isUserInEvent(String userId, List<Team> teams) {
-  return teams.map((team) => team.members.contains(userId)).contains(true);
+  return teams
+      .map(
+        (team) => team.members.map((e) => e.id).contains(userId),
+      )
+      .contains(true);
 }
 
 class EventTeamsDisplay extends ConsumerWidget {
@@ -176,13 +179,9 @@ class TeamCard extends ConsumerWidget {
                 children: [
                   // todo: Add team member usernames to Team data class
                   // this is costing us a lot of reads just to check usernames
-                  ref.watch(userDataProvider(team.members[index])).when(
-                        data: (data) => Text(data.firstName),
-                        error: (error, stackTrace) =>
-                            const Text("Unknown User"),
-                        loading: () => const CircularProgressIndicator(),
-                      ),
-                  if (userId == team.members[index] && userId != team.captainId)
+                  Text(team.members[index].name),
+                  if (userId == team.members[index].id &&
+                      userId != team.captainId)
                     ElevatedButton(
                       onPressed: () async {
                         final response =
@@ -200,7 +199,8 @@ class TeamCard extends ConsumerWidget {
                       },
                       child: const Text("Leave Team"),
                     ),
-                  if (userId == team.members[index] && userId == team.captainId)
+                  if (userId == team.members[index].id &&
+                      userId == team.captainId)
                     ElevatedButton(
                       onPressed: () async {
                         final response =
