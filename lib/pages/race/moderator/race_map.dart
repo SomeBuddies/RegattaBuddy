@@ -4,7 +4,8 @@ import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:regatta_buddy/extensions/string_extension.dart';
-import 'package:regatta_buddy/providers/auth/team_traces_notifier.dart';
+import 'package:regatta_buddy/providers/event_details/team_position_notifier.dart';
+import 'package:regatta_buddy/providers/event_details/team_traces_notifier.dart';
 import 'package:regatta_buddy/providers/race_events.dart';
 
 import 'package:regatta_buddy/utils/constants.dart' as constants;
@@ -69,8 +70,7 @@ class RaceMarkerLayer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    Map<String, LatLng> teamPositions =
-        ref.watch(teamPositionProvider(eventId));
+    Map<String, LatLng> teamPositions = ref.watch(teamPositionNotifierProvider(eventId));
     var logger = getLogger("RaceMarkerLayer");
     logger.i("building a RaceMarkerLayer widget");
 

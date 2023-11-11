@@ -8,14 +8,14 @@ import 'package:regatta_buddy/modals/actions_dialog.dart' as actions_dialog;
 import 'package:regatta_buddy/modals/actions_dialog.dart';
 import 'package:regatta_buddy/pages/race/moderator/event_statistics.dart';
 import 'package:regatta_buddy/pages/race/moderator/race_map.dart';
+import 'package:regatta_buddy/providers/event_details/team_position_notifier.dart';
 import 'package:regatta_buddy/providers/race_events.dart';
+import 'package:regatta_buddy/services/event_message_sender.dart';
 import 'package:regatta_buddy/utils/data_processing_helper.dart' as data_helper;
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/widgets/rb_notification.dart';
 import 'package:uuid/uuid.dart';
-
-import '../../../services/event_message_sender.dart';
 
 class RaceModeratorPage extends ConsumerStatefulWidget {
   final logger = getLogger('RaceModeratorPage');
@@ -74,10 +74,11 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
   @override
   Widget build(BuildContext context) {
     final teamScores = ref.watch(teamScoresProvider(eventId));
+    Map<String, LatLng> teamPositions =
+        ref.watch(teamPositionNotifierProvider(eventId));
     // todo do something with below
     // ignore: unused_local_variable
-    Map<String, LatLng> teamPositions = ref.watch(teamPositionProvider(eventId));
-    final currentRound = ref.watch(currentRoundProvider(event.id));
+    final currentRound = ref.watch(currentRoundProvider(eventId));
 
     return Scaffold(
       appBar: const AppHeader(),
@@ -87,7 +88,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
             child: Stack(children: [
               Column(
                 children: [
-                  EventStatistics(eventId: event.id,),
+                  EventStatistics(eventId: eventId),
                   SizedBox(
                     height: 300,
                     child: RaceMap(
@@ -101,53 +102,12 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
                         processedScores = data_helper.processScoresData(data);
                         if (processedScores.isNotEmpty) {
                           return ListView.builder(
+                            padding: const EdgeInsets.only(bottom: 100),
                             itemBuilder: (context, index) {
                               final teamId =
                                   processedScores.keys.elementAt(index);
-                              return ListTile(
-                                dense: true,
-                                leading: IconButton(
-                                  icon: const Icon(Icons.sailing, shadows: [
-                                    Shadow(
-                                      blurRadius: 10.0,
-                                      color: Colors.black,
-                                    ),
-                                  ]),
-                                  color: teamId.toSeededColor(),
-                                  iconSize: 40.0,
-                                  onPressed: () {},
-                                ),
-                                trailing: Wrap(
-                                  spacing: 12,
-                                  children: <Widget>[
-                                    IconButton(
-                                      icon: const Icon(Icons.my_location),
-                                      onPressed: () {
-                                        if (teamPositions[teamId] != null) {
-                                          mapController.move(teamPositions[teamId]!,
-                                              mapController.zoom);
-                                        } else {
-                                          widget.logger.w(
-                                              'Team $teamId has no position data | PROBABLY IT IS MOCKED');
-                                        }
-                                      },
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(Icons.timeline),
-                                      color: (trackedTeams.contains(teamId)) ? Colors.blue : Colors.grey,
-                                      onPressed: () {
-                                        setState(() {
-                                          trackedTeams.contains(teamId) ? trackedTeams.remove(teamId) : trackedTeams.add(teamId);
-                                          ref.read(currentlyTrackedTeamsProvider.notifier).set(trackedTeams);
-                                        });
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                title: Text("Team ${index + 1} : $teamId"),
-                                subtitle:
-                                    Text('Points: ${processedScores[teamId]}'),
-                              );
+                              return getTeamStatsTile(
+                                  teamId, teamPositions, index);
                             },
                             itemCount: processedScores.keys.length,
                           );
@@ -209,6 +169,84 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
         ]),
         child: const Icon(Icons.add, size: 35),
       ),
+    );
+  }
+
+  ListTile getTeamStatsTile(
+      String teamId, Map<String, LatLng> teamPositions, int index) {
+    return ListTile(
+      dense: true,
+      leading: Wrap(
+          spacing: 0,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: const Color.fromARGB(100, 0, 0, 0),
+                  width: 1.0,
+                ),
+                color: (index == 0)
+                    ? const Color.fromARGB(255, 255, 215, 0)
+                    : (index == 1)
+                        ? const Color.fromARGB(192, 192, 192, 192)
+                        : (index == 2)
+                            ? const Color.fromARGB(205, 127, 50, 50)
+                            : null,
+              ),
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                (index + 1).toString(),
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.sailing, shadows: [
+                Shadow(
+                  blurRadius: 10.0,
+                  color: Colors.black,
+                ),
+              ]),
+              color: teamId.toSeededColor(),
+              iconSize: 40.0,
+              onPressed: () {},
+            ),
+          ]),
+      trailing: Wrap(
+        spacing: 12,
+        children: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.my_location),
+            onPressed: () {
+              if (teamPositions[teamId] != null) {
+                mapController.move(teamPositions[teamId]!, mapController.zoom);
+              } else {
+                widget.logger.w(
+                    'Team $teamId has no position data | PROBABLY IT IS MOCKED');
+              }
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.timeline),
+            color: (trackedTeams.contains(teamId)) ? Colors.blue : Colors.grey,
+            onPressed: () {
+              setState(() {
+                trackedTeams.contains(teamId)
+                    ? trackedTeams.remove(teamId)
+                    : trackedTeams.add(teamId);
+                ref.read(currentlyTrackedTeamsProvider.notifier).set(trackedTeams);
+              });
+            },
+          ),
+        ],
+      ),
+      title: Text(teamId),
+      subtitle: Text('Points: ${processedScores[teamId]}'),
     );
   }
 }
