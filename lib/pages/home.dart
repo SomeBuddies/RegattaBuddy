@@ -4,7 +4,6 @@ import 'package:quickalert/quickalert.dart';
 
 import 'package:regatta_buddy/pages/event_creation/event_creation.dart';
 import 'package:regatta_buddy/pages/login_page.dart';
-import 'package:regatta_buddy/pages/regatta_details.dart';
 import 'package:regatta_buddy/pages/search_page.dart';
 import 'package:regatta_buddy/providers/auth/auth_state_notifier.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
@@ -41,26 +40,20 @@ class _HomePageState extends ConsumerState<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             buildButton(
-              onTap: () => handleJoinRegatta(context),
-              title: 'Join',
-              text: 'Use code to join an existing regatta',
-            ),
-            const SizedBox(height: 20.0),
-            buildButton(
               onTap: () => Navigator.pushNamed(context, SearchPage.route,
                   arguments: {'isUserView': true}),
-              title: 'Your regattas',
-              text: 'View your upcoming regattas',
+              title: 'Your events',
+              text: 'View your upcoming regatta events',
             ),
-            const SizedBox(height: 20.0),
+            const SizedBox(height: 30.0),
             buildButton(
               onTap: () {
                 QuickAlert.show(
                   context: context,
                   type: QuickAlertType.confirm,
-                  title: 'New regatta',
+                  title: 'Organize event',
                   text:
-                      'Are you sure you want to start creating a new regatta?',
+                      'Are you sure you want to start creating a new regatta event?',
                   onConfirmBtnTap: () {
                     Navigator.of(context).pop();
                     Navigator.pushNamed(context, EventCreationPage.route);
@@ -68,64 +61,19 @@ class _HomePageState extends ConsumerState<HomePage> {
                   confirmBtnText: 'Yes',
                 );
               },
-              title: 'Create',
-              text: 'Create a new regatta',
+              title: 'Organize event',
+              text: 'Organize a new regatta event',
             ),
-            const SizedBox(height: 20.0),
+            const SizedBox(height: 30.0),
             buildButton(
               onTap: () => Navigator.pushNamed(context, SearchPage.route,
                   arguments: {'isUserView': false}),
-              title: 'Search',
-              text: 'Search for upcoming regattas in your area',
+              title: 'Browse events',
+              text: 'Browse regatta events in your area',
             )
           ],
         ),
       ),
-    );
-  }
-
-  void handleJoinRegatta(
-    BuildContext context,
-  ) {
-    var regattaCode = '';
-
-    QuickAlert.show(
-      context: context,
-      type: QuickAlertType.custom,
-      confirmBtnText: 'Sign up',
-      customAsset: 'assets/images/search.png',
-      widget: TextFormField(
-        decoration: const InputDecoration(
-          alignLabelWithHint: true,
-          hintText: 'Enter regatta code',
-          prefixIcon: Icon(
-            Icons.lock_open,
-          ),
-        ),
-        textInputAction: TextInputAction.next,
-        keyboardType: TextInputType.visiblePassword,
-        onChanged: (value) => regattaCode = value,
-      ),
-      onConfirmBtnTap: () async {
-        if (!isCodeValid(regattaCode)) {
-          await QuickAlert.show(
-            context: context,
-            type: QuickAlertType.error,
-            text: 'Please input valid regatta code.',
-          );
-          return;
-        }
-        Navigator.pop(context);
-        await QuickAlert.show(
-          context: context,
-          type: QuickAlertType.success,
-          title: '{Regatta Name}',
-          text: "You successfully joined the regatta!",
-        );
-        if (context.mounted) {
-          Navigator.pushNamed(context, RegattaDetailsPage.route);
-        }
-      },
     );
   }
 

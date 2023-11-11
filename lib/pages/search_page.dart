@@ -80,16 +80,19 @@ class SearchPage extends HookConsumerWidget {
               ],
             ),
             Expanded(
-              child: eventsAsync.when(
-                data: (data) => ListView.builder(
-                  itemBuilder: (context, index) => SearchItem(data[index]),
-                  itemCount: data.length,
-                ),
-                error: (error, stackTrace) => Center(
-                  child: Text(error.toString()),
-                ),
-                loading: () => const Center(
-                  child: CircularProgressIndicator(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: eventsAsync.when(
+                  data: (data) => ListView.builder(
+                    itemBuilder: (context, index) => SearchItem(data[index]),
+                    itemCount: data.length,
+                  ),
+                  error: (error, stackTrace) => Center(
+                    child: Text(error.toString()),
+                  ),
+                  loading: () => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
                 ),
               ),
             ),

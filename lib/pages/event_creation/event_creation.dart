@@ -5,7 +5,6 @@ import 'package:regatta_buddy/models/event.dart';
 
 import 'package:regatta_buddy/pages/event_creation/event_form.dart';
 import 'package:regatta_buddy/pages/event_creation/event_route.dart';
-import 'package:regatta_buddy/pages/event_creation/event_social.dart';
 import 'package:regatta_buddy/pages/home.dart';
 import 'package:regatta_buddy/providers/repository_providers.dart';
 import 'package:regatta_buddy/providers/user_provider.dart';
@@ -44,7 +43,6 @@ class _EventCreationPageState extends ConsumerState<EventCreationPage> {
       () => EventFormSubPage(
           _formKey, changeName, changeDescription, changeDate, changeTime),
       () => EventRouteSubPage(markers, addMarker, deleteMarker),
-      () => const EventSocialSubPage(),
     ];
   }
 
