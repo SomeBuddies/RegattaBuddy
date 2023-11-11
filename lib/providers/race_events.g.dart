@@ -157,21 +157,148 @@ class _TeamScoresProviderElement
   String get eventId => (origin as TeamScoresProvider).eventId;
 }
 
-String _$currentRoundHash() => r'0086d1ff9f86f190952f6230b69d6cb475960cc7';
+String _$currentRoundHash() => r'd48aadeb0fa4c1092dbadd43f0cbbcbd6031d490';
+
+abstract class _$CurrentRound extends BuildlessAutoDisposeNotifier<int> {
+  late final String eventId;
+
+  int build(
+    String eventId,
+  );
+}
 
 /// See also [CurrentRound].
 @ProviderFor(CurrentRound)
-final currentRoundProvider =
-    AutoDisposeNotifierProvider<CurrentRound, int>.internal(
-  CurrentRound.new,
-  name: r'currentRoundProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$currentRoundHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+const currentRoundProvider = CurrentRoundFamily();
 
-typedef _$CurrentRound = AutoDisposeNotifier<int>;
+/// See also [CurrentRound].
+class CurrentRoundFamily extends Family<int> {
+  /// See also [CurrentRound].
+  const CurrentRoundFamily();
+
+  /// See also [CurrentRound].
+  CurrentRoundProvider call(
+    String eventId,
+  ) {
+    return CurrentRoundProvider(
+      eventId,
+    );
+  }
+
+  @override
+  CurrentRoundProvider getProviderOverride(
+    covariant CurrentRoundProvider provider,
+  ) {
+    return call(
+      provider.eventId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'currentRoundProvider';
+}
+
+/// See also [CurrentRound].
+class CurrentRoundProvider
+    extends AutoDisposeNotifierProviderImpl<CurrentRound, int> {
+  /// See also [CurrentRound].
+  CurrentRoundProvider(
+    String eventId,
+  ) : this._internal(
+          () => CurrentRound()..eventId = eventId,
+          from: currentRoundProvider,
+          name: r'currentRoundProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$currentRoundHash,
+          dependencies: CurrentRoundFamily._dependencies,
+          allTransitiveDependencies:
+              CurrentRoundFamily._allTransitiveDependencies,
+          eventId: eventId,
+        );
+
+  CurrentRoundProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.eventId,
+  }) : super.internal();
+
+  final String eventId;
+
+  @override
+  int runNotifierBuild(
+    covariant CurrentRound notifier,
+  ) {
+    return notifier.build(
+      eventId,
+    );
+  }
+
+  @override
+  Override overrideWith(CurrentRound Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: CurrentRoundProvider._internal(
+        () => create()..eventId = eventId,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        eventId: eventId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeNotifierProviderElement<CurrentRound, int> createElement() {
+    return _CurrentRoundProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is CurrentRoundProvider && other.eventId == eventId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, eventId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin CurrentRoundRef on AutoDisposeNotifierProviderRef<int> {
+  /// The parameter `eventId` of this provider.
+  String get eventId;
+}
+
+class _CurrentRoundProviderElement
+    extends AutoDisposeNotifierProviderElement<CurrentRound, int>
+    with CurrentRoundRef {
+  _CurrentRoundProviderElement(super.provider);
+
+  @override
+  String get eventId => (origin as CurrentRoundProvider).eventId;
+}
+
 String _$currentRoundStatusHash() =>
     r'016d8ed69a427df774434fb87f89cd0934c4c927';
 
@@ -189,5 +316,22 @@ final currentRoundStatusProvider =
 );
 
 typedef _$CurrentRoundStatus = AutoDisposeNotifier<RoundStatus>;
+String _$currentlyTrackedTeamsHash() =>
+    r'9fc1fe411947b21406842b902cf2fe8e2b04d815';
+
+/// See also [CurrentlyTrackedTeams].
+@ProviderFor(CurrentlyTrackedTeams)
+final currentlyTrackedTeamsProvider =
+    AutoDisposeNotifierProvider<CurrentlyTrackedTeams, Set<String>>.internal(
+  CurrentlyTrackedTeams.new,
+  name: r'currentlyTrackedTeamsProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$currentlyTrackedTeamsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$CurrentlyTrackedTeams = AutoDisposeNotifier<Set<String>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
