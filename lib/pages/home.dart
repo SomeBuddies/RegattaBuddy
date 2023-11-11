@@ -6,7 +6,6 @@ import 'package:regatta_buddy/pages/event_creation/event_creation.dart';
 import 'package:regatta_buddy/pages/login_page.dart';
 import 'package:regatta_buddy/pages/regatta_details.dart';
 import 'package:regatta_buddy/pages/search_page.dart';
-import 'package:regatta_buddy/pages/user_regattas.dart';
 import 'package:regatta_buddy/providers/auth/auth_state_notifier.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 
@@ -48,7 +47,8 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
             const SizedBox(height: 20.0),
             buildButton(
-              onTap: () => Navigator.pushNamed(context, UserRegattasPage.route),
+              onTap: () => Navigator.pushNamed(context, SearchPage.route,
+                  arguments: {'isUserView': true}),
               title: 'Your regattas',
               text: 'View your upcoming regattas',
             ),
@@ -73,7 +73,8 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
             const SizedBox(height: 20.0),
             buildButton(
-              onTap: () => Navigator.pushNamed(context, SearchPage.route),
+              onTap: () => Navigator.pushNamed(context, SearchPage.route,
+                  arguments: {'isUserView': false}),
               title: 'Search',
               text: 'Search for upcoming regattas in your area',
             )
