@@ -96,13 +96,13 @@ StateNotifierProvider<TeamPositionNotifier, Map<String, LatLng>>
 @riverpod
 class CurrentRound extends _$CurrentRound {
   @override
-  int build() {
-    // TODO should be synced with db
+  int build(String eventId) {
+    // TODO should get the current round from firebase
     return 0;
   }
 
-  void set(int type) {
-    state = type;
+  void set(int round) {
+    state = round;
   }
 
   void increment() {
@@ -129,3 +129,20 @@ class CurrentRoundStatus extends _$CurrentRoundStatus {
     state = RoundStatus.finished;
   }
 }
+
+@riverpod
+class CurrentlyTrackedTeams extends _$CurrentlyTrackedTeams {
+  @override
+  Set<String> build() {
+    return {};
+  }
+
+  void set(Set<String> teams) {
+    state = teams;
+  }
+
+  void clear() {
+    state = {};
+  }
+}
+

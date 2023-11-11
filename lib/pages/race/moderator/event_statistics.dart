@@ -7,13 +7,15 @@ import 'package:regatta_buddy/utils/constants.dart' as constants;
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 
 class EventStatistics extends ConsumerWidget {
-  EventStatistics({super.key});
+  final String eventId;
+
+  EventStatistics({super.key, required this.eventId});
 
   final logger = getLogger("EventStatistics");
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentRound = ref.watch(currentRoundProvider);
+    final currentRound = ref.watch(currentRoundProvider(eventId));
     final currentRoundStatus = ref.watch(currentRoundStatusProvider);
 
     return Container(
@@ -127,7 +129,7 @@ class EventStatistics extends ConsumerWidget {
         size: 40,
       ),
       onTap: () {
-        ref.read(currentRoundProvider.notifier).increment();
+        ref.read(currentRoundProvider(eventId).notifier).increment();
         ref.read(currentRoundStatusProvider.notifier).start();
         logger.i("Round started");
         // TODO send event to server

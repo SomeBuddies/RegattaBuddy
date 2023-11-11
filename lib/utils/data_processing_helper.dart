@@ -4,7 +4,6 @@ import 'logging/logger_helper.dart';
 Map<String, int> processScoresData(Map<String, List<int>> scores) {
   final logger = getLogger("DataProcessingHelper");
   final Map<String, int> teamScores = {};
-  logger.d("processing the following scores data: $scores");
   try {
     scores.forEach((key, value) {
       final teamId = key;

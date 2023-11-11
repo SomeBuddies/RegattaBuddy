@@ -36,6 +36,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
   int round = 1;
   Map<String, int> processedScores = {};
   final MapController mapController = MapController();
+  Set<String> trackedTeams = {};
 
   void addNotification(String title) {
     String uuid = const Uuid().v4();
@@ -75,9 +76,8 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
     final teamScores = ref.watch(teamScoresProvider(eventId));
     // todo do something with below
     // ignore: unused_local_variable
-    final currentRound = ref.watch(currentRoundProvider);
-    Map<String, LatLng> teamPositions =
-        ref.watch(teamPositionProvider(eventId));
+    Map<String, LatLng> teamPositions = ref.watch(teamPositionProvider(eventId));
+    final currentRound = ref.watch(currentRoundProvider(event.id));
 
     return Scaffold(
       appBar: const AppHeader(),
@@ -87,7 +87,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
             child: Stack(children: [
               Column(
                 children: [
-                  EventStatistics(),
+                  EventStatistics(eventId: event.id,),
                   SizedBox(
                     height: 300,
                     child: RaceMap(
@@ -117,17 +117,32 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
                                   iconSize: 40.0,
                                   onPressed: () {},
                                 ),
-                                trailing: IconButton(
-                                  icon: const Icon(Icons.my_location),
-                                  onPressed: () {
-                                    if (teamPositions[teamId] != null) {
-                                      mapController.move(teamPositions[teamId]!,
-                                          mapController.zoom);
-                                    } else {
-                                      widget.logger.w(
-                                          'Team $teamId has no position data | PROBABLY IT IS MOCKED');
-                                    }
-                                  },
+                                trailing: Wrap(
+                                  spacing: 12,
+                                  children: <Widget>[
+                                    IconButton(
+                                      icon: const Icon(Icons.my_location),
+                                      onPressed: () {
+                                        if (teamPositions[teamId] != null) {
+                                          mapController.move(teamPositions[teamId]!,
+                                              mapController.zoom);
+                                        } else {
+                                          widget.logger.w(
+                                              'Team $teamId has no position data | PROBABLY IT IS MOCKED');
+                                        }
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.timeline),
+                                      color: (trackedTeams.contains(teamId)) ? Colors.blue : Colors.grey,
+                                      onPressed: () {
+                                        setState(() {
+                                          trackedTeams.contains(teamId) ? trackedTeams.remove(teamId) : trackedTeams.add(teamId);
+                                          ref.read(currentlyTrackedTeamsProvider.notifier).set(trackedTeams);
+                                        });
+                                      },
+                                    ),
+                                  ],
                                 ),
                                 title: Text("Team ${index + 1} : $teamId"),
                                 subtitle:

@@ -4,6 +4,7 @@ import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:regatta_buddy/extensions/string_extension.dart';
+import 'package:regatta_buddy/providers/auth/team_traces_notifier.dart';
 import 'package:regatta_buddy/providers/race_events.dart';
 
 import 'package:regatta_buddy/utils/constants.dart' as constants;
@@ -11,7 +12,7 @@ import 'package:regatta_buddy/utils/external_api_constants.dart'
     as api_constants;
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 
-class RaceMap extends StatelessWidget {
+class RaceMap extends ConsumerWidget {
   final MapController mapController;
   final String eventId;
 
@@ -19,7 +20,11 @@ class RaceMap extends StatelessWidget {
       {super.key, required this.mapController, required this.eventId});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final trackedTeams = ref.watch(currentlyTrackedTeamsProvider);
+    final currentRound = ref.watch(currentRoundProvider(eventId));
+    final teamTraces = ref.watch(teamTracesNotifierProvider(eventId));
+
     return FlutterMap(
       mapController: mapController,
       options: MapOptions(
@@ -36,11 +41,25 @@ class RaceMap extends StatelessWidget {
           urlTemplate: api_constants.tileLayerUrl,
           userAgentPackageName: api_constants.tileLayerUserAgent,
         ),
+        PolylineLayer(
+          polylines: [
+            for (final teamId in trackedTeams)
+              Polyline(
+                points: getTrackedTeamTrace(teamId, teamTraces, currentRound),
+                strokeWidth: 4.0,
+                color: teamId.toSeededColor(),
+              ),
+          ],
+        ),
         CurrentLocationLayer(),
         RaceMarkerLayer(eventId: eventId)
       ],
     );
   }
+
+  List<LatLng> getTrackedTeamTrace(String trackedTeam, Map<String, Map<int, List<LatLng>>> teamTraces, int currentRound) => [if (pointsAreAvailable(trackedTeam, teamTraces, currentRound)) ...teamTraces[trackedTeam]![currentRound]!];
+
+  bool pointsAreAvailable(String trackedTeam, Map<String, Map<int, List<LatLng>>> teamTraces, int currentRound) => trackedTeam != "" && teamTraces[trackedTeam] != null && teamTraces[trackedTeam]![currentRound] != null;
 }
 
 class RaceMarkerLayer extends ConsumerWidget {
