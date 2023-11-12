@@ -9,7 +9,40 @@ class EventMessageSender {
         databaseReference.child('messages').child(eventId).child(timestamp);
 
     Message message = Message(
-        type: MessageType.startEvent, receiverType: MessageReceiverType.all);
+        type: MessageType.startEvent,
+        receiverType: MessageReceiverType.all
+    );
+
+    newMessage.set(message.toJson());
+  }
+
+  static void assignPoints(String eventId, String teamId, String roundPoints) {
+    String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+    final databaseReference = FirebaseDatabase.instance.ref();
+    DatabaseReference newMessage =
+    databaseReference.child('messages').child(eventId).child(timestamp);
+
+    Message message = Message(
+        type: MessageType.pointsAssignment,
+        receiverType: MessageReceiverType.team,
+        teamId: teamId,
+        value: roundPoints);
+
+    newMessage.set(message.toJson());
+  }
+
+  static void sendDirectedTextMessage(String eventId, String teamId, String text) {
+    String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+    final databaseReference = FirebaseDatabase.instance.ref();
+    DatabaseReference newMessage =
+        databaseReference.child('messages').child(eventId).child(timestamp);
+
+    Message message = Message(
+        type: MessageType.directedTextMessage,
+        receiverType: MessageReceiverType.team,
+        teamId: teamId,
+        value: text
+    );
 
     newMessage.set(message.toJson());
   }
