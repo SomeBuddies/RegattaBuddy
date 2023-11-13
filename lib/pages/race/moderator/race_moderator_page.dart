@@ -154,7 +154,10 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
           ActionButton(
             iconData: Icons.question_answer,
             title: "Send message",
-            onTap: () => addNotification("Protest started"),
+            onTap: () => {
+              EventMessageSender.sendDirectedTextMessage(eventId, 'teamX', "this is just a test message | :)"),
+              addNotification("Message was sent")
+            },
           ),
           ActionButton(
             iconData: Icons.format_list_bulleted_outlined,

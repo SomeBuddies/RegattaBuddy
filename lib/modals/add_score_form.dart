@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:regatta_buddy/models/assigned_points_in_round.dart';
 import 'package:regatta_buddy/providers/firebase_writer_service_provider.dart';
+import 'package:regatta_buddy/services/event_message_sender.dart';
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 
 class AddScoreForm extends ConsumerStatefulWidget {
@@ -153,7 +155,8 @@ class _AddScoreFormState extends ConsumerState<AddScoreForm> {
         },
       );
 
-      final newScore = currentScore + int.parse(pointsController.value.text);
+      final points = int.parse(pointsController.value.text);
+      final newScore = currentScore + points;
 
       final response = await firebaseWriterService.setPointsToTeam(
         widget.eventId,
@@ -161,6 +164,9 @@ class _AddScoreFormState extends ConsumerState<AddScoreForm> {
         widget.round,
         newScore,
       );
+
+      EventMessageSender.assignPoints(widget.eventId, selectedTeam, AssignedPointsInRound(widget.round, points).toString());
+
       if (response.isLeft()) {
         throw Exception(response.fold((l) => l, (r) => r));
       }

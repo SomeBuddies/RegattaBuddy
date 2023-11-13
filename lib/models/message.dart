@@ -3,14 +3,23 @@ class Message {
   final MessageReceiverType receiverType;
   final String? teamId;
   final String? value;
+  final String? timestamp;
 
   Message(
       {required this.type,
       required this.receiverType,
       this.teamId,
-      this.value});
+      this.value,
+      this.timestamp});
 
   Message.fromJson(Map<String, String> json)
+      : type = MessageType.values.byName(json['type']!),
+        receiverType = MessageReceiverType.values.byName(json['receiverType']!),
+        teamId = json['teamId'],
+        value = json['value'],
+        timestamp = json['timestamp'];
+
+  Message.fromJsonWithId(Map<String, String> json, String this.timestamp)
       : type = MessageType.values.byName(json['type']!),
         receiverType = MessageReceiverType.values.byName(json['receiverType']!),
         teamId = json['teamId'],
@@ -37,6 +46,8 @@ class Message {
 
 enum MessageType {
   startEvent,
+  directedTextMessage,
+  pointsAssignment,
 }
 
 enum MessageReceiverType { all, referee, team }

@@ -49,7 +49,7 @@ class RegattaBuddy extends ConsumerWidget {
         UserRegattasPage.route: (context) => const UserRegattasPage(),
         SearchPage.route: (context) => const SearchPage(),
         EventCreationPage.route: (context) => EventCreationPage(),
-        RacePage.route: (context) => const RacePage(),
+        RacePage.route: (context) => RacePage(),
         LoginPage.route: (context) => LoginPage(),
         RegisterPage.route: (context) => const RegisterPage(),
         ProfilePage.route: (context) => const ProfilePage(),

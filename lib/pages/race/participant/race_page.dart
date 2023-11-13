@@ -3,12 +3,15 @@ import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
 
 import 'package:regatta_buddy/modals/action_button.dart';
 import 'package:regatta_buddy/modals/actions_dialog.dart' as actions_dialog;
+import 'package:regatta_buddy/models/assigned_points_in_round.dart';
 import 'package:regatta_buddy/pages/race/participant/race_page_arguments.dart';
 import 'package:regatta_buddy/pages/race/participant/race_statistics.dart';
 import 'package:regatta_buddy/services/event_message_handler.dart';
+import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/widgets/custom_error.dart';
 import 'package:regatta_buddy/widgets/rb_notification.dart';
@@ -18,7 +21,9 @@ import '../../../models/message.dart';
 import '../../../services/locator.dart';
 
 class RacePage extends StatefulWidget {
-  const RacePage({super.key});
+  final logger = getLogger('RacePage');
+
+  RacePage({super.key});
 
   static const String route = '/race';
 
@@ -37,6 +42,9 @@ class _RacePageState extends State<RacePage> {
   String errorMessage = "";
   List<RBNotification> activeNotifications = [];
   List<ActionButton> raceActions = [];
+  bool initialMessagesLoaded = false;
+  List<Message> messages = [];
+
   final databaseReference = FirebaseDatabase.instance.ref();
   bool eventStarted = false;
 
@@ -67,6 +75,7 @@ class _RacePageState extends State<RacePage> {
   @override
   void initState() {
     super.initState();
+    messages = [];
 
     locator = LocationSender((error) => setState(() {
           errorMessage = error;
@@ -98,22 +107,50 @@ class _RacePageState extends State<RacePage> {
 
   @override
   void didChangeDependencies() {
-    final args =
-        ModalRoute.of(context)!.settings.arguments as RacePageArguments;
+    final args = ModalRoute.of(context)!.settings.arguments as RacePageArguments;
     eventId = args.eventId;
     teamId = args.teamId;
+
+    if (!initialMessagesLoaded) {
+      initialMessagesLoaded = true;
+      EventMessageHandler.getAllMessages(eventId).then((allMessages) {
+        setState(() {
+          for (var message in allMessages) {
+            if (!messages.contains(message)) messages.add(message);
+          }
+        });
+      });
+    }
+
     messageHandler = EventMessageHandler(
         eventId: eventId,
         teamId: teamId,
-        onStartEventMessage: onStartEventMessage)
+        onStartEventMessage: onStartEventMessage,
+        onDirectedTextMessage: onDirectedTextMessage,
+        onPointsAssignedMessage: onPointsAssignedMessage)
       ..start();
     super.didChangeDependencies();
   }
 
   void onStartEventMessage(Message message) {
     setState(() {
+      if (!messages.contains(message)) messages.add(message);
       eventStarted = true;
     });
+  }
+
+  void onDirectedTextMessage(Message message) {
+    setState(() {
+      if (!messages.contains(message)) messages.add(message);
+    });
+    widget.logger.i("Direct message received: ${message.value}");
+  }
+
+  void onPointsAssignedMessage(Message message) {
+    setState(() {
+      if (!messages.contains(message)) messages.add(message);
+    });
+    widget.logger.i("Points assigned message received: ${message.value}");
   }
 
   @override
@@ -138,24 +175,65 @@ class _RacePageState extends State<RacePage> {
           ? Column(
               children: [
                 const RaceStatistics(),
-                Flexible(
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        top: 85,
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Column(
-                            children: activeNotifications,
-                          ),
-                        ),
-                      ),
-                    ],
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: messages.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return MessageListTile(message: messages[index]);
+                    },
                   ),
                 ),
               ],
             )
           : CustomErrorWidget(errorMessage),
     );
+  }
+}
+
+class MessageListTile extends StatelessWidget {
+  Message message;
+
+  MessageListTile({
+    super.key, required this.message,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    String formattedDate = "";
+
+    if (message.timestamp != null) {
+      final date = DateTime.fromMillisecondsSinceEpoch(int.parse(message.timestamp!));
+      formattedDate = DateFormat('HH:mm').format(date);
+    }
+
+    switch (message.type) {
+      case MessageType.startEvent:
+        return ListTile(
+          leading: Icon(Icons.play_arrow),
+          title: Text('Event started'),
+          subtitle: Text(
+            'Moderator at $formattedDate',
+          ),
+        );
+      case MessageType.directedTextMessage:
+        return ListTile(
+          leading: const Icon(Icons.message),
+          title: Text(message.value!),
+          subtitle: Text(
+            '$formattedDate : ${message.value}',
+          ),
+        );
+      case MessageType.pointsAssignment:
+
+        AssignedPointsInRound assignment = AssignedPointsInRound.fromString(message.value!);
+
+        return ListTile(
+          leading: const Icon(Icons.score),
+          title: Text('${assignment.points} points assigned in ${assignment.round} round to ${message.teamId}'),
+          subtitle: Text(
+            'Moderator at $formattedDate',
+          ),
+        );
+    }
   }
 }
