@@ -13,10 +13,13 @@ class SearchPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isUserView = (ModalRoute.of(context)!.settings.arguments
+        as Map<String, bool>)['isUserView'];
     final searchQuery = useState('');
     final controller = useTextEditingController();
 
-    final eventsAsync = ref.watch(eventListProvider(query: searchQuery.value));
+    final eventsAsync = ref.watch(
+        eventListProvider(query: searchQuery.value, isUserView: isUserView));
 
     return Scaffold(
       appBar: const AppHeader(),
@@ -32,7 +35,7 @@ class SearchPage extends HookConsumerWidget {
                     decoration: const InputDecoration(hintText: "Search"),
                     autocorrect: false,
                     onSubmitted: (value) =>
-                        searchQuery.value = value.toLowerCase(),
+                    searchQuery.value = value.toLowerCase(),
                   ),
                 ),
                 Switch(
@@ -53,7 +56,7 @@ class SearchPage extends HookConsumerWidget {
                   ),
                   dropdownMenuEntries: SortType.values
                       .map((e) => DropdownMenuEntry(
-                          value: e, label: e.name.toCapitalized()))
+                      value: e, label: e.name.toCapitalized()))
                       .toList(),
                   onSelected: (value) =>
                       ref.read(currentSortTypeProvider.notifier).set(value!),
@@ -67,7 +70,7 @@ class SearchPage extends HookConsumerWidget {
                   ),
                   dropdownMenuEntries: SortOrder.values
                       .map((e) => DropdownMenuEntry(
-                          value: e, label: e.name.toCapitalized()))
+                      value: e, label: e.name.toCapitalized()))
                       .toList(),
                   onSelected: (value) =>
                       ref.read(currentSortOrderProvider.notifier).set(value!),
@@ -77,16 +80,19 @@ class SearchPage extends HookConsumerWidget {
               ],
             ),
             Expanded(
-              child: eventsAsync.when(
-                data: (data) => ListView.builder(
-                  itemBuilder: (context, index) => SearchItem(data[index]),
-                  itemCount: data.length,
-                ),
-                error: (error, stackTrace) => Center(
-                  child: Text(error.toString()),
-                ),
-                loading: () => const Center(
-                  child: CircularProgressIndicator(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: eventsAsync.when(
+                  data: (data) => ListView.builder(
+                    itemBuilder: (context, index) => SearchItem(data[index]),
+                    itemCount: data.length,
+                  ),
+                  error: (error, stackTrace) => Center(
+                    child: Text(error.toString()),
+                  ),
+                  loading: () => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
                 ),
               ),
             ),
