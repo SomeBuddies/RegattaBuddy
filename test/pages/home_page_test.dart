@@ -59,10 +59,9 @@ void main() {
       ),
     );
 
-    expect(find.text('Join'), findsOneWidget);
-    expect(find.text('Your regattas'), findsOneWidget);
-    expect(find.text('Create'), findsOneWidget);
-    expect(find.text('Search'), findsOneWidget);
+    expect(find.text('Your events'), findsOneWidget);
+    expect(find.text('Organize event'), findsOneWidget);
+    expect(find.text('Browse events'), findsOneWidget);
   });
 
   testWidgets("Navigates to SearchPage on search button click", (tester) async {
@@ -84,7 +83,7 @@ void main() {
 
     expect(find.text('mockedSearchPage'), findsNothing);
 
-    await tester.tap(find.text('Search'));
+    await tester.tap(find.text('Browse events'));
     await tester.pumpAndSettle();
 
     verify(() => mockObserver.didPush(any(), any()));
@@ -108,13 +107,13 @@ void main() {
       ),
     );
 
-    expect(find.text('mockedUserRegattasPage'), findsNothing);
+    expect(find.text('mockedSearchPage'), findsNothing);
 
-    await tester.tap(find.text('Your regattas'));
+    await tester.tap(find.text('Your events'));
     await tester.pumpAndSettle();
 
     verify(() => mockObserver.didPush(any(), any()));
-    expect(find.text('mockedUserRegattasPage'), findsOneWidget);
+    expect(find.text('mockedSearchPage'), findsOneWidget);
   });
 
   testWidgets("Navigates to CreatePage on create button click and confirmation", (tester) async {
@@ -136,7 +135,7 @@ void main() {
 
     expect(find.text('mockedCreatePage'), findsNothing);
 
-    await tester.tap(find.text('Create a new regatta'));
+    await tester.tap(find.text('Organize event'));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Yes'));
@@ -144,65 +143,5 @@ void main() {
 
     verify(() => mockObserver.didPush(any(), any()));
     expect(find.text('mockedCreatePage'), findsOneWidget);
-  });
-
-  testWidgets("Navigates to RegattaDetailsPage after joining and using correct code",
-      (tester) async {
-    final mockObserver = MockNavigatorObserver();
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          authStateNotiferProvider.overrideWith(
-            () => MockAuthStateNotifier(),
-          ),
-        ],
-        child: MaterialApp(
-          home: const HomePage(),
-          routes: mockedRoutes,
-          navigatorObservers: [mockObserver],
-        ),
-      ),
-    );
-    expect(find.text('mockedRegattaDetailsPage'), findsNothing);
-    await tester.tap(find.text('Join'));
-    await tester.pumpAndSettle();
-
-    await tester.enterText(find.byType(TextFormField), validRegattaCode);
-    await tester.tap(find.text('Sign up'));
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('Okay'));
-    await tester.pumpAndSettle();
-
-    verify(() => mockObserver.didPush(any(), any()));
-    expect(find.text('mockedRegattaDetailsPage'), findsOneWidget);
-  });
-
-  testWidgets("Shows error message on invalid regatta code", (tester) async {
-    final mockObserver = MockNavigatorObserver();
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          authStateNotiferProvider.overrideWith(
-            () => MockAuthStateNotifier(),
-          ),
-        ],
-        child: MaterialApp(
-          home: const HomePage(),
-          routes: mockedRoutes,
-          navigatorObservers: [mockObserver],
-        ),
-      ),
-    );
-
-    expect(find.text('mockedRegattaDetailsPage'), findsNothing);
-    await tester.tap(find.text('Join'));
-    await tester.pumpAndSettle();
-
-    await tester.enterText(find.byType(TextFormField), invalidRegattaCode);
-    await tester.tap(find.text('Sign up'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Please input valid regatta code.'), findsOneWidget);
   });
 }
