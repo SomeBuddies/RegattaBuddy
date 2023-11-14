@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:regatta_buddy/models/event.dart';
+import 'package:regatta_buddy/pages/race/moderator/race_moderator_page.dart';
+import 'package:regatta_buddy/pages/race/participant/race_page.dart';
+import 'package:regatta_buddy/pages/race/participant/race_page_arguments.dart';
 import 'package:regatta_buddy/providers/user_provider.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/widgets/event_details_display.dart';
@@ -44,6 +47,15 @@ class GoToEventButton extends ConsumerStatefulWidget {
 
 class _GoToEventButtonState extends ConsumerState<GoToEventButton> {
   bool showButton = false;
+  String? teamId;
+
+  void onPressed() {
+    teamId == null
+        ? Navigator.pushNamed(context, RaceModeratorPage.route,
+            arguments: widget.event.id)
+        : Navigator.pushNamed(context, RacePage.route,
+            arguments: RacePageArguments(widget.event.id, teamId!));
+  }
 
   Future<void> loadNeededData(Event event) async {
     if (isEventActive(event) && isEventConnectedToUser(event)) {
@@ -68,12 +80,17 @@ class _GoToEventButtonState extends ConsumerState<GoToEventButton> {
 
     final List<Team>? teams =
         ref.watch(teamsProvider(event)).whenOrNull(data: (teams) => teams);
-    return teams
-            ?.filter((team) => team.members
-                .map((teamMember) => teamMember.id)
-                .contains(userId))
-            .isEmpty ??
-        false;
+    if (teams == null) return false;
+    var teamsWithUser = teams.filter((team) =>
+        team.members.map((teamMember) => teamMember.id).contains(userId));
+
+    if (teamsWithUser.isNotEmpty) {
+      setState(() {
+        teamId = teamsWithUser.first.id;
+      });
+      return true;
+    }
+    return false;
   }
 
   @override
@@ -86,7 +103,7 @@ class _GoToEventButtonState extends ConsumerState<GoToEventButton> {
   Widget build(BuildContext context) {
     return showButton
         ? ElevatedButton(
-            onPressed: () {},
+      onPressed: onPressed,
             child: const Text("Enter event"),
           )
         : const SizedBox.shrink();

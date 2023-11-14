@@ -45,7 +45,9 @@ class EventRepository {
     final query = await _events_collection
         .where(
           "date",
-          isGreaterThan: DateTime.timestamp().toIso8601String(),
+          isGreaterThan: DateTime.now()
+              .subtract(const Duration(days: 1))
+              .toIso8601String(),
         )
         .get();
 
