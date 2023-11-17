@@ -7,7 +7,7 @@ part of 'team_traces_notifier.dart';
 // **************************************************************************
 
 String _$teamTracesNotifierHash() =>
-    r'b129bcb1f4a71099923fa50ef3df2d5176cd9481';
+    r'0ba59251037d1991eaa9604402bc1ea5430c89c1';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -31,7 +31,7 @@ class _SystemHash {
 }
 
 abstract class _$TeamTracesNotifier
-    extends BuildlessNotifier<Map<String, Map<int, List<LatLng>>>> {
+    extends BuildlessAutoDisposeNotifier<Map<String, Map<int, List<LatLng>>>> {
   late final String eventId;
 
   Map<String, Map<int, List<LatLng>>> build(
@@ -83,7 +83,7 @@ class TeamTracesNotifierFamily
 }
 
 /// See also [TeamTracesNotifier].
-class TeamTracesNotifierProvider extends NotifierProviderImpl<
+class TeamTracesNotifierProvider extends AutoDisposeNotifierProviderImpl<
     TeamTracesNotifier, Map<String, Map<int, List<LatLng>>>> {
   /// See also [TeamTracesNotifier].
   TeamTracesNotifierProvider(
@@ -140,7 +140,7 @@ class TeamTracesNotifierProvider extends NotifierProviderImpl<
   }
 
   @override
-  NotifierProviderElement<TeamTracesNotifier,
+  AutoDisposeNotifierProviderElement<TeamTracesNotifier,
       Map<String, Map<int, List<LatLng>>>> createElement() {
     return _TeamTracesNotifierProviderElement(this);
   }
@@ -160,14 +160,14 @@ class TeamTracesNotifierProvider extends NotifierProviderImpl<
 }
 
 mixin TeamTracesNotifierRef
-    on NotifierProviderRef<Map<String, Map<int, List<LatLng>>>> {
+    on AutoDisposeNotifierProviderRef<Map<String, Map<int, List<LatLng>>>> {
   /// The parameter `eventId` of this provider.
   String get eventId;
 }
 
-class _TeamTracesNotifierProviderElement extends NotifierProviderElement<
-    TeamTracesNotifier,
-    Map<String, Map<int, List<LatLng>>>> with TeamTracesNotifierRef {
+class _TeamTracesNotifierProviderElement
+    extends AutoDisposeNotifierProviderElement<TeamTracesNotifier,
+        Map<String, Map<int, List<LatLng>>>> with TeamTracesNotifierRef {
   _TeamTracesNotifierProviderElement(super.provider);
 
   @override

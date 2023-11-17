@@ -6,8 +6,8 @@ part of 'go_to_event_button.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$getUserTeamIdControllerHash() =>
-    r'8f2346feec04c2a1c2a41284f8e2cd5dce92e8b9';
+String _$getUserTeamControllerHash() =>
+    r'b039a6c33b030be1c828f1883ca3af8e3d10fb66';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,27 +30,27 @@ class _SystemHash {
   }
 }
 
-/// See also [getUserTeamIdController].
-@ProviderFor(getUserTeamIdController)
-const getUserTeamIdControllerProvider = GetUserTeamIdControllerFamily();
+/// See also [getUserTeamController].
+@ProviderFor(getUserTeamController)
+const getUserTeamControllerProvider = GetUserTeamControllerFamily();
 
-/// See also [getUserTeamIdController].
-class GetUserTeamIdControllerFamily extends Family<AsyncValue<String?>> {
-  /// See also [getUserTeamIdController].
-  const GetUserTeamIdControllerFamily();
+/// See also [getUserTeamController].
+class GetUserTeamControllerFamily extends Family<AsyncValue<Team?>> {
+  /// See also [getUserTeamController].
+  const GetUserTeamControllerFamily();
 
-  /// See also [getUserTeamIdController].
-  GetUserTeamIdControllerProvider call(
+  /// See also [getUserTeamController].
+  GetUserTeamControllerProvider call(
     Event event,
   ) {
-    return GetUserTeamIdControllerProvider(
+    return GetUserTeamControllerProvider(
       event,
     );
   }
 
   @override
-  GetUserTeamIdControllerProvider getProviderOverride(
-    covariant GetUserTeamIdControllerProvider provider,
+  GetUserTeamControllerProvider getProviderOverride(
+    covariant GetUserTeamControllerProvider provider,
   ) {
     return call(
       provider.event,
@@ -69,33 +69,32 @@ class GetUserTeamIdControllerFamily extends Family<AsyncValue<String?>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'getUserTeamIdControllerProvider';
+  String? get name => r'getUserTeamControllerProvider';
 }
 
-/// See also [getUserTeamIdController].
-class GetUserTeamIdControllerProvider
-    extends AutoDisposeFutureProvider<String?> {
-  /// See also [getUserTeamIdController].
-  GetUserTeamIdControllerProvider(
+/// See also [getUserTeamController].
+class GetUserTeamControllerProvider extends AutoDisposeFutureProvider<Team?> {
+  /// See also [getUserTeamController].
+  GetUserTeamControllerProvider(
     Event event,
   ) : this._internal(
-          (ref) => getUserTeamIdController(
-            ref as GetUserTeamIdControllerRef,
+          (ref) => getUserTeamController(
+            ref as GetUserTeamControllerRef,
             event,
           ),
-          from: getUserTeamIdControllerProvider,
-          name: r'getUserTeamIdControllerProvider',
+          from: getUserTeamControllerProvider,
+          name: r'getUserTeamControllerProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$getUserTeamIdControllerHash,
-          dependencies: GetUserTeamIdControllerFamily._dependencies,
+                  : _$getUserTeamControllerHash,
+          dependencies: GetUserTeamControllerFamily._dependencies,
           allTransitiveDependencies:
-              GetUserTeamIdControllerFamily._allTransitiveDependencies,
+              GetUserTeamControllerFamily._allTransitiveDependencies,
           event: event,
         );
 
-  GetUserTeamIdControllerProvider._internal(
+  GetUserTeamControllerProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -109,12 +108,12 @@ class GetUserTeamIdControllerProvider
 
   @override
   Override overrideWith(
-    FutureOr<String?> Function(GetUserTeamIdControllerRef provider) create,
+    FutureOr<Team?> Function(GetUserTeamControllerRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: GetUserTeamIdControllerProvider._internal(
-        (ref) => create(ref as GetUserTeamIdControllerRef),
+      override: GetUserTeamControllerProvider._internal(
+        (ref) => create(ref as GetUserTeamControllerRef),
         from: from,
         name: null,
         dependencies: null,
@@ -126,13 +125,13 @@ class GetUserTeamIdControllerProvider
   }
 
   @override
-  AutoDisposeFutureProviderElement<String?> createElement() {
-    return _GetUserTeamIdControllerProviderElement(this);
+  AutoDisposeFutureProviderElement<Team?> createElement() {
+    return _GetUserTeamControllerProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is GetUserTeamIdControllerProvider && other.event == event;
+    return other is GetUserTeamControllerProvider && other.event == event;
   }
 
   @override
@@ -144,18 +143,18 @@ class GetUserTeamIdControllerProvider
   }
 }
 
-mixin GetUserTeamIdControllerRef on AutoDisposeFutureProviderRef<String?> {
+mixin GetUserTeamControllerRef on AutoDisposeFutureProviderRef<Team?> {
   /// The parameter `event` of this provider.
   Event get event;
 }
 
-class _GetUserTeamIdControllerProviderElement
-    extends AutoDisposeFutureProviderElement<String?>
-    with GetUserTeamIdControllerRef {
-  _GetUserTeamIdControllerProviderElement(super.provider);
+class _GetUserTeamControllerProviderElement
+    extends AutoDisposeFutureProviderElement<Team?>
+    with GetUserTeamControllerRef {
+  _GetUserTeamControllerProviderElement(super.provider);
 
   @override
-  Event get event => (origin as GetUserTeamIdControllerProvider).event;
+  Event get event => (origin as GetUserTeamControllerProvider).event;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

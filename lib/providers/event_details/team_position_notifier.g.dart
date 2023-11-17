@@ -7,7 +7,7 @@ part of 'team_position_notifier.dart';
 // **************************************************************************
 
 String _$teamPositionNotifierHash() =>
-    r'575a2283916de8254052cee9b2fc30b01511bce7';
+    r'6167958f13fb6f51d01858b5d5952e87f34a34d4';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -31,7 +31,7 @@ class _SystemHash {
 }
 
 abstract class _$TeamPositionNotifier
-    extends BuildlessNotifier<Map<String, LatLng>> {
+    extends BuildlessAutoDisposeNotifier<Map<String, LatLng>> {
   late final Event event;
 
   Map<String, LatLng> build(
@@ -82,8 +82,8 @@ class TeamPositionNotifierFamily extends Family<Map<String, LatLng>> {
 }
 
 /// See also [TeamPositionNotifier].
-class TeamPositionNotifierProvider
-    extends NotifierProviderImpl<TeamPositionNotifier, Map<String, LatLng>> {
+class TeamPositionNotifierProvider extends AutoDisposeNotifierProviderImpl<
+    TeamPositionNotifier, Map<String, LatLng>> {
   /// See also [TeamPositionNotifier].
   TeamPositionNotifierProvider(
     Event event,
@@ -139,7 +139,7 @@ class TeamPositionNotifierProvider
   }
 
   @override
-  NotifierProviderElement<TeamPositionNotifier, Map<String, LatLng>>
+  AutoDisposeNotifierProviderElement<TeamPositionNotifier, Map<String, LatLng>>
       createElement() {
     return _TeamPositionNotifierProviderElement(this);
   }
@@ -158,14 +158,15 @@ class TeamPositionNotifierProvider
   }
 }
 
-mixin TeamPositionNotifierRef on NotifierProviderRef<Map<String, LatLng>> {
+mixin TeamPositionNotifierRef
+    on AutoDisposeNotifierProviderRef<Map<String, LatLng>> {
   /// The parameter `event` of this provider.
   Event get event;
 }
 
 class _TeamPositionNotifierProviderElement
-    extends NotifierProviderElement<TeamPositionNotifier, Map<String, LatLng>>
-    with TeamPositionNotifierRef {
+    extends AutoDisposeNotifierProviderElement<TeamPositionNotifier,
+        Map<String, LatLng>> with TeamPositionNotifierRef {
   _TeamPositionNotifierProviderElement(super.provider);
 
   @override

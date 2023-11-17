@@ -7,7 +7,7 @@ part of 'firebase_writer_service_provider.dart';
 // **************************************************************************
 
 String _$firebaseWriterServiceHash() =>
-    r'ad119df86eb908c9ad01bab0a5985db0fa69490a';
+    r'21724a03c8cc49815ba01350b46a3978a32ab0ec';
 
 /// See also [firebaseWriterService].
 @ProviderFor(firebaseWriterService)

@@ -35,19 +35,20 @@ final firebaseFirestoreProvider = Provider<FirebaseFirestore>.internal(
 );
 
 typedef FirebaseFirestoreRef = ProviderRef<FirebaseFirestore>;
-String _$firebaseDbHash() => r'0f006708c71128c28becd69e1436450aa1d680f6';
+String _$firebaseRealtimeHash() => r'43d866e84056f1f16c5c02829f958a1074da0e9b';
 
-/// See also [firebaseDb].
-@ProviderFor(firebaseDb)
-final firebaseDbProvider = Provider<DatabaseReference>.internal(
-  firebaseDb,
-  name: r'firebaseDbProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$firebaseDbHash,
+/// See also [firebaseRealtime].
+@ProviderFor(firebaseRealtime)
+final firebaseRealtimeProvider = Provider<DatabaseReference>.internal(
+  firebaseRealtime,
+  name: r'firebaseRealtimeProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$firebaseRealtimeHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef FirebaseDbRef = ProviderRef<DatabaseReference>;
+typedef FirebaseRealtimeRef = ProviderRef<DatabaseReference>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

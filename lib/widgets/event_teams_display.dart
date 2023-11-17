@@ -16,6 +16,10 @@ bool isUserInEvent(String userId, List<Team> teams) {
       .contains(true);
 }
 
+bool isUserHost(String userId, Event event) {
+  return userId == event.hostId;
+}
+
 class EventTeamsDisplay extends ConsumerWidget {
   final Event event;
 
@@ -37,6 +41,7 @@ class EventTeamsDisplay extends ConsumerWidget {
           data: (data) => Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              if (data.isEmpty) const Text("No Teams Created Yet!"),
               Flexible(
                 child: ListView.builder(
                   itemBuilder: (context, index) => TeamCard(
@@ -51,7 +56,8 @@ class EventTeamsDisplay extends ConsumerWidget {
                   physics: const NeverScrollableScrollPhysics(),
                 ),
               ),
-              if (!isUserInEvent(userId, data)) CreateTeamButton(event),
+              if (!isUserInEvent(userId, data) && !isUserHost(userId, event))
+                CreateTeamButton(event),
             ],
           ),
           loading: () => const CircularProgressIndicator(),
@@ -158,7 +164,7 @@ class TeamCard extends ConsumerWidget {
                   team.name,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                if (!isUserInEvent(userId, teams))
+                if (!isUserInEvent(userId, teams) && !isUserHost(userId, event))
                   ElevatedButton(
                     onPressed: () async {
                       final response = await teamRepository.joinTeam(team.id);

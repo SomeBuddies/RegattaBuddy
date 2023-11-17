@@ -7,7 +7,6 @@ import 'package:regatta_buddy/extensions/string_extension.dart';
 import 'package:regatta_buddy/models/event.dart';
 import 'package:regatta_buddy/providers/event_details/team_position_notifier.dart';
 import 'package:regatta_buddy/providers/event_details/team_traces_notifier.dart';
-import 'package:regatta_buddy/providers/event_details/teams_provider.dart';
 import 'package:regatta_buddy/providers/race_events.dart';
 
 import 'package:regatta_buddy/utils/constants.dart' as constants;
@@ -19,8 +18,7 @@ class RaceMap extends ConsumerWidget {
   final MapController mapController;
   final Event event;
 
-  const RaceMap(
-      {super.key, required this.mapController, required this.event});
+  const RaceMap({super.key, required this.mapController, required this.event});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -60,9 +58,18 @@ class RaceMap extends ConsumerWidget {
     );
   }
 
-  List<LatLng> getTrackedTeamTrace(String trackedTeam, Map<String, Map<int, List<LatLng>>> teamTraces, int currentRound) => [if (pointsAreAvailable(trackedTeam, teamTraces, currentRound)) ...teamTraces[trackedTeam]![currentRound]!];
+  List<LatLng> getTrackedTeamTrace(String trackedTeam,
+          Map<String, Map<int, List<LatLng>>> teamTraces, int currentRound) =>
+      [
+        if (pointsAreAvailable(trackedTeam, teamTraces, currentRound))
+          ...teamTraces[trackedTeam]![currentRound]!
+      ];
 
-  bool pointsAreAvailable(String trackedTeam, Map<String, Map<int, List<LatLng>>> teamTraces, int currentRound) => trackedTeam != "" && teamTraces[trackedTeam] != null && teamTraces[trackedTeam]![currentRound] != null;
+  bool pointsAreAvailable(String trackedTeam,
+          Map<String, Map<int, List<LatLng>>> teamTraces, int currentRound) =>
+      trackedTeam != "" &&
+      teamTraces[trackedTeam] != null &&
+      teamTraces[trackedTeam]![currentRound] != null;
 }
 
 class RaceMarkerLayer extends ConsumerWidget {
@@ -72,8 +79,8 @@ class RaceMarkerLayer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
-    Map<String, LatLng> teamPositions = ref.watch(teamPositionNotifierProvider(event));
+    Map<String, LatLng> teamPositions =
+        ref.watch(teamPositionNotifierProvider(event));
     var logger = getLogger("RaceMarkerLayer");
     logger.i("building a RaceMarkerLayer widget");
 
