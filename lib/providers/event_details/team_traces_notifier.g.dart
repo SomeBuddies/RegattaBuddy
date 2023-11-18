@@ -7,7 +7,7 @@ part of 'team_traces_notifier.dart';
 // **************************************************************************
 
 String _$teamTracesNotifierHash() =>
-    r'ca118b023ba607a99626992b2909e26e74a2d474';
+    r'b129bcb1f4a71099923fa50ef3df2d5176cd9481';
 
 /// Copied from Dart SDK
 class _SystemHash {

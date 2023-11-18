@@ -17,7 +17,7 @@ UserRepository userRepository(UserRepositoryRef ref) {
   return UserRepository(ref);
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 TeamRepository teamRepository(TeamRepositoryRef ref, Event event) {
   return TeamRepository(
     ref,

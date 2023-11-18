@@ -19,6 +19,7 @@ class TeamTracesNotifier extends _$TeamTracesNotifier {
     final dbScoresRef = firebaseDb.child('scores').child(eventId);
 
     dbScoresRef.onValue.listen((event) {
+      if (event.snapshot.value == null) return;
       final teamsAndScores = event.snapshot.value as Map<dynamic, dynamic>;
 
       for (final round in List.generate(10, (index) => index)) {

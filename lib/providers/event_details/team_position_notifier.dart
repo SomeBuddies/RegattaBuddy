@@ -31,9 +31,9 @@ class TeamPositionNotifier extends _$TeamPositionNotifier {
               }
               final data = event.snapshot.value as String;
               logger.i("updating $team position: ${data.toString()}");
-              final latlong = data.split(', ');
-              var latitude = double.parse(latlong[0]);
-              var longitude = double.parse(latlong[1]);
+              final latlon = data.split(', ');
+              var latitude = double.parse(latlon[0]);
+              var longitude = double.parse(latlon[1]);
               var newMap = Map.of(state);
               newMap[team.id] = LatLng(latitude, longitude);
               state = newMap;

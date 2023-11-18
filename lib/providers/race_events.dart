@@ -11,11 +11,14 @@ part 'race_events.g.dart';
 @riverpod
 Stream<Map<String, List<int>>> teamScores(TeamScoresRef ref, String eventId) {
   final logger = getLogger("TeamScoresProvider");
+  logger.i("initializing a teamScore provider for $eventId");
   final dbRef = ref.watch(firebaseDbProvider).child('scores').child(eventId);
 
   final controller = StreamController<Map<String, List<int>>>();
 
   final subscription = dbRef.onValue.listen((DatabaseEvent event) {
+    if (event.snapshot.value == null) return;
+    if (event.snapshot.value is! Map) return;
     final data = event.snapshot.value as Map<dynamic, dynamic>;
     logger.i("getting new data from firebase: ${data.toString()}");
 

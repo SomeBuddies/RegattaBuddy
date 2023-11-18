@@ -50,7 +50,6 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
   EventMessageHandler? messageHandler;
   Set<String> trackedTeams = {};
   List<Team> eventTeams = [];
-  bool areTeamsLoaded = false;
   Map<String, int> processedScores = {};
   List<ActionButton> raceActions = [];
   EventStatus eventStatus = EventStatus.notStarted;
@@ -98,7 +97,6 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
 
     teams.when(
       data: (data) => {
-        areTeamsLoaded = true,
         eventTeams = data,
       },
       loading: () => {},
@@ -167,7 +165,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
                 final teamId = processedScores.keys.elementAt(index);
                 Map<String, LatLng> teamPositions =
                     ref.watch(teamPositionNotifierProvider(event));
-                return getTeamStatsTile(teamId, teamPositions[teamId], index);
+                return getTeamStatsTile(teamId, getTeamName(teamId), teamPositions[teamId], index);
               },
               itemCount: processedScores.keys.length,
             );
@@ -225,7 +223,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
       ActionButton(
           iconData: Icons.control_point,
           title: "Add points",
-          onTap: () => addPointsHandler(processedScores.keys.toList())),
+          onTap: () => addPointsHandler(eventTeams.map((e) => e.name).toList())),
       ActionButton(
         iconData: Icons.question_answer,
         title: "Send message",
@@ -262,7 +260,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
     return null;
   }
 
-  ListTile getTeamStatsTile(String teamId, LatLng? teamPosition, int index) {
+  ListTile getTeamStatsTile(String teamId, String teamName, LatLng? teamPosition, int index) {
     return ListTile(
       dense: true,
       leading: Wrap(
@@ -336,7 +334,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
           ),
         ],
       ),
-      title: Text(teamId),
+      title: Text(teamName),
       subtitle: Text('Points: ${processedScores[teamId]}'),
     );
   }
@@ -438,5 +436,9 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
     setState(() {
       activeNotifications.removeWhere((element) => element.uuid == uuid);
     });
+  }
+
+  String getTeamName(String teamId) {
+    return eventTeams.firstWhere((element) => element.id == teamId, orElse: () => const Team(name: "unknown", captainId: "unknown")).name;
   }
 }
