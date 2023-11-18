@@ -18,6 +18,7 @@ import 'package:regatta_buddy/widgets/rb_notification.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../models/event.dart';
+import '../../../services/event_message_handler.dart';
 
 class RaceModeratorPage extends ConsumerStatefulWidget {
   final logger = getLogger('RaceModeratorPage');
@@ -40,6 +41,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
   final MapController mapController = MapController();
   Set<String> trackedTeams = {};
   bool eventStarted = false;
+  EventMessageHandler? messageHandler;
 
   void addNotification(String title) {
     String uuid = const Uuid().v4();
@@ -67,6 +69,13 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
   @override
   void didChangeDependencies() {
     event = ModalRoute.of(context)?.settings.arguments as Event;
+    messageHandler = EventMessageHandler(
+        eventId: event.id,
+        teamId: null,
+        onStartEventMessage: (_) => setState(() {
+              eventStarted = true;
+            }))
+      ..start();
     super.didChangeDependencies();
   }
 

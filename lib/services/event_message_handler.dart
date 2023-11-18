@@ -31,7 +31,9 @@ class EventMessageHandler {
           event.snapshot.value as Map<Object?, Object?>);
       final message = Message.fromJson(messageData);
 
-      if (message.isForAll() || message.isForTeam(teamId)) {
+      if (message.isForAll() ||
+          message.isForTeam(teamId) ||
+          message.isForReferee(teamId)) {
         switch (message.type) {
           case MessageType.startEvent:
             onStartEventMessage?.call(message);

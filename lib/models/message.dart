@@ -37,6 +37,10 @@ class Message {
   bool isForTeam(String? id) {
     return receiverType == MessageReceiverType.team && teamId == id;
   }
+
+  bool isForReferee(String? id) {
+    return receiverType == MessageReceiverType.referee && id == null;
+  }
 }
 
 enum MessageType {
