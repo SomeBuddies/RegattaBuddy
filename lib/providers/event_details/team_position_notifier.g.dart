@@ -7,7 +7,7 @@ part of 'team_position_notifier.dart';
 // **************************************************************************
 
 String _$teamPositionNotifierHash() =>
-    r'70ccaac91aa2436525387a7257621f692a3cb411';
+    r'575a2283916de8254052cee9b2fc30b01511bce7';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -32,10 +32,10 @@ class _SystemHash {
 
 abstract class _$TeamPositionNotifier
     extends BuildlessNotifier<Map<String, LatLng>> {
-  late final String eventId;
+  late final Event event;
 
   Map<String, LatLng> build(
-    String eventId,
+    Event event,
   );
 }
 
@@ -50,10 +50,10 @@ class TeamPositionNotifierFamily extends Family<Map<String, LatLng>> {
 
   /// See also [TeamPositionNotifier].
   TeamPositionNotifierProvider call(
-    String eventId,
+    Event event,
   ) {
     return TeamPositionNotifierProvider(
-      eventId,
+      event,
     );
   }
 
@@ -62,7 +62,7 @@ class TeamPositionNotifierFamily extends Family<Map<String, LatLng>> {
     covariant TeamPositionNotifierProvider provider,
   ) {
     return call(
-      provider.eventId,
+      provider.event,
     );
   }
 
@@ -86,9 +86,9 @@ class TeamPositionNotifierProvider
     extends NotifierProviderImpl<TeamPositionNotifier, Map<String, LatLng>> {
   /// See also [TeamPositionNotifier].
   TeamPositionNotifierProvider(
-    String eventId,
+    Event event,
   ) : this._internal(
-          () => TeamPositionNotifier()..eventId = eventId,
+          () => TeamPositionNotifier()..event = event,
           from: teamPositionNotifierProvider,
           name: r'teamPositionNotifierProvider',
           debugGetCreateSourceHash:
@@ -98,7 +98,7 @@ class TeamPositionNotifierProvider
           dependencies: TeamPositionNotifierFamily._dependencies,
           allTransitiveDependencies:
               TeamPositionNotifierFamily._allTransitiveDependencies,
-          eventId: eventId,
+          event: event,
         );
 
   TeamPositionNotifierProvider._internal(
@@ -108,17 +108,17 @@ class TeamPositionNotifierProvider
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.eventId,
+    required this.event,
   }) : super.internal();
 
-  final String eventId;
+  final Event event;
 
   @override
   Map<String, LatLng> runNotifierBuild(
     covariant TeamPositionNotifier notifier,
   ) {
     return notifier.build(
-      eventId,
+      event,
     );
   }
 
@@ -127,13 +127,13 @@ class TeamPositionNotifierProvider
     return ProviderOverride(
       origin: this,
       override: TeamPositionNotifierProvider._internal(
-        () => create()..eventId = eventId,
+        () => create()..event = event,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        eventId: eventId,
+        event: event,
       ),
     );
   }
@@ -146,21 +146,21 @@ class TeamPositionNotifierProvider
 
   @override
   bool operator ==(Object other) {
-    return other is TeamPositionNotifierProvider && other.eventId == eventId;
+    return other is TeamPositionNotifierProvider && other.event == event;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, eventId.hashCode);
+    hash = _SystemHash.combine(hash, event.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
 
 mixin TeamPositionNotifierRef on NotifierProviderRef<Map<String, LatLng>> {
-  /// The parameter `eventId` of this provider.
-  String get eventId;
+  /// The parameter `event` of this provider.
+  Event get event;
 }
 
 class _TeamPositionNotifierProviderElement
@@ -169,7 +169,7 @@ class _TeamPositionNotifierProviderElement
   _TeamPositionNotifierProviderElement(super.provider);
 
   @override
-  String get eventId => (origin as TeamPositionNotifierProvider).eventId;
+  Event get event => (origin as TeamPositionNotifierProvider).event;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

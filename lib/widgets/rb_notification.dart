@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:regatta_buddy/utils/constants.dart' as constants;
 
+
+enum NotificationSeverity {
+  low,
+  normal,
+  high,
+}
+
 class RBNotification extends StatelessWidget {
   const RBNotification({
     super.key,
     required this.uuid,
     required this.title,
     required this.onClose,
+    this.severity = NotificationSeverity.low,
     this.height = 80,
     this.additionalText = "",
   });
@@ -16,6 +24,7 @@ class RBNotification extends StatelessWidget {
   final String title;
   final String additionalText;
   final Function onClose;
+  final NotificationSeverity severity;
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +34,16 @@ class RBNotification extends StatelessWidget {
       width: containerWidth,
       margin: const EdgeInsets.all(5),
       padding: const EdgeInsets.all(10),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: Colors.white,
+        border: Border.fromBorderSide(
+          BorderSide(
+            color: getBorderColor(),
+            width: 2,
+          ),
+        ),
         borderRadius:
-            BorderRadius.all(Radius.circular(constants.elementsBorderRadius)),
+            const BorderRadius.all(Radius.circular(constants.elementsBorderRadius)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -62,5 +77,16 @@ class RBNotification extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Color getBorderColor() {
+    switch (severity) {
+      case NotificationSeverity.low:
+        return Colors.grey;
+      case NotificationSeverity.normal:
+        return Colors.black;
+      case NotificationSeverity.high:
+        return Colors.deepOrange;
+    }
   }
 }

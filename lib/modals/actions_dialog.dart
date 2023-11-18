@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:regatta_buddy/modals/action_button.dart';
 import 'package:regatta_buddy/modals/add_score_form.dart';
+import 'package:regatta_buddy/models/message.dart';
+import 'package:regatta_buddy/pages/race/messages_list.dart';
 import 'package:regatta_buddy/utils/constants.dart' as constants;
 
 Future<void> showActionsDialog(
@@ -71,6 +73,39 @@ Future<void> showSelectWithInputDialog(BuildContext context,
                   height: 270,
                   child: AddScoreForm(options, eventId, round),
                 ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+Future<void> showMessagesDialog(BuildContext context, List<Message> messages) async {
+  await Future.delayed(const Duration(seconds: 0));
+
+  if (context.mounted) {
+    await showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (BuildContext cxt) {
+        return AlertDialog(
+          title: const Text('Messages'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(constants.elementsBorderRadius),
+          ),
+          content: SizedBox(
+            height: 400,
+            child: SingleChildScrollView(
+
+              child: Column(
+                children: messages.map((message) {
+                  return Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: MessageListTile(message: message),
+                  );
+                }).toList(),
               ),
             ),
           ),

@@ -36,7 +36,7 @@ final userRepositoryProvider = Provider<UserRepository>.internal(
 );
 
 typedef UserRepositoryRef = ProviderRef<UserRepository>;
-String _$teamRepositoryHash() => r'db1b7085f0dbaefd3a5ba965a4c9e2706d838654';
+String _$teamRepositoryHash() => r'a13ecb0a3eff2e90b3c2d61d180adb7b7c91ee70';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -102,7 +102,7 @@ class TeamRepositoryFamily extends Family<TeamRepository> {
 }
 
 /// See also [teamRepository].
-class TeamRepositoryProvider extends AutoDisposeProvider<TeamRepository> {
+class TeamRepositoryProvider extends Provider<TeamRepository> {
   /// See also [teamRepository].
   TeamRepositoryProvider(
     Event event,
@@ -154,7 +154,7 @@ class TeamRepositoryProvider extends AutoDisposeProvider<TeamRepository> {
   }
 
   @override
-  AutoDisposeProviderElement<TeamRepository> createElement() {
+  ProviderElement<TeamRepository> createElement() {
     return _TeamRepositoryProviderElement(this);
   }
 
@@ -172,13 +172,13 @@ class TeamRepositoryProvider extends AutoDisposeProvider<TeamRepository> {
   }
 }
 
-mixin TeamRepositoryRef on AutoDisposeProviderRef<TeamRepository> {
+mixin TeamRepositoryRef on ProviderRef<TeamRepository> {
   /// The parameter `event` of this provider.
   Event get event;
 }
 
-class _TeamRepositoryProviderElement
-    extends AutoDisposeProviderElement<TeamRepository> with TeamRepositoryRef {
+class _TeamRepositoryProviderElement extends ProviderElement<TeamRepository>
+    with TeamRepositoryRef {
   _TeamRepositoryProviderElement(super.provider);
 
   @override
