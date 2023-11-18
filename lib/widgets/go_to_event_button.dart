@@ -1,80 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:regatta_buddy/models/event.dart';
+import 'package:regatta_buddy/pages/race/moderator/race_moderator_page.dart';
+import 'package:regatta_buddy/pages/race/participant/race_page.dart';
+import 'package:regatta_buddy/pages/race/participant/race_page_arguments.dart';
+import 'package:regatta_buddy/providers/firebase_providers.dart';
+import 'package:regatta_buddy/providers/repository_providers.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../models/event.dart';
-import '../models/team.dart';
-import '../pages/race/moderator/race_moderator_page.dart';
-import '../pages/race/participant/race_page.dart';
-import '../pages/race/participant/race_page_arguments.dart';
-import '../providers/event_details/teams_provider.dart';
-import '../providers/user_provider.dart';
+part 'go_to_event_button.g.dart';
 
-class GoToEventButton extends ConsumerStatefulWidget {
-  const GoToEventButton(this.event, {Key? key}) : super(key: key);
-  final Event event;
+@riverpod
+FutureOr<String?> getUserTeamIdController(
+    GetUserTeamIdControllerRef ref, Event event) async {
+  final userId = ref.watch(firebaseAuthProvider).currentUser?.uid;
 
-  @override
-  ConsumerState<GoToEventButton> createState() => _GoToEventButtonState();
+  if (userId == null) return null;
+
+  return await ref
+      .watch(userRepositoryProvider)
+      .getUserTeamId(userId: userId, eventId: event.id);
 }
 
-class _GoToEventButtonState extends ConsumerState<GoToEventButton> {
-  String? teamId;
-  late final Event event;
-  String? userId;
-  List<Team>? teams;
+class GoToEventButton extends HookConsumerWidget {
+  final Event event;
 
-  void onPressed() {
-    teamId == null
-        ? Navigator.pushNamed(context, RaceModeratorPage.route,
-            arguments: event)
-        : Navigator.pushNamed(context, RacePage.route,
-            arguments: RacePageArguments(event, teamId!));
-  }
-
-  bool shouldShowButton() {
-    return isEventActive() && isEventConnectedToUser();
-  }
-
-  bool isEventActive() {
-    DateTime now = DateTime.now();
-    return now.isAfter(event.date.subtract(const Duration(hours: 1))) &&
-        now.isBefore(event.date.add(const Duration(days: 1)));
-  }
-
-  bool isEventConnectedToUser() {
-    if (userId == null) return false;
-    if (event.hostId == userId) return true;
-
-    if (teams == null) return false;
-    var teamsWithUser = teams!.where((team) =>
-        team.members.map((teamMember) => teamMember.id).contains(userId));
-
-    if (teamsWithUser.isNotEmpty) {
-      setState(() {
-        teamId = teamsWithUser.first.id;
-      });
-      return true;
-    }
-    return false;
-  }
+  const GoToEventButton(this.event, {super.key});
 
   @override
-  void initState() {
-    super.initState();
-    event = widget.event;
-  }
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userId = ref.watch(firebaseAuthProvider).currentUser?.uid;
+    final asyncTeamId = ref.watch(getUserTeamIdControllerProvider(event));
 
-  @override
-  Widget build(BuildContext context) {
-    userId = ref
-        .watch(currentUserDataProvider)
-        .whenOrNull(data: (userData) => userData.uid);
-    teams = ref.watch(teamsProvider(event)).whenOrNull(data: (teams) => teams);
-    return shouldShowButton()
-        ? ElevatedButton(
-            onPressed: onPressed,
-            child: const Text("Enter event"),
-          )
-        : const SizedBox.shrink();
+    return switch (asyncTeamId) {
+      AsyncData(value: final teamId)
+          when userId == event.hostId || teamId != null =>
+        ElevatedButton(
+          onPressed: () {
+            if (teamId == null) {
+              Navigator.pushNamed(context, RaceModeratorPage.route,
+                  arguments: event);
+            } else {
+              Navigator.pushNamed(context, RacePage.route,
+                  arguments: RacePageArguments(event, teamId));
+            }
+          },
+          child: const Text("Enter event"),
+        ),
+      _ => const SizedBox.shrink(),
+    };
   }
 }

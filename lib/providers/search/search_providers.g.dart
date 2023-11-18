@@ -156,7 +156,7 @@ class _FirestoreEventsProviderElement
   String? get userId => (origin as FirestoreEventsProvider).userId;
 }
 
-String _$eventListHash() => r'ee09cb2f4d564b0b63644bcbfe79b8633c996a8b';
+String _$eventListHash() => r'a1ee35015cfde7c42b7ead6cd411354bef740a38';
 
 /// See also [eventList].
 @ProviderFor(eventList)
