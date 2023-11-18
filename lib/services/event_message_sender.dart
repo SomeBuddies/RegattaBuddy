@@ -71,7 +71,8 @@ class EventMessageSender {
     Message message = Message(
         type: MessageType.roundStarted,
         receiverType: MessageReceiverType.all,
-        value: round.toString());
+        value: round.toString(),
+        timestamp: timestamp);
 
     newMessage.set(message.toJson());
   }
@@ -85,7 +86,9 @@ class EventMessageSender {
     Message message = Message(
         type: MessageType.roundFinished,
         receiverType: MessageReceiverType.all,
-        value: round.toString());
+        value: round.toString(),
+        timestamp: timestamp
+    );
 
     newMessage.set(message.toJson());
   }

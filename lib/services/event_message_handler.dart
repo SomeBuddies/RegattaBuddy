@@ -10,7 +10,6 @@ class EventMessageHandler {
   final String? teamId;
   void Function(Message)? onEachNewMessage;
   void Function(Message)? onStartEventMessage;
-  // void Function(Message)? onFinishEventMessage;
   void Function(Message)? onDirectedTextMessage;
   void Function(Message)? onPointsAssignedMessage;
   void Function(Message)? onRoundStartedMessage;

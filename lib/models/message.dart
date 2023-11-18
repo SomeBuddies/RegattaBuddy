@@ -53,8 +53,7 @@ enum MessageType {
   directedTextMessage,
   pointsAssignment,
   roundStarted,
-  roundFinished,
-  eventFinished
+  roundFinished
 }
 
 enum MessageReceiverType { all, referee, team }
