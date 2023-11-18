@@ -12,7 +12,8 @@ part 'race_events.g.dart';
 Stream<Map<String, List<int>>> teamScores(TeamScoresRef ref, String eventId) {
   final logger = getLogger("TeamScoresProvider");
   logger.i("initializing a teamScore provider for $eventId");
-  final dbRef = ref.watch(firebaseDbProvider).child('scores').child(eventId);
+  final dbRef =
+      ref.watch(firebaseRealtimeProvider).child('scores').child(eventId);
 
   final controller = StreamController<Map<String, List<int>>>();
 

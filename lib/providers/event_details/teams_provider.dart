@@ -5,7 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'teams_provider.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 FutureOr<List<Team>> teams(TeamsRef ref, Event event) {
   return ref.watch(teamRepositoryProvider(event)).getTeams();
 }

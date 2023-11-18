@@ -8,12 +8,12 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'team_position_notifier.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class TeamPositionNotifier extends _$TeamPositionNotifier {
   @override
   Map<String, LatLng> build(Event event) {
     final teams = ref.watch(teamsProvider(event));
-    final firebaseDb = ref.watch(firebaseDbProvider);
+    final firebaseDb = ref.watch(firebaseRealtimeProvider);
     final logger = getLogger("TeamPositionNotifier");
     logger.i("initializing a TeamPositionNotifier provider");
     teams.when(

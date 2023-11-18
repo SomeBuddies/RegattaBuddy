@@ -16,6 +16,6 @@ FirebaseFirestore firebaseFirestore(FirebaseFirestoreRef ref) {
 }
 
 @Riverpod(keepAlive: true)
-DatabaseReference firebaseDb(FirebaseDbRef ref) {
+DatabaseReference firebaseRealtime(FirebaseRealtimeRef ref) {
   return FirebaseDatabase.instance.ref();
 }

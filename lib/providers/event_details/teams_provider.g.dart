@@ -6,7 +6,7 @@ part of 'teams_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$teamsHash() => r'2ca5fe8b827adfa18a34960109cd0355f0328a4b';
+String _$teamsHash() => r'e2b3e2535512d7480bf1766416ffb1f566a84ec0';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -72,7 +72,7 @@ class TeamsFamily extends Family<AsyncValue<List<Team>>> {
 }
 
 /// See also [teams].
-class TeamsProvider extends FutureProvider<List<Team>> {
+class TeamsProvider extends AutoDisposeFutureProvider<List<Team>> {
   /// See also [teams].
   TeamsProvider(
     Event event,
@@ -123,7 +123,7 @@ class TeamsProvider extends FutureProvider<List<Team>> {
   }
 
   @override
-  FutureProviderElement<List<Team>> createElement() {
+  AutoDisposeFutureProviderElement<List<Team>> createElement() {
     return _TeamsProviderElement(this);
   }
 
@@ -141,12 +141,12 @@ class TeamsProvider extends FutureProvider<List<Team>> {
   }
 }
 
-mixin TeamsRef on FutureProviderRef<List<Team>> {
+mixin TeamsRef on AutoDisposeFutureProviderRef<List<Team>> {
   /// The parameter `event` of this provider.
   Event get event;
 }
 
-class _TeamsProviderElement extends FutureProviderElement<List<Team>>
+class _TeamsProviderElement extends AutoDisposeFutureProviderElement<List<Team>>
     with TeamsRef {
   _TeamsProviderElement(super.provider);
 

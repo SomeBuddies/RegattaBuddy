@@ -7,12 +7,11 @@ import 'package:latlong2/latlong.dart';
 
 part 'team_traces_notifier.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class TeamTracesNotifier extends _$TeamTracesNotifier {
-
   @override
   Map<String, Map<int, List<LatLng>>> build(String eventId) {
-    final firebaseDb = ref.watch(firebaseDbProvider);
+    final firebaseDb = ref.watch(firebaseRealtimeProvider);
     final logger = getLogger("TeamTracesNotifier");
     logger.i("initializing a TeamTracesNotifier provider");
 
@@ -41,7 +40,10 @@ class TeamTracesNotifier extends _$TeamTracesNotifier {
             var longitude = double.parse(latlong[1]);
             var newMap = Map.of(state);
             var teamMap = newMap[team] ?? {};
-            teamMap[round] = [...teamMap[round] ?? [], LatLng(latitude, longitude)];
+            teamMap[round] = [
+              ...teamMap[round] ?? [],
+              LatLng(latitude, longitude)
+            ];
             newMap[team] = teamMap;
             state = newMap;
           });
@@ -50,5 +52,4 @@ class TeamTracesNotifier extends _$TeamTracesNotifier {
     });
     return Map.unmodifiable({});
   }
-
 }

@@ -3,27 +3,26 @@ import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:intl/intl.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:uuid/uuid.dart';
 
 import 'package:regatta_buddy/modals/action_button.dart';
 import 'package:regatta_buddy/modals/actions_dialog.dart' as actions_dialog;
-import 'package:regatta_buddy/models/assigned_points_in_round.dart';
+import 'package:regatta_buddy/models/event.dart';
+import 'package:regatta_buddy/models/message.dart';
+import 'package:regatta_buddy/models/team.dart';
+import 'package:regatta_buddy/pages/race/messages_list.dart';
 import 'package:regatta_buddy/pages/race/participant/race_page_arguments.dart';
 import 'package:regatta_buddy/pages/race/participant/race_statistics.dart';
-import 'package:regatta_buddy/pages/race/messages_list.dart';
+import 'package:regatta_buddy/pages/regatta_details.dart';
 import 'package:regatta_buddy/services/event_message_handler.dart';
+import 'package:regatta_buddy/services/locator.dart';
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/widgets/custom_error.dart';
 import 'package:regatta_buddy/widgets/rb_notification.dart';
-import 'package:uuid/uuid.dart';
 
-import '../../../models/event.dart';
-import '../../../models/message.dart';
-import '../../../services/locator.dart';
-import '../../regatta_details.dart';
-
-class RacePage extends StatefulWidget {
+class RacePage extends ConsumerStatefulWidget {
   final logger = getLogger('RacePage');
 
   RacePage({super.key});
@@ -31,14 +30,14 @@ class RacePage extends StatefulWidget {
   static const String route = '/race';
 
   @override
-  State<RacePage> createState() => _RacePageState();
+  ConsumerState<RacePage> createState() => _RacePageState();
 }
 
-class _RacePageState extends State<RacePage> {
+class _RacePageState extends ConsumerState<RacePage> {
   LocationSender? locator;
   EventMessageHandler? messageHandler;
-  late Event event;
-  late String teamId;
+  late final Event event;
+  late final Team team;
   late StreamSubscription<Position> subscription;
   final int _notificationTimeInSeconds = 10;
   bool isError = false;
@@ -112,11 +111,11 @@ class _RacePageState extends State<RacePage> {
     final args =
         ModalRoute.of(context)!.settings.arguments as RacePageArguments;
     event = args.event;
-    teamId = args.teamId;
+    team = args.team;
 
     messageHandler = EventMessageHandler(
         eventId: event.id,
-        teamId: teamId,
+        teamId: team.id,
         onEachNewMessage: onEachNewMessage,
         onStartEventMessage: onStartEventMessage,
         onDirectedTextMessage: onDirectedTextMessage,
@@ -175,7 +174,7 @@ class _RacePageState extends State<RacePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (eventStarted) locator?.start(event.id, teamId);
+    if (eventStarted) locator?.start(event.id, team.id);
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(

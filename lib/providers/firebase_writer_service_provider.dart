@@ -7,7 +7,7 @@ part 'firebase_writer_service_provider.g.dart';
 
 @Riverpod(keepAlive: true)
 FirebaseWriterService firebaseWriterService(FirebaseWriterServiceRef ref) {
-  final firebaseDatabase = ref.watch(firebaseDbProvider);
+  final firebaseDatabase = ref.watch(firebaseRealtimeProvider);
 
   return FirebaseWriterService(firebaseDatabase);
 }

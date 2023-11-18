@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart' as realtime_db;
 import 'package:fpdart/fpdart.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:regatta_buddy/extensions/transaction_extension.dart';
@@ -18,6 +19,8 @@ class TeamRepository {
   TeamRepository(this._ref, {required this.event});
 
   FirebaseFirestore get _firestore => _ref.read(firebaseFirestoreProvider);
+  realtime_db.DatabaseReference get _realtime =>
+      _ref.read(firebaseRealtimeProvider);
   UserRepository get _userRepo => _ref.read(userRepositoryProvider);
 
   CollectionReference<Map<String, dynamic>> get colRef =>
@@ -220,5 +223,16 @@ class TeamRepository {
       );
       return right(unit);
     });
+  }
+
+  // todo: move out of this repo
+  Future<void> initRealtime() async {
+    final teams = await getTeams();
+
+    for (Team team in teams) {
+      await _realtime
+          .child("scores/${event.id}/${team.id}/0")
+          .set({"score": 0});
+    }
   }
 }

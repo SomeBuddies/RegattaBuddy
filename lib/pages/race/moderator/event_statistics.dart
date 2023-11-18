@@ -74,7 +74,7 @@ class _EventStatisticsState extends ConsumerState<EventStatistics> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   "Time",
                   style: TextStyle(
                     color: Colors.black,
@@ -84,7 +84,7 @@ class _EventStatisticsState extends ConsumerState<EventStatistics> {
                 ),
                 Text(
                   widget.timer.formattedDuration.toString(),
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.black,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,

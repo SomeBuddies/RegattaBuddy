@@ -18,17 +18,17 @@ class EventMessageHandler {
 
   StreamSubscription<DatabaseEvent>? messageStream;
 
-  EventMessageHandler(
-      {required this.eventId,
-        this.teamId,
-        this.onEachNewMessage,
-        this.onStartEventMessage,
-        this.onDirectedTextMessage,
-        this.onPointsAssignedMessage,
-        this.onRoundStartedMessage,
-        this.onRoundFinishedMessage,
-        this.onEndEventMessage
-      });
+  EventMessageHandler({
+    required this.eventId,
+    this.teamId,
+    this.onEachNewMessage,
+    this.onStartEventMessage,
+    this.onDirectedTextMessage,
+    this.onPointsAssignedMessage,
+    this.onRoundStartedMessage,
+    this.onRoundFinishedMessage,
+    this.onEndEventMessage,
+  });
 
   void start() {
     final databaseReference = FirebaseDatabase.instance.ref();
