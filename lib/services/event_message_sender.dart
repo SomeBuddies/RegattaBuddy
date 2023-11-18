@@ -10,8 +10,22 @@ class EventMessageSender {
 
     Message message = Message(
         type: MessageType.startEvent,
-        receiverType: MessageReceiverType.all
-    );
+        receiverType: MessageReceiverType.all,
+        timestamp: timestamp);
+
+    newMessage.set(message.toJson());
+  }
+
+  static void endEvent(String eventId) {
+    String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+    final databaseReference = FirebaseDatabase.instance.ref();
+    DatabaseReference newMessage =
+        databaseReference.child('messages').child(eventId).child(timestamp);
+
+    Message message = Message(
+        type: MessageType.endEvent,
+        receiverType: MessageReceiverType.all,
+        timestamp: timestamp);
 
     newMessage.set(message.toJson());
   }
@@ -20,13 +34,14 @@ class EventMessageSender {
     String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
     final databaseReference = FirebaseDatabase.instance.ref();
     DatabaseReference newMessage =
-    databaseReference.child('messages').child(eventId).child(timestamp);
+        databaseReference.child('messages').child(eventId).child(timestamp);
 
     Message message = Message(
         type: MessageType.pointsAssignment,
         receiverType: MessageReceiverType.team,
         teamId: teamId,
-        value: roundPoints);
+        value: roundPoints,
+        timestamp: timestamp);
 
     newMessage.set(message.toJson());
   }
@@ -41,8 +56,8 @@ class EventMessageSender {
         type: MessageType.directedTextMessage,
         receiverType: MessageReceiverType.team,
         teamId: teamId,
-        value: text
-    );
+        value: text,
+        timestamp: timestamp);
 
     newMessage.set(message.toJson());
   }

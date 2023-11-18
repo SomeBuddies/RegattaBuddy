@@ -8,7 +8,6 @@ import 'package:regatta_buddy/pages/event_creation/event_creation.dart';
 import 'package:regatta_buddy/pages/home.dart';
 import 'package:regatta_buddy/pages/regatta_details.dart';
 import 'package:regatta_buddy/pages/search_page.dart';
-import 'package:regatta_buddy/pages/user_regattas.dart';
 import 'package:regatta_buddy/providers/auth/auth_state_notifier.dart';
 
 import '../firebase_mock.dart';
@@ -36,9 +35,6 @@ void main() {
         ),
     EventCreationPage.route: (_) => const Scaffold(
           body: Text("mockedCreatePage"),
-        ),
-    UserRegattasPage.route: (_) => const Scaffold(
-          body: Text("mockedUserRegattasPage"),
         ),
     RegattaDetailsPage.route: (_) => const Scaffold(
           body: Text("mockedRegattaDetailsPage"),

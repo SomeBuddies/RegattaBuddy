@@ -17,6 +17,9 @@ import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/widgets/rb_notification.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../models/event.dart';
+import '../../../services/event_message_handler.dart';
+
 class RaceModeratorPage extends ConsumerStatefulWidget {
   final logger = getLogger('RaceModeratorPage');
 
@@ -30,13 +33,15 @@ class RaceModeratorPage extends ConsumerStatefulWidget {
 
 class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
   final int _notificationTimeInSeconds = 10;
-  late final String eventId;
+  late Event event;
   List<RBNotification> activeNotifications = [];
   List<ActionButton> raceActions = [];
   int round = 1;
   Map<String, int> processedScores = {};
   final MapController mapController = MapController();
   Set<String> trackedTeams = {};
+  bool eventStarted = false;
+  EventMessageHandler? messageHandler;
 
   void addNotification(String title) {
     String uuid = const Uuid().v4();
@@ -63,22 +68,26 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
 
   @override
   void didChangeDependencies() {
-    eventId = ModalRoute.of(context)?.settings.arguments as String;
+    event = ModalRoute.of(context)?.settings.arguments as Event;
+    messageHandler = EventMessageHandler(
+        eventId: event.id,
+        teamId: null,
+        onStartEventMessage: (_) => setState(() {
+              eventStarted = true;
+            }))
+      ..start();
     super.didChangeDependencies();
   }
 
   addPointsHandler(List<String> teams) async {
-    await showSelectWithInputDialog(context, teams, eventId, round);
+    await showSelectWithInputDialog(context, teams, event.id, round);
   }
 
   @override
   Widget build(BuildContext context) {
-    final teamScores = ref.watch(teamScoresProvider(eventId));
+    final teamScores = ref.watch(teamScoresProvider(event.id));
     Map<String, LatLng> teamPositions =
-        ref.watch(teamPositionNotifierProvider(eventId));
-    // todo do something with below
-    // ignore: unused_local_variable
-    final currentRound = ref.watch(currentRoundProvider(eventId));
+        ref.watch(teamPositionNotifierProvider(event.id));
 
     return Scaffold(
       appBar: const AppHeader(),
@@ -88,12 +97,12 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
             child: Stack(children: [
               Column(
                 children: [
-                  EventStatistics(eventId: eventId),
+                  EventStatistics(eventId: event.id),
                   SizedBox(
                     height: 300,
                     child: RaceMap(
                       mapController: mapController,
-                      eventId: eventId,
+                      eventId: event.id,
                     ),
                   ),
                   Expanded(
@@ -140,13 +149,25 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
       floatingActionButton: FloatingActionButton(
         elevation: 10,
         onPressed: () => actions_dialog.showActionsDialog(context, [
-          ActionButton(
-            iconData: Icons.start,
-            title: "Start event",
-            onTap: () {
-              EventMessageSender.startEvent(eventId);
-            },
-          ),
+          eventStarted
+              ? ActionButton(
+                  iconData: Icons.cancel_outlined,
+                  title: "End event",
+                  onTap: () {
+                    EventMessageSender.endEvent(event.id);
+                    Navigator.of(context).pop();
+                  },
+                )
+              : ActionButton(
+                  iconData: Icons.start,
+                  title: "Start event",
+                  onTap: () {
+                    EventMessageSender.startEvent(event.id);
+                    setState(() {
+                      eventStarted = true;
+                    });
+                  },
+                ),
           ActionButton(
               iconData: Icons.control_point,
               title: "Add points",
@@ -154,8 +175,10 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
           ActionButton(
             iconData: Icons.question_answer,
             title: "Send message",
-            onTap: () => {
-              EventMessageSender.sendDirectedTextMessage(eventId, 'teamX', "this is just a test message | :)"),
+            onTap: () =>
+            {
+              EventMessageSender.sendDirectedTextMessage(
+                  event.id, 'teamX', "this is just a test message | :)"),
               addNotification("Message was sent")
             },
           ),

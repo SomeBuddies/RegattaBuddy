@@ -1,6 +1,8 @@
+import '../../../models/event.dart';
+
 class RacePageArguments {
-  final String eventId;
+  final Event event;
   final String teamId;
 
-  const RacePageArguments(this.eventId, this.teamId);
+  const RacePageArguments(this.event, this.teamId);
 }

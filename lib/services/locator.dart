@@ -8,7 +8,7 @@ import '../utils/constants.dart';
 class LocationSender {
   void Function(String) setErrorMessage;
   StreamSubscription<Position>? positionStream;
-  bool isOn = false;
+  bool _isOn = false;
 
   LocationSender(this.setErrorMessage);
 
@@ -39,37 +39,39 @@ class LocationSender {
   }
 
   void start(String eventId, String teamId) async {
-    await _ensurePermissions().catchError((error) {
-      setErrorMessage(error);
-      return false;
-    });
-    isOn = true;
-    positionStream =
-        Geolocator.getPositionStream(locationSettings: kLocationSettings)
-            .listen((Position? position) {
-      if (position != null) {
-        DatabaseReference teamReference = FirebaseDatabase.instance
-            .ref()
-            .child('traces')
-            .child(eventId)
-            .child(teamId);
+    if (!_isOn) {
+      await _ensurePermissions().catchError((error) {
+        setErrorMessage(error);
+        return false;
+      });
+      _isOn = true;
+      positionStream =
+          Geolocator.getPositionStream(locationSettings: kLocationSettings)
+              .listen((Position? position) {
+        if (position != null) {
+          DatabaseReference teamReference = FirebaseDatabase.instance
+              .ref()
+              .child('traces')
+              .child(eventId)
+              .child(teamId);
 
-        teamReference.update({
-          'lastUpdate': position.timestamp.toString(),
-          'lastPosition':
-              '${position.latitude.toString()}, ${position.longitude.toString()}'
-        });
-        // todo remove round mock when message nextRound created
-        teamReference.child('positions').child('rounds').child('0').update({
-          position.timestamp!.millisecondsSinceEpoch.toString():
-              '${position.latitude.toString()}, ${position.longitude.toString()}',
-        });
-      }
-    });
+          teamReference.update({
+            'lastUpdate': position.timestamp.toString(),
+            'lastPosition':
+                '${position.latitude.toString()}, ${position.longitude.toString()}'
+          });
+          // todo remove round mock when message nextRound created
+          teamReference.child('positions').child('rounds').child('0').update({
+            position.timestamp!.millisecondsSinceEpoch.toString():
+                '${position.latitude.toString()}, ${position.longitude.toString()}',
+          });
+        }
+      });
+    }
   }
 
   void stop() {
     if (positionStream != null) positionStream!.cancel();
-    isOn = false;
+    _isOn = false;
   }
 }

@@ -14,7 +14,6 @@ import 'package:regatta_buddy/pages/race/participant/race_page.dart';
 import 'package:regatta_buddy/pages/regatta_details.dart';
 import 'package:regatta_buddy/pages/register_page.dart';
 import 'package:regatta_buddy/pages/search_page.dart';
-import 'package:regatta_buddy/pages/user_regattas.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,7 +45,6 @@ class RegattaBuddy extends ConsumerWidget {
       home: const HomePage(),
       routes: {
         RegattaDetailsPage.route: (context) => const RegattaDetailsPage(),
-        UserRegattasPage.route: (context) => const UserRegattasPage(),
         SearchPage.route: (context) => const SearchPage(),
         EventCreationPage.route: (context) => EventCreationPage(),
         RacePage.route: (context) => RacePage(),
