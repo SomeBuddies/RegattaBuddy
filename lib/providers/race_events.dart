@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:regatta_buddy/enums/round_status.dart';
 import 'package:regatta_buddy/providers/firebase_providers.dart';
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
@@ -94,4 +93,3 @@ class CurrentlyTrackedTeams extends _$CurrentlyTrackedTeams {
     state = {};
   }
 }
-

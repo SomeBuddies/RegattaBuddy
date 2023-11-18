@@ -70,6 +70,23 @@ class UserRepository {
     }
   }
 
+  Future<String?> getUserTeamId({
+    required String userId,
+    required String eventId,
+    Transaction? transaction,
+  }) async {
+    final docRef =
+        _firestore.collection('users/$userId/joinedEvents').doc(eventId);
+
+    if (transaction == null) {
+      final doc = await docRef.get();
+      return doc.data()?["teamId"];
+    } else {
+      final doc = await transaction.get(docRef);
+      return doc.data()?["teamId"];
+    }
+  }
+
   /// Adds an event to the list of joined events along with information,
   /// which team the user is on.
   void addToJoinedEvents({
