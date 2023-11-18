@@ -7,7 +7,6 @@ import 'package:regatta_buddy/pages/event_creation/event_form.dart';
 import 'package:regatta_buddy/pages/event_creation/event_route.dart';
 import 'package:regatta_buddy/pages/home.dart';
 import 'package:regatta_buddy/providers/repository_providers.dart';
-import 'package:regatta_buddy/providers/user_provider.dart';
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/models/complex_marker.dart';
@@ -41,8 +40,17 @@ class _EventCreationPageState extends ConsumerState<EventCreationPage> {
     super.initState();
     pages = [
       () => EventFormSubPage(
-          _formKey, changeName, changeDescription, changeDate, changeTime),
-      () => EventRouteSubPage(markers, addMarker, deleteMarker),
+            _formKey,
+            changeName,
+            changeDescription,
+            changeDate,
+            changeTime,
+          ),
+      () => EventRouteSubPage(
+            markers,
+            addMarker,
+            deleteMarker,
+          ),
     ];
   }
 
@@ -98,26 +106,27 @@ class _EventCreationPageState extends ConsumerState<EventCreationPage> {
   }
 
   void finishEventCreation() async {
-    ref.read(currentUserDataProvider).whenOrNull(
-          data: (data) {
-            Event event = Event(
-              hostId: data.uid,
-              route: markers.map((e) => e.marker.point).toList(),
-              location: markers[0].marker.point,
-              date: eventDate!.withTimeOfDay(eventTime!).toUtc(),
-              name: eventName!,
-              description: eventDescription!,
-            );
-            widget.logger.i(
-              "Event creation finished, saving following event to firebase: ${event.toJson()}",
-            );
-
-            ref.read(eventRepositoryProvider).addEvent(event);
-
-            Navigator.pushReplacementNamed(context, HomePage.route);
-          },
-          error: (error, stackTrace) => throw error as Exception,
+    final user = await ref.read(userRepositoryProvider).getCurrentUserData();
+    user.fold(
+      (error) => throw Exception(error),
+      (user) {
+        Event event = Event(
+          hostId: user.uid,
+          route: markers.map((e) => e.marker.point).toList(),
+          location: markers[0].marker.point,
+          date: eventDate!.withTimeOfDay(eventTime!).toUtc(),
+          name: eventName!,
+          description: eventDescription!,
         );
+        widget.logger.i(
+          "Event creation finished, saving following event to firebase: ${event.toJson()}",
+        );
+
+        ref.read(eventRepositoryProvider).addEvent(event);
+
+        Navigator.pushReplacementNamed(context, HomePage.route);
+      },
+    );
   }
 
   @override

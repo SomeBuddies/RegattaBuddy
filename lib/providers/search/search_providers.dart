@@ -1,6 +1,6 @@
 import 'package:regatta_buddy/models/event.dart';
+import 'package:regatta_buddy/providers/firebase_providers.dart';
 import 'package:regatta_buddy/providers/repository_providers.dart';
-import 'package:regatta_buddy/providers/user_provider.dart';
 import 'package:regatta_buddy/services/event_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:regatta_buddy/enums/sort_enums.dart';
@@ -61,12 +61,13 @@ Future<List<Event>> firestoreEvents(FirestoreEventsRef ref,
 }
 
 @riverpod
-Future<List<Event>> eventList(EventListRef ref,
-    {String? query, bool? isUserView}) async {
+Future<List<Event>> eventList(
+  EventListRef ref, {
+  String? query,
+  bool? isUserView,
+}) async {
   final String? userId = isUserView == true
-      ? ref.read(currentUserDataProvider).whenOrNull(
-            data: (data) => data.uid,
-          )
+      ? ref.watch(firebaseAuthProvider).currentUser?.uid
       : null;
   final events =
       await ref.watch(firestoreEventsProvider(userId: userId).future);
