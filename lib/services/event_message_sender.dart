@@ -9,9 +9,19 @@ class EventMessageSender {
         databaseReference.child('messages').child(eventId).child(timestamp);
 
     Message message = Message(
-        type: MessageType.startEvent,
-        receiverType: MessageReceiverType.all
-    );
+        type: MessageType.startEvent, receiverType: MessageReceiverType.all);
+
+    newMessage.set(message.toJson());
+  }
+
+  static void endEvent(String eventId) {
+    String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+    final databaseReference = FirebaseDatabase.instance.ref();
+    DatabaseReference newMessage =
+        databaseReference.child('messages').child(eventId).child(timestamp);
+
+    Message message = Message(
+        type: MessageType.endEvent, receiverType: MessageReceiverType.all);
 
     newMessage.set(message.toJson());
   }
@@ -20,7 +30,7 @@ class EventMessageSender {
     String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
     final databaseReference = FirebaseDatabase.instance.ref();
     DatabaseReference newMessage =
-    databaseReference.child('messages').child(eventId).child(timestamp);
+        databaseReference.child('messages').child(eventId).child(timestamp);
 
     Message message = Message(
         type: MessageType.pointsAssignment,

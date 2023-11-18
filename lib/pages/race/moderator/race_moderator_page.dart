@@ -17,6 +17,9 @@ import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/widgets/rb_notification.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../models/event.dart';
+import '../../regatta_details.dart';
+
 class RaceModeratorPage extends ConsumerStatefulWidget {
   final logger = getLogger('RaceModeratorPage');
 
@@ -37,6 +40,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
   Map<String, int> processedScores = {};
   final MapController mapController = MapController();
   Set<String> trackedTeams = {};
+  bool eventStarted = false;
 
   void addNotification(String title) {
     String uuid = const Uuid().v4();
@@ -76,9 +80,6 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
     final teamScores = ref.watch(teamScoresProvider(eventId));
     Map<String, LatLng> teamPositions =
         ref.watch(teamPositionNotifierProvider(eventId));
-    // todo do something with below
-    // ignore: unused_local_variable
-    final currentRound = ref.watch(currentRoundProvider(eventId));
 
     return Scaffold(
       appBar: const AppHeader(),
@@ -140,13 +141,29 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
       floatingActionButton: FloatingActionButton(
         elevation: 10,
         onPressed: () => actions_dialog.showActionsDialog(context, [
-          ActionButton(
-            iconData: Icons.start,
-            title: "Start event",
-            onTap: () {
-              EventMessageSender.startEvent(eventId);
-            },
-          ),
+          eventStarted
+              ? ActionButton(
+                  iconData: Icons.cancel_outlined,
+                  title: "End event",
+                  onTap: () {
+                    EventMessageSender.startEvent(eventId);
+                    Navigator.of(context).pushNamed(
+                      RegattaDetailsPage.route,
+                      arguments:
+                          eventId as Event, // invalid value just for a moment
+                    );
+                  },
+                )
+              : ActionButton(
+                  iconData: Icons.start,
+                  title: "Start event",
+                  onTap: () {
+                    EventMessageSender.startEvent(eventId);
+                    setState(() {
+                      eventStarted = true;
+                    });
+                  },
+                ),
           ActionButton(
               iconData: Icons.control_point,
               title: "Add points",
@@ -154,8 +171,10 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
           ActionButton(
             iconData: Icons.question_answer,
             title: "Send message",
-            onTap: () => {
-              EventMessageSender.sendDirectedTextMessage(eventId, 'teamX', "this is just a test message | :)"),
+            onTap: () =>
+            {
+              EventMessageSender.sendDirectedTextMessage(
+                  eventId, 'teamX', "this is just a test message | :)"),
               addNotification("Message was sent")
             },
           ),
