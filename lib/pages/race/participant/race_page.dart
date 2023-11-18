@@ -191,10 +191,11 @@ class _RacePageState extends State<RacePage> {
 }
 
 class MessageListTile extends StatelessWidget {
-  Message message;
+  final Message message;
 
-  MessageListTile({
-    super.key, required this.message,
+  const MessageListTile({
+    super.key,
+    required this.message,
   });
 
   @override
@@ -202,7 +203,8 @@ class MessageListTile extends StatelessWidget {
     String formattedDate = "";
 
     if (message.timestamp != null) {
-      final date = DateTime.fromMillisecondsSinceEpoch(int.parse(message.timestamp!));
+      final date =
+          DateTime.fromMillisecondsSinceEpoch(int.parse(message.timestamp!));
       formattedDate = DateFormat('HH:mm').format(date);
     }
 
@@ -224,14 +226,23 @@ class MessageListTile extends StatelessWidget {
           ),
         );
       case MessageType.pointsAssignment:
-
-        AssignedPointsInRound assignment = AssignedPointsInRound.fromString(message.value!);
+        AssignedPointsInRound assignment =
+            AssignedPointsInRound.fromString(message.value!);
 
         return ListTile(
           leading: const Icon(Icons.score),
-          title: Text('${assignment.points} points assigned in ${assignment.round} round to ${message.teamId}'),
+          title: Text(
+              '${assignment.points} points assigned in ${assignment.round} round to ${message.teamId}'),
           subtitle: Text(
             'Moderator at $formattedDate',
+          ),
+        );
+      case MessageType.endEvent:
+        return ListTile(
+          leading: const Icon(Icons.message),
+          title: Text(message.value!),
+          subtitle: Text(
+            '$formattedDate : ${message.value}',
           ),
         );
     }

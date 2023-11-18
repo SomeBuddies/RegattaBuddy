@@ -46,6 +46,7 @@ class Message {
 
 enum MessageType {
   startEvent,
+  endEvent,
   directedTextMessage,
   pointsAssignment,
 }

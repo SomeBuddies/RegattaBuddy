@@ -9,11 +9,16 @@ class EventMessageHandler {
   void Function(Message)? onStartEventMessage;
   void Function(Message)? onDirectedTextMessage;
   void Function(Message)? onPointsAssignedMessage;
+  void Function(Message)? onEndEventMessage;
 
   StreamSubscription<DatabaseEvent>? messageStream;
 
   EventMessageHandler(
-      {required this.eventId, this.teamId, this.onStartEventMessage, this.onDirectedTextMessage, this.onPointsAssignedMessage});
+      {required this.eventId,
+      this.teamId,
+      this.onStartEventMessage,
+      this.onDirectedTextMessage,
+      this.onPointsAssignedMessage});
 
   void start() {
     final databaseReference = FirebaseDatabase.instance.ref();
@@ -29,15 +34,14 @@ class EventMessageHandler {
         switch (message.type) {
           case MessageType.startEvent:
             onStartEventMessage?.call(message);
-            break;
           case MessageType.directedTextMessage:
             if (message.isForTeam(teamId)) {
               onDirectedTextMessage?.call(message);
             }
-            break;
           case MessageType.pointsAssignment:
             onPointsAssignedMessage?.call(message);
-            break;
+          case MessageType.endEvent:
+            onEndEventMessage?.call(message);
         }
       }
     });
