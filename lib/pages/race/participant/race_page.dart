@@ -116,12 +116,19 @@ class _RacePageState extends State<RacePage> {
     messageHandler = EventMessageHandler(
         eventId: event.id,
         teamId: teamId,
+        onEachNewMessage: onEachNewMessage,
         onStartEventMessage: onStartEventMessage,
         onDirectedTextMessage: onDirectedTextMessage,
         onPointsAssignedMessage: onPointsAssignedMessage,
         onEndEventMessage: onEndEventMessage)
       ..start();
     super.didChangeDependencies();
+  }
+
+  void onEachNewMessage(Message message) {
+    setState(() {
+      if (!messages.contains(message)) messages.add(message);
+    });
   }
 
   void onStartEventMessage(Message message) {
@@ -247,6 +254,12 @@ class MessageListTile extends StatelessWidget {
           subtitle: Text(
             'Moderator at $formattedDate',
           ),
+        );
+      default:
+        return ListTile(
+          leading: const Icon(Icons.error),
+          title: const Text('Unknown message type'),
+          subtitle: Text(formattedDate),
         );
     }
   }

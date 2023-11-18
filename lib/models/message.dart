@@ -41,6 +41,10 @@ class Message {
   bool isForReferee(String? id) {
     return receiverType == MessageReceiverType.referee && id == null;
   }
+
+  get convertedTimestamp {
+    return DateTime.fromMillisecondsSinceEpoch(int.parse(timestamp));
+  }
 }
 
 enum MessageType {
@@ -48,6 +52,15 @@ enum MessageType {
   endEvent,
   directedTextMessage,
   pointsAssignment,
+  roundStarted,
+  roundFinished,
+  eventFinished
 }
 
 enum MessageReceiverType { all, referee, team }
+
+// contract:
+// type: roundStarted
+// receiverType: all
+// value: "${roundNumber},${datetime}"
+

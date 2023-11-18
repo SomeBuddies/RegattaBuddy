@@ -61,4 +61,32 @@ class EventMessageSender {
 
     newMessage.set(message.toJson());
   }
+
+  static void startRound(String eventId, int round) {
+    String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+    final databaseReference = FirebaseDatabase.instance.ref();
+    DatabaseReference newMessage =
+    databaseReference.child('messages').child(eventId).child(timestamp);
+
+    Message message = Message(
+        type: MessageType.roundStarted,
+        receiverType: MessageReceiverType.all,
+        value: round.toString());
+
+    newMessage.set(message.toJson());
+  }
+
+  static void finishRound(String eventId, int round) {
+    String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+    final databaseReference = FirebaseDatabase.instance.ref();
+    DatabaseReference newMessage =
+    databaseReference.child('messages').child(eventId).child(timestamp);
+
+    Message message = Message(
+        type: MessageType.roundFinished,
+        receiverType: MessageReceiverType.all,
+        value: round.toString());
+
+    newMessage.set(message.toJson());
+  }
 }

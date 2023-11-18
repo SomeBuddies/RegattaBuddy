@@ -1,22 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'package:regatta_buddy/enums/round_status.dart';
 import 'package:regatta_buddy/providers/race_events.dart';
 import 'package:regatta_buddy/utils/constants.dart' as constants;
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
+import 'package:regatta_buddy/utils/timer.dart';
 
-class EventStatistics extends ConsumerWidget {
+class EventStatistics extends ConsumerStatefulWidget {
   final String eventId;
+  final Timer timer;
 
-  EventStatistics({super.key, required this.eventId});
+  const EventStatistics({Key? key, required this.eventId, required this.timer})
+      : super(key: key);
 
+  @override
+  ConsumerState<EventStatistics> createState() => _EventStatisticsState();
+}
+
+class _EventStatisticsState extends ConsumerState<EventStatistics> {
+  Duration time = Duration.zero;
   final logger = getLogger("EventStatistics");
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final currentRound = ref.watch(currentRoundProvider(eventId));
-    final currentRoundStatus = ref.watch(currentRoundStatusProvider);
+  void initState() {
+    widget.timer.setAdditionalChangeCallback(onTimeChange);
+    super.initState();
+  }
+
+  void onTimeChange(Duration duration) {
+    setState(() {
+      time = duration;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final currentRound = ref.watch(currentRoundProvider(widget.eventId));
 
     return Container(
       decoration: const BoxDecoration(
@@ -52,7 +71,7 @@ class EventStatistics extends ConsumerWidget {
                 ),
               ],
             ),
-            const Column(
+            Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
@@ -64,7 +83,7 @@ class EventStatistics extends ConsumerWidget {
                   ),
                 ),
                 Text(
-                  "0:00:00",
+                  widget.timer.formattedDuration.toString(),
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20,
@@ -88,7 +107,7 @@ class EventStatistics extends ConsumerWidget {
                       ),
                     ),
                     Text(
-                      "$currentRound / 5",
+                      "$currentRound",
                       style: const TextStyle(
                         color: Colors.black,
                         fontSize: 20,
@@ -97,43 +116,11 @@ class EventStatistics extends ConsumerWidget {
                     ),
                   ],
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [getActionForRound(ref, currentRoundStatus)],
-                ),
               ],
             ),
           ],
         ),
       ),
-    );
-  }
-
-  GestureDetector getActionForRound(WidgetRef ref, RoundStatus roundStatus) {
-    if (roundStatus == RoundStatus.started) {
-      return GestureDetector(
-        child: const Icon(
-          Icons.pause,
-          size: 40,
-        ),
-        onTap: () {
-          ref.read(currentRoundStatusProvider.notifier).finish();
-          logger.i("Round finished");
-          // TODO send event to server
-        },
-      );
-    }
-    return GestureDetector(
-      child: const Icon(
-        Icons.play_arrow,
-        size: 40,
-      ),
-      onTap: () {
-        ref.read(currentRoundProvider(eventId).notifier).increment();
-        ref.read(currentRoundStatusProvider.notifier).start();
-        logger.i("Round started");
-        // TODO send event to server
-      },
     );
   }
 }

@@ -2,17 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:regatta_buddy/enums/event_status.dart';
+import 'package:regatta_buddy/enums/round_status.dart';
 import 'package:regatta_buddy/extensions/string_extension.dart';
 import 'package:regatta_buddy/modals/action_button.dart';
 import 'package:regatta_buddy/modals/actions_dialog.dart' as actions_dialog;
 import 'package:regatta_buddy/modals/actions_dialog.dart';
+import 'package:regatta_buddy/models/message.dart';
 import 'package:regatta_buddy/pages/race/moderator/event_statistics.dart';
 import 'package:regatta_buddy/pages/race/moderator/race_map.dart';
 import 'package:regatta_buddy/providers/event_details/team_position_notifier.dart';
 import 'package:regatta_buddy/providers/race_events.dart';
+import 'package:regatta_buddy/services/event_message_handler.dart';
 import 'package:regatta_buddy/services/event_message_sender.dart';
 import 'package:regatta_buddy/utils/data_processing_helper.dart' as data_helper;
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
+import 'package:regatta_buddy/utils/timer.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/widgets/rb_notification.dart';
 import 'package:uuid/uuid.dart';
@@ -34,37 +39,24 @@ class RaceModeratorPage extends ConsumerStatefulWidget {
 class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
   final int _notificationTimeInSeconds = 10;
   late Event event;
-  List<RBNotification> activeNotifications = [];
-  List<ActionButton> raceActions = [];
-  int round = 1;
-  Map<String, int> processedScores = {};
   final MapController mapController = MapController();
+  late final Timer timer;
+
+  final int NOTIFICATIONS_LIMIT = 3;
+  final int _notificationTimeInSeconds = 10;
+  List<RBNotification> activeNotifications = [];
+
+  List<Message> messages = [];
+  EventMessageHandler? messageHandler;
   Set<String> trackedTeams = {};
+
   bool eventStarted = false;
   EventMessageHandler? messageHandler;
-
-  void addNotification(String title) {
-    String uuid = const Uuid().v4();
-    setState(() {
-      activeNotifications.add(
-        RBNotification(
-          uuid: uuid,
-          title: title,
-          onClose: () => removeNotification(uuid),
-        ),
-      );
-    });
-    Future.delayed(
-      Duration(seconds: _notificationTimeInSeconds),
-      () => {removeNotification(uuid), setState(() {})},
-    );
-  }
-
-  void removeNotification(String uuid) {
-    setState(() {
-      activeNotifications.removeWhere((element) => element.uuid == uuid);
-    });
-  }
+  Map<String, int> processedScores = {};
+  List<ActionButton> raceActions = [];
+  EventStatus eventStatus = EventStatus.notStarted;
+  RoundStatus roundStatus = RoundStatus.started;
+  int round = 0;
 
   @override
   void didChangeDependencies() {
@@ -76,11 +68,34 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
               eventStarted = true;
             }))
       ..start();
+
+    messageHandler = EventMessageHandler(
+      eventId: eventId,
+      onEachNewMessage: onEachNewMessage,
+      onStartEventMessage: onStartEventMessage,
+      onStartEventMessage: (_) => setState(() {
+          eventStarted = true;
+        }),
+      onRoundFinishedMessage: onRoundFinishedMessage,
+      onRoundStartedMessage: onRoundStartedMessage,
+    )..start();
     super.didChangeDependencies();
   }
 
   addPointsHandler(List<String> teams) async {
     await showSelectWithInputDialog(context, teams, event.id, round);
+  }
+
+  @override
+  void initState() {
+    timer = Timer();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    messageHandler?.stop();
+    super.dispose();
   }
 
   @override
@@ -97,7 +112,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
             child: Stack(children: [
               Column(
                 children: [
-                  EventStatistics(eventId: event.id),
+                  EventStatistics(eventId: event.id, timer: timer),
                   SizedBox(
                     height: 300,
                     child: RaceMap(
@@ -148,54 +163,87 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
       ),
       floatingActionButton: FloatingActionButton(
         elevation: 10,
-        onPressed: () => actions_dialog.showActionsDialog(context, [
-          eventStarted
-              ? ActionButton(
-                  iconData: Icons.cancel_outlined,
-                  title: "End event",
-                  onTap: () {
-                    EventMessageSender.endEvent(event.id);
-                    Navigator.of(context).pop();
-                  },
-                )
-              : ActionButton(
-                  iconData: Icons.start,
-                  title: "Start event",
-                  onTap: () {
-                    EventMessageSender.startEvent(event.id);
-                    setState(() {
-                      eventStarted = true;
-                    });
-                  },
-                ),
-          ActionButton(
-              iconData: Icons.control_point,
-              title: "Add points",
-              onTap: () => addPointsHandler(processedScores.keys.toList())),
-          ActionButton(
-            iconData: Icons.question_answer,
-            title: "Send message",
-            onTap: () =>
-            {
-              EventMessageSender.sendDirectedTextMessage(
-                  event.id, 'teamX', "this is just a test message | :)"),
-              addNotification("Message was sent")
-            },
-          ),
-          ActionButton(
-            iconData: Icons.format_list_bulleted_outlined,
-            title: "Show events",
-            onTap: () => addNotification("Judge was notified"),
-          ),
-          ActionButton(
-            iconData: Icons.close_outlined,
-            title: "Cancel",
-            onTap: () => {},
-          ),
-        ]),
+        onPressed: () => {
+          showActionsDialog(context),
+        },
         child: const Icon(Icons.add, size: 35),
       ),
     );
+  }
+
+  Future<void> showActionsDialog(BuildContext context) {
+
+    List<ActionButton> raceActions = [];
+
+    if (eventStatus == EventStatus.notStarted) {
+      raceActions.add(ActionButton(
+        iconData: Icons.start,
+        title: "Start event",
+        onTap: () {
+          EventMessageSender.startEvent(eventId);
+        },
+      ));
+    } else if (eventStatus == EventStatus.inProgress && roundStatus == RoundStatus.finished) {
+      raceActions.add(ActionButton(
+        iconData: Icons.sports,
+        title: "Start round ${round + 1}",
+        onTap: () {
+          EventMessageSender.startRound(eventId, round + 1);
+        },
+      ));
+    } else if (eventStatus == EventStatus.inProgress && roundStatus == RoundStatus.started) {
+      raceActions.add(ActionButton(
+        iconData: Icons.timer_sharp,
+        title: "Finish round $round",
+        onTap: () {
+          EventMessageSender.finishRound(eventId, round);
+        },
+      ));
+    }
+
+    raceActions.addAll([
+        ActionButton(
+            iconData: Icons.control_point,
+            title: "Add points",
+            onTap: () => addPointsHandler(processedScores.keys.toList())),
+        ActionButton(
+          iconData: Icons.question_answer,
+          title: "Send message",
+          onTap: () => {
+            EventMessageSender.sendDirectedTextMessage(eventId, 'teamX', "this is just a test message | :)"),
+            addNotification("Message was sent")
+          },
+        ),
+        ActionButton(
+          iconData: Icons.format_list_bulleted_outlined,
+          title: "Show events",
+          onTap: () => {
+            addNotification("Judge was notified"),
+            setState(() {
+              eventStatus = EventStatus.inProgress;
+            })
+          },
+        ),
+        ActionButton(
+          iconData: Icons.close_outlined,
+          title: "Cancel",
+          onTap: () => {},
+        ),
+      ]);
+    return actions_dialog.showActionsDialog(context, raceActions);
+  }
+
+  ActionButton? getRoundActionButton(EventStatus eventStatus, int round) {
+    if (eventStatus == EventStatus.notStarted) {
+      return ActionButton(
+        iconData: Icons.start,
+        title: "Start event",
+        onTap: () {
+          EventMessageSender.startEvent(eventId);
+        },
+      );
+    }
+    return null;
   }
 
   ListTile getTeamStatsTile(
@@ -274,5 +322,125 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
       title: Text(teamId),
       subtitle: Text('Points: ${processedScores[teamId]}'),
     );
+  }
+
+  // Future<void> loadAllAvailableMessages() async {
+  //   var allMessages = await EventMessageHandler.getAllMessages(eventId);
+  //   setState(() {
+  //     for (var message in allMessages) {
+  //       if (!messages.contains(message)) messages.add(message);
+  //     }
+  //   });
+  //
+  //   setCurrentEventStateByMessages();
+  // }
+
+  void setCurrentEventStateByMessages() {
+    for(var message in messages) {
+      switch (message.type) {
+        case MessageType.startEvent:
+          if (eventStatus != EventStatus.finished) {
+            setState(() {
+              eventStatus = EventStatus.inProgress;
+            });
+          }
+          break;
+        case MessageType.eventFinished:
+          setState(() {
+            eventStatus = EventStatus.finished;
+          });
+          break;
+        case MessageType.roundStarted:
+          int roundNumber = int.parse(message.value!);
+          if (roundNumber > round) {
+            setState(() {
+              round = roundNumber;
+              roundStatus = RoundStatus.started;
+            });
+          }
+          break;
+        case MessageType.roundFinished:
+          int roundNumber = int.parse(message.value!);
+          if (roundNumber >= round) {
+            setState(() {
+              round = roundNumber;
+              roundStatus = RoundStatus.finished;
+            });
+          }
+          break;
+        default:
+          break;
+      }
+
+    }
+    widget.logger.i('Current event status: $eventStatus');
+    widget.logger.i('Current round status: $roundStatus');
+    widget.logger.i('Current round: $round');
+
+  }
+
+  void onEachNewMessage(Message message) {
+    setState(() {
+      if (!messages.contains(message)) messages.add(message);
+    });
+  }
+
+  void onStartEventMessage(Message message) {
+    setState(() {
+      eventStatus = EventStatus.inProgress;
+      round = 0;
+      ref.read(currentRoundProvider(eventId).notifier).set(round);
+    });
+  }
+
+  void onFinishEventMessage(Message message) {
+    setState(() {
+      eventStatus = EventStatus.finished;
+    });
+  }
+
+  void onRoundFinishedMessage(Message message) {
+    setState(() {
+      roundStatus = RoundStatus.finished;
+    });
+    addNotification("Round $round finished");
+    timer.stop();
+  }
+
+  void onRoundStartedMessage(Message message) {
+    setState(() {
+      round = int.parse(message.value!);
+      ref.read(currentRoundProvider(eventId).notifier).set(round);
+      roundStatus = RoundStatus.started;
+    });
+
+    addNotification("Round $round started");
+    timer.startFrom(message.convertedTimestamp);
+  }
+
+  void addNotification(String title) {
+    String uuid = const Uuid().v4();
+    setState(() {
+      activeNotifications.add(
+        RBNotification(
+          uuid: uuid,
+          title: title,
+          onClose: () => removeNotification(uuid),
+        ),
+      );
+    });
+    if (activeNotifications.length > NOTIFICATIONS_LIMIT) {
+      removeNotification(activeNotifications.first.uuid);
+    }
+    Future.delayed(
+      Duration(seconds: _notificationTimeInSeconds),
+          () => {removeNotification(uuid), setState(() {})},
+    );
+  }
+
+  void removeNotification(String uuid) {
+    setState(() {
+      activeNotifications.removeWhere((element) => element.uuid == uuid);
+    });
   }
 }
