@@ -26,7 +26,7 @@ class _GoToEventButtonState extends ConsumerState<GoToEventButton> {
   void onPressed() {
     teamId == null
         ? Navigator.pushNamed(context, RaceModeratorPage.route,
-            arguments: event.id)
+            arguments: event)
         : Navigator.pushNamed(context, RacePage.route,
             arguments: RacePageArguments(event.id, teamId!));
   }
