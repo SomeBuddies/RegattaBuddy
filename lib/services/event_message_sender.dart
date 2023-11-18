@@ -9,7 +9,9 @@ class EventMessageSender {
         databaseReference.child('messages').child(eventId).child(timestamp);
 
     Message message = Message(
-        type: MessageType.startEvent, receiverType: MessageReceiverType.all);
+        type: MessageType.startEvent,
+        receiverType: MessageReceiverType.all,
+        timestamp: timestamp);
 
     newMessage.set(message.toJson());
   }
@@ -21,7 +23,9 @@ class EventMessageSender {
         databaseReference.child('messages').child(eventId).child(timestamp);
 
     Message message = Message(
-        type: MessageType.endEvent, receiverType: MessageReceiverType.all);
+        type: MessageType.endEvent,
+        receiverType: MessageReceiverType.all,
+        timestamp: timestamp);
 
     newMessage.set(message.toJson());
   }
@@ -36,7 +40,8 @@ class EventMessageSender {
         type: MessageType.pointsAssignment,
         receiverType: MessageReceiverType.team,
         teamId: teamId,
-        value: roundPoints);
+        value: roundPoints,
+        timestamp: timestamp);
 
     newMessage.set(message.toJson());
   }
@@ -51,8 +56,8 @@ class EventMessageSender {
         type: MessageType.directedTextMessage,
         receiverType: MessageReceiverType.team,
         teamId: teamId,
-        value: text
-    );
+        value: text,
+        timestamp: timestamp);
 
     newMessage.set(message.toJson());
   }

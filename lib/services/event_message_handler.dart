@@ -18,7 +18,8 @@ class EventMessageHandler {
       this.teamId,
       this.onStartEventMessage,
       this.onDirectedTextMessage,
-      this.onPointsAssignedMessage});
+      this.onPointsAssignedMessage,
+      this.onEndEventMessage});
 
   void start() {
     final databaseReference = FirebaseDatabase.instance.ref();
@@ -28,7 +29,7 @@ class EventMessageHandler {
     messageStream = messRef.onChildAdded.listen((event) {
       final messageData = Map<String, String>.from(
           event.snapshot.value as Map<Object?, Object?>);
-      final message = Message.fromJsonWithId(messageData, event.snapshot.key!);
+      final message = Message.fromJson(messageData);
 
       if (message.isForAll() || message.isForTeam(teamId)) {
         switch (message.type) {
@@ -49,22 +50,5 @@ class EventMessageHandler {
 
   void stop() {
     messageStream?.cancel();
-  }
-
-  static Future<List<Message>> getAllMessages(String eventId) async {
-    final dbRef = FirebaseDatabase.instance.ref();
-    DatabaseReference messRef = dbRef.child('messages').child(eventId);
-
-    final messages = <Message>[];
-    final snapshot = await messRef.get();
-    if (snapshot.exists) {
-      final messageData = Map<String, Map<String, String>>.from(
-          snapshot.value as Map<Object?, Object?>);
-      messageData.forEach((key, value) {
-        messages.add(Message.fromJsonWithId(value, key));
-      });
-    }
-    messages.sort((a, b) => int.parse(a.timestamp!).compareTo(int.parse(b.timestamp!)));
-    return messages;
   }
 }

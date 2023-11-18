@@ -17,8 +17,10 @@ import 'package:regatta_buddy/widgets/custom_error.dart';
 import 'package:regatta_buddy/widgets/rb_notification.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../models/event.dart';
 import '../../../models/message.dart';
 import '../../../services/locator.dart';
+import '../../regatta_details.dart';
 
 class RacePage extends StatefulWidget {
   final logger = getLogger('RacePage');
@@ -34,15 +36,14 @@ class RacePage extends StatefulWidget {
 class _RacePageState extends State<RacePage> {
   LocationSender? locator;
   EventMessageHandler? messageHandler;
-  late final String eventId;
-  late final String teamId;
+  late Event event;
+  late String teamId;
   late StreamSubscription<Position> subscription;
   final int _notificationTimeInSeconds = 10;
   bool isError = false;
   String errorMessage = "";
   List<RBNotification> activeNotifications = [];
   List<ActionButton> raceActions = [];
-  bool initialMessagesLoaded = false;
   List<Message> messages = [];
 
   final databaseReference = FirebaseDatabase.instance.ref();
@@ -107,27 +108,18 @@ class _RacePageState extends State<RacePage> {
 
   @override
   void didChangeDependencies() {
-    final args = ModalRoute.of(context)!.settings.arguments as RacePageArguments;
-    eventId = args.eventId;
+    final args =
+        ModalRoute.of(context)!.settings.arguments as RacePageArguments;
+    event = args.event;
     teamId = args.teamId;
 
-    if (!initialMessagesLoaded) {
-      initialMessagesLoaded = true;
-      EventMessageHandler.getAllMessages(eventId).then((allMessages) {
-        setState(() {
-          for (var message in allMessages) {
-            if (!messages.contains(message)) messages.add(message);
-          }
-        });
-      });
-    }
-
     messageHandler = EventMessageHandler(
-        eventId: eventId,
+        eventId: event.id,
         teamId: teamId,
         onStartEventMessage: onStartEventMessage,
         onDirectedTextMessage: onDirectedTextMessage,
-        onPointsAssignedMessage: onPointsAssignedMessage)
+        onPointsAssignedMessage: onPointsAssignedMessage,
+        onEndEventMessage: onEndEventMessage)
       ..start();
     super.didChangeDependencies();
   }
@@ -137,6 +129,19 @@ class _RacePageState extends State<RacePage> {
       if (!messages.contains(message)) messages.add(message);
       eventStarted = true;
     });
+  }
+
+  void onEndEventMessage(Message message) {
+    setState(() {
+      if (!messages.contains(message)) messages.add(message);
+    });
+
+    Future.delayed(
+        const Duration(seconds: 5),
+        () => Navigator.of(context).pushNamed(
+              RegattaDetailsPage.route,
+              arguments: event,
+            ));
   }
 
   void onDirectedTextMessage(Message message) {
@@ -162,7 +167,7 @@ class _RacePageState extends State<RacePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (eventStarted && !locator!.isOn) locator?.start(eventId, teamId);
+    if (eventStarted) locator?.start(event.id, teamId);
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -202,17 +207,15 @@ class MessageListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     String formattedDate = "";
 
-    if (message.timestamp != null) {
-      final date =
-          DateTime.fromMillisecondsSinceEpoch(int.parse(message.timestamp!));
-      formattedDate = DateFormat('HH:mm').format(date);
-    }
+    final date =
+        DateTime.fromMillisecondsSinceEpoch(int.parse(message.timestamp));
+    formattedDate = DateFormat('HH:mm').format(date);
 
     switch (message.type) {
       case MessageType.startEvent:
         return ListTile(
-          leading: Icon(Icons.play_arrow),
-          title: Text('Event started'),
+          leading: const Icon(Icons.play_arrow),
+          title: const Text('Event started'),
           subtitle: Text(
             'Moderator at $formattedDate',
           ),
@@ -239,10 +242,10 @@ class MessageListTile extends StatelessWidget {
         );
       case MessageType.endEvent:
         return ListTile(
-          leading: const Icon(Icons.message),
-          title: Text(message.value!),
+          leading: const Icon(Icons.cancel_outlined),
+          title: const Text('Event ended'),
           subtitle: Text(
-            '$formattedDate : ${message.value}',
+            'Moderator at $formattedDate',
           ),
         );
     }
