@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:regatta_buddy/models/assigned_points_in_round.dart';
@@ -25,7 +24,6 @@ class MessagesList extends StatelessWidget {
   }
 }
 
-
 class MessageListTile extends StatelessWidget {
   final Message message;
 
@@ -39,7 +37,7 @@ class MessageListTile extends StatelessWidget {
     String formattedDate = "";
 
     final date =
-    DateTime.fromMillisecondsSinceEpoch(int.parse(message.timestamp));
+        DateTime.fromMillisecondsSinceEpoch(int.parse(message.timestamp));
     formattedDate = DateFormat('HH:mm').format(date);
 
     switch (message.type) {
@@ -61,7 +59,7 @@ class MessageListTile extends StatelessWidget {
         );
       case MessageType.pointsAssignment:
         AssignedPointsInRound assignment =
-        AssignedPointsInRound.fromString(message.value!);
+            AssignedPointsInRound.fromString(message.value!);
 
         return ListTile(
           leading: const Icon(Icons.score),
@@ -80,7 +78,6 @@ class MessageListTile extends StatelessWidget {
           ),
         );
       case MessageType.roundStarted:
-
         var titleText = "Round nr ${message.value!} started";
         if (message.value! == "0") {
           titleText = "Warmup started";
@@ -105,6 +102,50 @@ class MessageListTile extends StatelessWidget {
             'Moderator at $formattedDate',
           ),
         );
+
+      case MessageType.reportProblem:
+        var titleText =
+            "Problem reported";
+        return ListTile(
+          leading: const Icon(Icons.medical_services_outlined, color: Colors.red),
+          title: Text(titleText),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 5),
+              Text(message.value!),
+              const SizedBox(height: 5),
+              Text(
+                '${message.teamName ?? message.teamId} at $formattedDate',
+                style: const TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
+            ],
+          ),
+        );
+
+      case MessageType.requestHelp:
+        var titleText =
+            "Help requested";
+        return ListTile(
+          leading: const Icon(Icons.help_outline, color: Colors.red),
+          title: Text(titleText),
+          subtitle: Text(
+            '${message.teamName ?? message.teamId} at $formattedDate',
+          ),
+        );
+
+      case MessageType.protest:
+        var titleText = "Team ${message.teamName ?? message.teamId} protested";
+        return ListTile(
+          leading: const Icon(Icons.sports_kabaddi, color: Colors.red),
+          title: Text(titleText),
+          subtitle: Text(
+            '${message.teamName ?? message.teamId} at $formattedDate',
+          ),
+        );
+
       default:
         return ListTile(
           leading: const Icon(Icons.error),

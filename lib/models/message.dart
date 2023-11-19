@@ -56,8 +56,9 @@ enum MessageType {
   pointsAssignment,
   roundStarted,
   roundFinished,
-  helpRequest,
+  requestHelp,
   protest,
+  reportProblem
 }
 
 enum MessageReceiverType { all, referee, team }
@@ -67,3 +68,16 @@ enum MessageReceiverType { all, referee, team }
 // receiverType: all
 // value: "${roundNumber},${datetime}"
 
+// type: protest
+// receiverType: referee
+// teamId: team that protests
+// value: problematic team
+
+// type: requestHelp
+// receiverType: referee
+// teamId: team that needs help
+
+// type: reportProblem
+// receiverType: referee
+// teamId: team that reports problem
+// value: problem description

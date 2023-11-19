@@ -64,10 +64,47 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
       eventId: event.id,
       onEachNewMessage: onEachNewMessage,
       onStartEventMessage: onStartEventMessage,
+      onEndEventMessage: onEndEventMessage,
       onRoundFinishedMessage: onRoundFinishedMessage,
       onRoundStartedMessage: onRoundStartedMessage,
+      onReportedProblemMessage: onReportedProblemMessage,
+      onProtestMessage: onProtestMessage,
+      onRequestedHelpMessage: onRequestedHelpMessage,
     )..start();
     super.didChangeDependencies();
+  }
+
+  onReportedProblemMessage(Message message) {
+    if (happenedMomentAgo(message.convertedTimestamp)) {
+      showDisappearingMessageDialog(
+        context,
+        message,
+        duration: const Duration(seconds: 10),
+        customTitle: "PROBLEM WAS REPORTED",
+      );
+    }
+  }
+
+  onProtestMessage(Message message) {
+    if (happenedMomentAgo(message.convertedTimestamp)) {
+      showDisappearingMessageDialog(
+        context,
+        message,
+        duration: const Duration(seconds: 10),
+        customTitle: "PROTEST WAS REPORTED",
+      );
+    }
+  }
+
+  onRequestedHelpMessage(Message message) {
+    if (happenedMomentAgo(message.convertedTimestamp)) {
+      showDisappearingMessageDialog(
+        context,
+        message,
+        duration: const Duration(seconds: 10),
+        customTitle: "HELP WAS REQUESTED",
+      );
+    }
   }
 
   addPointsHandler(List<Team> teams) async {
@@ -215,24 +252,17 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
       raceActions.add(ActionButton(
         iconData: Icons.flag_circle_outlined,
         title: "Finish event",
-        onTap: () => EventMessageSender.endEvent(event.id)
-      ));
+        onTap: () {
+          EventMessageSender.endEvent(event.id);
+          eventStatus = EventStatus.finished;
+        }));
     }
 
     raceActions.addAll([
-      ActionButton(
+      if (eventStatus == EventStatus.inProgress) ActionButton(
           iconData: Icons.control_point,
           title: "Add points",
           onTap: () => addPointsHandler(eventTeams)),
-      ActionButton(
-        iconData: Icons.question_answer,
-        title: "Send message",
-        onTap: () => {
-          EventMessageSender.sendDirectedTextMessage(
-              event.id, 'teamX', "this is just a test message | :)"),
-          addNotification("Message was sent")
-        },
-      ),
       ActionButton(
         iconData: Icons.format_list_bulleted_outlined,
         title: "Show events",
@@ -386,7 +416,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
     ref.read(currentRoundProvider(event.id).notifier).set(round);
   }
 
-  void onFinishEventMessage(Message message) {
+  void onEndEventMessage(Message message) {
     setState(() {
       eventStatus = EventStatus.finished;
     });
@@ -453,5 +483,9 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
     setState(() {
       if (!messages.contains(message)) messages.add(message);
     });
+  }
+
+  bool happenedMomentAgo(DateTime dateTime) {
+    return dateTime.difference(DateTime.now()).inSeconds.abs() < 10;
   }
 }

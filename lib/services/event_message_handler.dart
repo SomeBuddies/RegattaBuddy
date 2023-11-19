@@ -15,6 +15,9 @@ class EventMessageHandler {
   void Function(Message)? onRoundStartedMessage;
   void Function(Message)? onRoundFinishedMessage;
   void Function(Message)? onEndEventMessage;
+  void Function(Message)? onReportedProblemMessage;
+  void Function(Message)? onRequestedHelpMessage;
+  void Function(Message)? onProtestMessage;
 
   StreamSubscription<DatabaseEvent>? messageStream;
 
@@ -28,6 +31,9 @@ class EventMessageHandler {
     this.onRoundStartedMessage,
     this.onRoundFinishedMessage,
     this.onEndEventMessage,
+    this.onReportedProblemMessage,
+    this.onRequestedHelpMessage,
+    this.onProtestMessage,
   });
 
   void start() {
@@ -60,11 +66,24 @@ class EventMessageHandler {
           case MessageType.roundFinished:
             onRoundFinishedMessage?.call(message);
           default:
-            logger.w('Unknown message type: ${message.type}');
+
+        }
+      }
+      if (message.isForReferee(teamId) || isSendByThisInstance(message)) {
+        switch (message.type) {
+          case MessageType.reportProblem:
+            onReportedProblemMessage?.call(message);
+          case MessageType.protest:
+            onProtestMessage?.call(message);
+          case MessageType.requestHelp:
+            onRequestedHelpMessage?.call(message);
+          default:
         }
       }
     });
   }
+
+  bool isSendByThisInstance(Message message) => message.teamId == teamId;
 
   void stop() {
     messageStream?.cancel();

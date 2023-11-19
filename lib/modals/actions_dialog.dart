@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:regatta_buddy/modals/action_button.dart';
 import 'package:regatta_buddy/modals/add_score_form.dart';
+import 'package:regatta_buddy/modals/report_problem_form.dart';
+import 'package:regatta_buddy/modals/report_protest_form.dart';
 import 'package:regatta_buddy/models/message.dart';
 import 'package:regatta_buddy/models/team.dart';
 import 'package:regatta_buddy/pages/race/messages_list.dart';
@@ -119,7 +121,8 @@ Future<void> showMessagesDialog(
 }
 
 Future<void> showDisappearingMessageDialog(
-    BuildContext context, Message message, {String? customTitle}) async {
+    BuildContext context, Message message,
+    {String? customTitle, Duration? duration}) async {
   Timer? dialogTimer;
 
   if (context.mounted) {
@@ -127,14 +130,17 @@ Future<void> showDisappearingMessageDialog(
       barrierDismissible: true,
       context: context,
       builder: (BuildContext cxt) {
-        dialogTimer = Timer(const Duration(seconds: 5), () => Navigator.of(context).pop());
+        dialogTimer = Timer(duration ?? const Duration(seconds: 5),
+            () => Navigator.of(context).pop());
         return WillPopScope(
             onWillPop: () async {
               dialogTimer?.cancel();
               return true;
             },
             child: AlertDialog(
-              title: customTitle != null ? Text(customTitle): const Text('Message'),
+              title: customTitle != null
+                  ? Text(customTitle)
+                  : const Text('Message'),
               shape: RoundedRectangleBorder(
                 borderRadius:
                     BorderRadius.circular(constants.elementsBorderRadius),
@@ -160,7 +166,86 @@ Future<void> showDisappearingMessageDialog(
                   ),
                 ),
               ),
-            )
+            ));
+      },
+    );
+  }
+}
+
+Future<void> showReportProblemDialog(
+    BuildContext context, String eventId, String teamId) async {
+  await Future.delayed(const Duration(seconds: 0));
+
+  if (context.mounted) {
+    await showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (BuildContext cxt) {
+        return Align(
+          alignment: Alignment.center,
+          child: Padding(
+            padding: const EdgeInsets.all(constants.elementsBorderRadius),
+            child: Material(
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(constants.elementsBorderRadius),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: SizedBox(
+                  height: 270,
+                  child: ReportProblemForm(eventId: eventId, teamId: teamId),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+Future<void> showProtestDialog(
+    BuildContext context, String eventId, String teamId) async {
+  await Future.delayed(const Duration(seconds: 0));
+
+  // TODO pomoc krzysia needed
+  List<Team> teams = [
+    Team(
+      name: 'Foki',
+      captainId: '123123',
+      members: [
+        TeamMember(id: 'iddd', name: 'name')
+      ],
+    )
+  ];
+
+  if (context.mounted) {
+    await showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (BuildContext cxt) {
+        return Align(
+          alignment: Alignment.center,
+          child: Padding(
+            padding: const EdgeInsets.all(constants.elementsBorderRadius),
+            child: Material(
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(constants.elementsBorderRadius),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: SizedBox(
+                  height: 270,
+                  child:
+                      ProtestForm(eventId: eventId, teams: teams, teamId: teamId),
+                ),
+              ),
+            ),
+          ),
         );
       },
     );

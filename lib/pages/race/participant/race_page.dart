@@ -17,6 +17,7 @@ import 'package:regatta_buddy/pages/race/participant/race_statistics.dart';
 import 'package:regatta_buddy/pages/regatta_details.dart';
 import 'package:regatta_buddy/providers/race_events.dart';
 import 'package:regatta_buddy/services/event_message_handler.dart';
+import 'package:regatta_buddy/services/event_message_sender.dart';
 import 'package:regatta_buddy/services/locator.dart';
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:regatta_buddy/utils/timer.dart';
@@ -44,7 +45,6 @@ class _RacePageState extends ConsumerState<RacePage> {
   bool isError = false;
   String errorMessage = "";
   List<RBNotification> activeNotifications = [];
-  List<ActionButton> raceActions = [];
   List<Message> messages = [];
   late final Timer timer;
   int round = 0;
@@ -62,28 +62,6 @@ class _RacePageState extends ConsumerState<RacePage> {
           errorMessage = error;
           isError = true;
         }));
-    raceActions = [
-      ActionButton(
-        iconData: Icons.help_outline,
-        title: "Needs help",
-        onTap: () => {},
-      ),
-      ActionButton(
-        iconData: Icons.sports_kabaddi,
-        title: "Protest",
-        onTap: () => {},
-      ),
-      ActionButton(
-        iconData: Icons.question_answer,
-        title: "Problem",
-        onTap: () => {},
-      ),
-      ActionButton(
-        iconData: Icons.close_outlined,
-        title: "Cancel",
-        onTap: () => {},
-      ),
-    ];
   }
 
   @override
@@ -95,15 +73,18 @@ class _RacePageState extends ConsumerState<RacePage> {
     widget.logger.d("Current team: ${team.name} in event: ${event.name}");
 
     messageHandler = EventMessageHandler(
-        eventId: event.id,
-        teamId: team.id,
-        onStartEventMessage: onStartEventMessage,
-        onRoundStartedMessage: onRoundStartedMessage,
-        onRoundFinishedMessage: onRoundFinishedMessage,
-        onDirectedTextMessage: onDirectedTextMessage,
-        onPointsAssignedMessage: onPointsAssignedMessage,
-        onEndEventMessage: onEndEventMessage)
-      ..start();
+      eventId: event.id,
+      teamId: team.id,
+      onStartEventMessage: onStartEventMessage,
+      onRoundStartedMessage: onRoundStartedMessage,
+      onRoundFinishedMessage: onRoundFinishedMessage,
+      onDirectedTextMessage: onDirectedTextMessage,
+      onPointsAssignedMessage: onPointsAssignedMessage,
+      onEndEventMessage: onEndEventMessage,
+      onReportedProblemMessage: saveMessage,
+      onProtestMessage: saveMessage,
+      onRequestedHelpMessage: saveMessage,
+    )..start();
     super.didChangeDependencies();
   }
 
@@ -116,6 +97,11 @@ class _RacePageState extends ConsumerState<RacePage> {
     saveMessageInMemory(message);
     showDialogIfNewMessage(message);
     timer.stop();
+  }
+
+  void saveMessage(Message message) {
+    message = populateMessageWithTeamName(message);
+    saveMessageInMemory(message);
   }
 
   void onRoundStartedMessage(Message message) {
@@ -183,7 +169,7 @@ class _RacePageState extends ConsumerState<RacePage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         elevation: 10,
-        onPressed: () => actions_dialog.showActionsDialog(context, raceActions),
+        onPressed: () => showActionsDialog(context),
         child: const Icon(Icons.warning_amber_rounded, size: 35),
       ),
       appBar: const AppHeader(),
@@ -196,6 +182,32 @@ class _RacePageState extends ConsumerState<RacePage> {
             )
           : CustomErrorWidget(errorMessage),
     );
+  }
+
+  Future<void> showActionsDialog(BuildContext context) {
+    List<ActionButton> raceActions = [
+      ActionButton(
+        iconData: Icons.help_outline,
+        title: "Needs help",
+        onTap: () => {EventMessageSender.requestHelp(event.id, team.id)},
+      ),
+      ActionButton(
+        iconData: Icons.sports_kabaddi,
+        title: "Protest",
+        onTap: () => showProtestDialog(context, event.id, team.id)
+      ),
+      ActionButton(
+          iconData: Icons.medical_services_outlined,
+          title: "Problem",
+          onTap: () => showReportProblemDialog(context, event.id, team.id)),
+      ActionButton(
+        iconData: Icons.close_outlined,
+        title: "Cancel",
+        onTap: () => {},
+      ),
+    ];
+
+    return actions_dialog.showActionsDialog(context, raceActions);
   }
 
   void showDialogIfNewMessage(Message message) {
