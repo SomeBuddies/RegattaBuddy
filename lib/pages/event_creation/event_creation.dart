@@ -6,6 +6,7 @@ import 'package:regatta_buddy/models/event.dart';
 import 'package:regatta_buddy/pages/event_creation/event_form.dart';
 import 'package:regatta_buddy/pages/event_creation/event_route.dart';
 import 'package:regatta_buddy/pages/home.dart';
+import 'package:regatta_buddy/providers/firebase_providers.dart';
 import 'package:regatta_buddy/providers/repository_providers.dart';
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
@@ -105,28 +106,26 @@ class _EventCreationPageState extends ConsumerState<EventCreationPage> {
     }
   }
 
-  void finishEventCreation() async {
-    final user = await ref.read(userRepositoryProvider).getCurrentUserData();
-    user.fold(
-      (error) => throw Exception(error),
-      (user) {
-        Event event = Event(
-          hostId: user.uid,
-          route: markers.map((e) => e.marker.point).toList(),
-          location: markers[0].marker.point,
-          date: eventDate!.withTimeOfDay(eventTime!).toUtc(),
-          name: eventName!,
-          description: eventDescription!,
-        );
-        widget.logger.i(
-          "Event creation finished, saving following event to firebase: ${event.toJson()}",
-        );
+  void finishEventCreation() {
+    final userId = ref.read(firebaseAuthProvider).currentUser?.uid;
 
-        ref.read(eventRepositoryProvider).addEvent(event);
+    if (userId == null) return;
 
-        Navigator.pushReplacementNamed(context, HomePage.route);
-      },
+    Event event = Event(
+      hostId: userId,
+      route: markers.map((e) => e.marker.point).toList(),
+      location: markers[0].marker.point,
+      date: eventDate!.withTimeOfDay(eventTime!).toUtc(),
+      name: eventName!,
+      description: eventDescription!,
     );
+    widget.logger.i(
+      "Event creation finished, saving following event to firebase: ${event.toJson()}",
+    );
+
+    ref.read(eventRepositoryProvider).addEvent(event);
+
+    Navigator.pushReplacementNamed(context, HomePage.route);
   }
 
   @override

@@ -1,7 +1,7 @@
 import 'package:regatta_buddy/models/event.dart';
 import 'package:regatta_buddy/providers/firebase_providers.dart';
 import 'package:regatta_buddy/providers/repository_providers.dart';
-import 'package:regatta_buddy/services/event_repository.dart';
+import 'package:regatta_buddy/services/repositories/event_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:regatta_buddy/enums/sort_enums.dart';
 

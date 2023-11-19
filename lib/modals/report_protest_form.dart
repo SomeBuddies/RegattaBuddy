@@ -7,14 +7,15 @@ class ProtestForm extends StatefulWidget {
   final String teamId;
   final List<Team> teams;
 
-  ProtestForm({
+  const ProtestForm({
+    super.key,
     required this.eventId,
     required this.teams,
     required this.teamId,
   });
 
   @override
-  _ProtestFormState createState() => _ProtestFormState();
+  State<ProtestForm> createState() => _ProtestFormState();
 }
 
 class _ProtestFormState extends State<ProtestForm> {
@@ -38,8 +39,7 @@ class _ProtestFormState extends State<ProtestForm> {
           const SizedBox(height: 20),
           DropdownButton<Team>(
             value: selectedTeam,
-            items: widget.teams
-                .map<DropdownMenuItem<Team>>((Team value) {
+            items: widget.teams.map<DropdownMenuItem<Team>>((Team value) {
               return DropdownMenuItem<Team>(
                 value: value,
                 child: Text(
@@ -73,8 +73,8 @@ class _ProtestFormState extends State<ProtestForm> {
           ElevatedButton(
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
-
-                EventMessageSender.protest(widget.eventId, widget.teamId, selectedTeam.id, descriptionController.text);
+                EventMessageSender.protest(widget.eventId, widget.teamId,
+                    selectedTeam.id, descriptionController.text);
 
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -94,5 +94,4 @@ class _ProtestFormState extends State<ProtestForm> {
       ),
     );
   }
-
 }

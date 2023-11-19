@@ -5,6 +5,7 @@ import 'package:regatta_buddy/modals/action_button.dart';
 import 'package:regatta_buddy/modals/add_score_form.dart';
 import 'package:regatta_buddy/modals/report_problem_form.dart';
 import 'package:regatta_buddy/modals/report_protest_form.dart';
+import 'package:regatta_buddy/models/event.dart';
 import 'package:regatta_buddy/models/message.dart';
 import 'package:regatta_buddy/models/team.dart';
 import 'package:regatta_buddy/pages/race/messages_list.dart';
@@ -54,7 +55,7 @@ Future<void> showActionsDialog(
 }
 
 Future<void> showSelectWithInputDialog(
-    BuildContext context, List<Team> teams, String eventId, int round) async {
+    BuildContext context, List<Team> teams, Event event, int round) async {
   await Future.delayed(const Duration(seconds: 0));
 
   if (context.mounted) {
@@ -76,7 +77,7 @@ Future<void> showSelectWithInputDialog(
                 padding: const EdgeInsets.all(16),
                 child: SizedBox(
                   height: 270,
-                  child: AddScoreForm(teams, eventId, round),
+                  child: AddScoreForm(teams, event, round),
                 ),
               ),
             ),
@@ -130,8 +131,10 @@ Future<void> showDisappearingMessageDialog(
       barrierDismissible: true,
       context: context,
       builder: (BuildContext cxt) {
-        dialogTimer = Timer(duration ?? const Duration(seconds: 5),
-            () => Navigator.of(context).pop());
+        dialogTimer = Timer(
+          duration ?? const Duration(seconds: 5),
+          () => Navigator.of(context).pop(),
+        );
         return WillPopScope(
             onWillPop: () async {
               dialogTimer?.cancel();
@@ -212,12 +215,10 @@ Future<void> showProtestDialog(
 
   // TODO pomoc krzysia needed
   List<Team> teams = [
-    Team(
+    const Team(
       name: 'Foki',
       captainId: '123123',
-      members: [
-        TeamMember(id: 'iddd', name: 'name')
-      ],
+      members: [TeamMember(id: 'iddd', name: 'name')],
     )
   ];
 
@@ -240,8 +241,8 @@ Future<void> showProtestDialog(
                 padding: const EdgeInsets.all(16),
                 child: SizedBox(
                   height: 270,
-                  child:
-                      ProtestForm(eventId: eventId, teams: teams, teamId: teamId),
+                  child: ProtestForm(
+                      eventId: eventId, teams: teams, teamId: teamId),
                 ),
               ),
             ),

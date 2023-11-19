@@ -3,20 +3,21 @@ import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:regatta_buddy/models/assigned_points_in_round.dart';
+import 'package:regatta_buddy/models/event.dart';
 import 'package:regatta_buddy/models/team.dart';
 import 'package:regatta_buddy/providers/firebase_writer_service_provider.dart';
-import 'package:regatta_buddy/services/event_message_sender.dart';
+import 'package:regatta_buddy/providers/repository_providers.dart';
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 
 class AddScoreForm extends ConsumerStatefulWidget {
   final logger = getLogger('AddScoreForm');
   final List<Team> teams;
-  final String eventId;
+  final Event event;
   final int round;
 
   AddScoreForm(
     this.teams,
-    this.eventId,
+    this.event,
     this.round, {
     super.key,
   });
@@ -48,8 +49,7 @@ class _AddScoreFormState extends ConsumerState<AddScoreForm> {
           const Text("Select a team and add points"),
           DropdownButton<Team>(
             value: selectedTeam,
-            items: widget.teams
-                .map<DropdownMenuItem<Team>>((Team value) {
+            items: widget.teams.map<DropdownMenuItem<Team>>((Team value) {
               return DropdownMenuItem<Team>(
                 value: value,
                 child: Text(
@@ -136,10 +136,9 @@ class _AddScoreFormState extends ConsumerState<AddScoreForm> {
   Future<Either<String, String>> updateTeamPoints() async {
     final firebaseWriterService = ref.watch(firebaseWriterServiceProvider);
 
-
     try {
       final currentScoreResponse = await firebaseWriterService.getTeamScore(
-        widget.eventId,
+        widget.event.id,
         selectedTeam.id,
         widget.round,
       );
@@ -161,13 +160,17 @@ class _AddScoreFormState extends ConsumerState<AddScoreForm> {
       final newScore = currentScore + points;
 
       final response = await firebaseWriterService.setPointsToTeam(
-        widget.eventId,
+        widget.event.id,
         selectedTeam.id,
         widget.round,
         newScore,
       );
 
-      EventMessageSender.assignPoints(widget.eventId, selectedTeam.id, AssignedPointsInRound(widget.round, points).toString());
+      ref.read(eventMessageSenderProvider).assignPoints(
+            widget.event,
+            selectedTeam,
+            AssignedPointsInRound(widget.round, points).toString(),
+          );
 
       if (response.isLeft()) {
         throw Exception(response.fold((l) => l, (r) => r));

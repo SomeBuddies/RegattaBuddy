@@ -14,9 +14,10 @@ class Event with _$Event {
     @JsonKey(includeFromJson: false, includeToJson: false)
     @Default('')
     String id,
-    required String hostId,
     @LatLngConverter() required List<LatLng> route,
     @LatLngConverter() required LatLng location,
+    @Default(EventStatus.notStarted) EventStatus status,
+    required String hostId,
     required DateTime date,
     required String name,
     required String description,
@@ -30,6 +31,12 @@ class Event with _$Event {
     return Event.fromJson(doc.data() as Map<String, Object?>)
         .copyWith(id: doc.id);
   }
+}
+
+enum EventStatus {
+  notStarted,
+  inProgress,
+  finished,
 }
 
 // Because LatLng is a custom class it needs to have its own JsonConverter

@@ -13,7 +13,7 @@ FutureOr<UserData> userData(UserDataRef ref, String uid) async {
   );
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 FutureOr<UserData> CurrentUserData(CurrentUserDataRef ref) async {
   final data = await ref.watch(userRepositoryProvider).getCurrentUserData();
   return data.fold(

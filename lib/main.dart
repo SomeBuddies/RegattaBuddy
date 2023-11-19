@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:regatta_buddy/debug/debug_observer.dart';
 import 'package:regatta_buddy/firebase_options.dart';
 import 'package:regatta_buddy/pages/race/moderator/race_moderator_page.dart';
 import 'package:regatta_buddy/pages/event_creation/event_creation.dart';
@@ -15,6 +16,8 @@ import 'package:regatta_buddy/pages/regatta_details.dart';
 import 'package:regatta_buddy/pages/register_page.dart';
 import 'package:regatta_buddy/pages/search_page.dart';
 
+// ! switch to enable/disable rivepod logs;
+bool debugRiverpod = false;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -25,8 +28,11 @@ void main() async {
     if (kReleaseMode) exit(1);
   };
   runApp(
-    const ProviderScope(
-      child: RegattaBuddy(),
+    ProviderScope(
+      observers: [
+        if (debugRiverpod) DebugObserver(),
+      ],
+      child: const RegattaBuddy(),
     ),
   );
 }
