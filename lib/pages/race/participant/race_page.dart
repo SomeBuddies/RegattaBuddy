@@ -90,6 +90,9 @@ class _RacePageState extends ConsumerState<RacePage> {
 
   void onStartEventMessage(Message message) {
     saveMessageInMemory(message);
+    setState(() {
+      eventStarted = true;
+    });
   }
 
   void onRoundFinishedMessage(Message message) {
