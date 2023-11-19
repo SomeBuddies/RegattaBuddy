@@ -8,27 +8,50 @@ import 'package:regatta_buddy/pages/search_page.dart';
 import 'package:regatta_buddy/providers/auth/auth_state_notifier.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 
-class HomePage extends ConsumerStatefulWidget {
+class HomePage extends ConsumerWidget {
   static const String route = '/';
 
   const HomePage({super.key});
 
-  @override
-  ConsumerState<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends ConsumerState<HomePage> {
-  @override
-  Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) async {
-        ref.read(authStateNotiferProvider.notifier).checkIfLoggedIn();
-        ref.watch(authStateNotiferProvider).whenOrNull(
-              unauthenticated: (message) =>
-                  Navigator.of(context).pushReplacementNamed(LoginPage.route),
-            );
-      },
+  Card buildButton({
+    required VoidCallback onTap,
+    required String title,
+    required String text,
+  }) {
+    return Card(
+      shape: const StadiumBorder(),
+      margin: const EdgeInsets.symmetric(
+        horizontal: 20,
+      ),
+      clipBehavior: Clip.antiAlias,
+      elevation: 1,
+      child: ListTile(
+        onTap: onTap,
+        contentPadding: const EdgeInsets.only(
+          left: 30,
+        ),
+        title: Text(title),
+        subtitle: Text(text),
+      ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(authStateNotiferProvider).maybeWhen(
+          initial: () => WidgetsBinding.instance.addPostFrameCallback(
+            (timeStamp) async {
+              ref.read(authStateNotiferProvider.notifier).checkIfLoggedIn();
+            },
+          ),
+          unauthenticated: (message) =>
+              WidgetsBinding.instance.addPostFrameCallback(
+            (timeStamp) async {
+              Navigator.of(context).pushReplacementNamed(LoginPage.route);
+            },
+          ),
+          orElse: () {},
+        );
 
     return Scaffold(
       appBar: const AppHeader(),
@@ -73,37 +96,6 @@ class _HomePageState extends ConsumerState<HomePage> {
             )
           ],
         ),
-      ),
-    );
-  }
-
-  bool isCodeValid(String regattaCode) {
-    var tempAllowedCode = '12345';
-    if (regattaCode.length >= 3 && regattaCode == tempAllowedCode) {
-      return true;
-    }
-    return false;
-  }
-
-  Card buildButton({
-    required VoidCallback onTap,
-    required String title,
-    required String text,
-  }) {
-    return Card(
-      shape: const StadiumBorder(),
-      margin: const EdgeInsets.symmetric(
-        horizontal: 20,
-      ),
-      clipBehavior: Clip.antiAlias,
-      elevation: 1,
-      child: ListTile(
-        onTap: onTap,
-        contentPadding: const EdgeInsets.only(
-          left: 30,
-        ),
-        title: Text(title),
-        subtitle: Text(text),
       ),
     );
   }

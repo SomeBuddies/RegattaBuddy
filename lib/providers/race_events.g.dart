@@ -6,7 +6,7 @@ part of 'race_events.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$teamScoresHash() => r'9e3f9e8319117fadc480fa106675905baedafe7f';
+String _$teamScoresHash() => r'c7b5a673f3923975b6a130bb2ddbad7581f3e7a0';
 
 /// Copied from Dart SDK
 class _SystemHash {

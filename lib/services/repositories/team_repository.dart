@@ -9,7 +9,7 @@ import 'package:regatta_buddy/models/team.dart';
 import 'package:regatta_buddy/providers/event_details/teams_provider.dart';
 import 'package:regatta_buddy/providers/firebase_providers.dart';
 import 'package:regatta_buddy/providers/repository_providers.dart';
-import 'package:regatta_buddy/services/user_repository.dart';
+import 'package:regatta_buddy/services/repositories/user_repository.dart';
 
 class TeamRepository {
   final Ref _ref;

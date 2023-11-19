@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:regatta_buddy/enums/event_status.dart';
 import 'package:regatta_buddy/enums/round_status.dart';
 import 'package:regatta_buddy/extensions/string_extension.dart';
 import 'package:regatta_buddy/modals/action_button.dart';
@@ -15,8 +14,8 @@ import 'package:regatta_buddy/pages/race/moderator/race_map.dart';
 import 'package:regatta_buddy/providers/event_details/team_position_notifier.dart';
 import 'package:regatta_buddy/providers/event_details/teams_provider.dart';
 import 'package:regatta_buddy/providers/race_events.dart';
+import 'package:regatta_buddy/providers/repository_providers.dart';
 import 'package:regatta_buddy/services/event_message_handler.dart';
-import 'package:regatta_buddy/services/event_message_sender.dart';
 import 'package:regatta_buddy/utils/data_processing_helper.dart' as data_helper;
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:regatta_buddy/utils/timer.dart';
@@ -108,7 +107,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
   }
 
   addPointsHandler(List<Team> teams) async {
-    await showSelectWithInputDialog(context, teams, event.id, round);
+    await showSelectWithInputDialog(context, teams, event, round);
   }
 
   showMessagesHandler() async {
@@ -202,7 +201,8 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
                 final teamId = processedScores.keys.elementAt(index);
                 Map<String, LatLng> teamPositions =
                     ref.watch(teamPositionNotifierProvider(event));
-                return getTeamStatsTile(teamId, getTeamName(teamId), teamPositions[teamId], index);
+                return getTeamStatsTile(
+                    teamId, getTeamName(teamId), teamPositions[teamId], index);
               },
               itemCount: processedScores.keys.length,
             );
@@ -227,47 +227,51 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
 
     if (eventStatus == EventStatus.notStarted) {
       raceActions.add(ActionButton(
-        iconData: Icons.start,
-        title: "Start event",
-        onTap: () => EventMessageSender.startEvent(event.id)
-
-      ));
+          iconData: Icons.start,
+          title: "Start event",
+          onTap: () {
+            ref.read(eventMessageSenderProvider).startEvent(event);
+            eventStatus = EventStatus.inProgress;
+          }));
     } else if (eventStatus == EventStatus.inProgress &&
         roundStatus == RoundStatus.finished) {
       raceActions.add(ActionButton(
-        iconData: Icons.sports,
-        title: "Start round ${round + 1}",
-        onTap: () => EventMessageSender.startRound(event.id, round + 1)
-
-      ));
+          iconData: Icons.sports,
+          title: "Start round ${round + 1}",
+          onTap: () => ref
+              .read(eventMessageSenderProvider)
+              .startRound(event.id, round + 1)));
     } else if (eventStatus == EventStatus.inProgress &&
         roundStatus == RoundStatus.started) {
       raceActions.add(ActionButton(
-        iconData: Icons.timer_sharp,
-        title: "Finish round $round",
-        onTap: () => EventMessageSender.finishRound(event.id, round)
-      ));
+          iconData: Icons.timer_sharp,
+          title: "Finish round $round",
+          onTap: () => ref
+              .read(eventMessageSenderProvider)
+              .finishRound(event.id, round)));
     }
-    if (eventStatus == EventStatus.inProgress && roundStatus != RoundStatus.started) {
+    if (eventStatus == EventStatus.inProgress &&
+        roundStatus != RoundStatus.started) {
       raceActions.add(ActionButton(
         iconData: Icons.flag_circle_outlined,
         title: "Finish event",
         onTap: () {
-          EventMessageSender.endEvent(event.id);
+          ref.read(eventMessageSenderProvider).endEvent(event);
           eventStatus = EventStatus.finished;
-        }));
+        },
+      ));
     }
 
     raceActions.addAll([
-      if (eventStatus == EventStatus.inProgress) ActionButton(
-          iconData: Icons.control_point,
-          title: "Add points",
-          onTap: () => addPointsHandler(eventTeams)),
+      if (eventStatus == EventStatus.inProgress)
+        ActionButton(
+            iconData: Icons.control_point,
+            title: "Add points",
+            onTap: () => addPointsHandler(eventTeams)),
       ActionButton(
-        iconData: Icons.format_list_bulleted_outlined,
-        title: "Show events",
-        onTap: () => showMessagesHandler()
-      ),
+          iconData: Icons.format_list_bulleted_outlined,
+          title: "Show events",
+          onTap: () => showMessagesHandler()),
       ActionButton(
         iconData: Icons.close_outlined,
         title: "Cancel",
@@ -283,14 +287,15 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
         iconData: Icons.start,
         title: "Start event",
         onTap: () {
-          EventMessageSender.startEvent(event.id);
+          ref.read(eventMessageSenderProvider).startEvent(event);
         },
       );
     }
     return null;
   }
 
-  ListTile getTeamStatsTile(String teamId, String teamName, LatLng? teamPosition, int index) {
+  ListTile getTeamStatsTile(
+      String teamId, String teamName, LatLng? teamPosition, int index) {
     return ListTile(
       dense: true,
       leading: Wrap(

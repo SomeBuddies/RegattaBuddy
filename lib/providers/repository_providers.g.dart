@@ -6,7 +6,7 @@ part of 'repository_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$eventRepositoryHash() => r'd409dd63b14a2464564cd99500feef45d0d3bda7';
+String _$eventRepositoryHash() => r'44e4b339143bbeab6fcab3d5eeca65aa2c938ad7';
 
 /// See also [eventRepository].
 @ProviderFor(eventRepository)
@@ -184,5 +184,22 @@ class _TeamRepositoryProviderElement extends ProviderElement<TeamRepository>
   @override
   Event get event => (origin as TeamRepositoryProvider).event;
 }
+
+String _$eventMessageSenderHash() =>
+    r'9469cca670fb752d6df0aa540ab3539a5885e726';
+
+/// See also [eventMessageSender].
+@ProviderFor(eventMessageSender)
+final eventMessageSenderProvider = Provider<EventMessageSender>.internal(
+  eventMessageSender,
+  name: r'eventMessageSenderProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$eventMessageSenderHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef EventMessageSenderRef = ProviderRef<EventMessageSender>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

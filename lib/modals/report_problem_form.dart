@@ -5,10 +5,11 @@ class ReportProblemForm extends StatefulWidget {
   final String eventId;
   final String teamId;
 
-  const ReportProblemForm({super.key, required this.eventId, required this.teamId});
+  const ReportProblemForm(
+      {super.key, required this.eventId, required this.teamId});
 
   @override
-  _ReportProblemFormState createState() => _ReportProblemFormState();
+  State<ReportProblemForm> createState() => _ReportProblemFormState();
 }
 
 class _ReportProblemFormState extends State<ReportProblemForm> {
@@ -41,7 +42,8 @@ class _ReportProblemFormState extends State<ReportProblemForm> {
           ElevatedButton(
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
-                EventMessageSender.reportProblem(widget.eventId, widget.teamId, descriptionController.text);
+                EventMessageSender.reportProblem(
+                    widget.eventId, widget.teamId, descriptionController.text);
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text("Reported problem to referee"),

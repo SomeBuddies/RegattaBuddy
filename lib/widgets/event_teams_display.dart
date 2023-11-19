@@ -56,7 +56,9 @@ class EventTeamsDisplay extends ConsumerWidget {
                   physics: const NeverScrollableScrollPhysics(),
                 ),
               ),
-              if (!isUserInEvent(userId, data) && !isUserHost(userId, event))
+              if (!isUserInEvent(userId, data) &&
+                  !isUserHost(userId, event) &&
+                  event.status == EventStatus.notStarted)
                 CreateTeamButton(event),
             ],
           ),
@@ -164,7 +166,9 @@ class TeamCard extends ConsumerWidget {
                   team.name,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                if (!isUserInEvent(userId, teams) && !isUserHost(userId, event))
+                if (!isUserInEvent(userId, teams) &&
+                    !isUserHost(userId, event) &&
+                    event.status == EventStatus.notStarted)
                   ElevatedButton(
                     onPressed: () async {
                       final response = await teamRepository.joinTeam(team.id);
@@ -187,7 +191,8 @@ class TeamCard extends ConsumerWidget {
                   // this is costing us a lot of reads just to check usernames
                   Text(team.members[index].name),
                   if (userId == team.members[index].id &&
-                      userId != team.captainId)
+                      userId != team.captainId &&
+                      event.status == EventStatus.notStarted)
                     ElevatedButton(
                       onPressed: () async {
                         final response =
@@ -206,7 +211,8 @@ class TeamCard extends ConsumerWidget {
                       child: const Text("Leave Team"),
                     ),
                   if (userId == team.members[index].id &&
-                      userId == team.captainId)
+                      userId == team.captainId &&
+                      event.status == EventStatus.notStarted)
                     ElevatedButton(
                       onPressed: () async {
                         final response =

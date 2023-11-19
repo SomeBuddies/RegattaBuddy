@@ -22,11 +22,12 @@ Event _$EventFromJson(Map<String, dynamic> json) {
 mixin _$Event {
   @JsonKey(includeFromJson: false, includeToJson: false)
   String get id => throw _privateConstructorUsedError;
-  String get hostId => throw _privateConstructorUsedError;
   @LatLngConverter()
   List<LatLng> get route => throw _privateConstructorUsedError;
   @LatLngConverter()
   LatLng get location => throw _privateConstructorUsedError;
+  EventStatus get status => throw _privateConstructorUsedError;
+  String get hostId => throw _privateConstructorUsedError;
   DateTime get date => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
@@ -43,9 +44,10 @@ abstract class $EventCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(includeFromJson: false, includeToJson: false) String id,
-      String hostId,
       @LatLngConverter() List<LatLng> route,
       @LatLngConverter() LatLng location,
+      EventStatus status,
+      String hostId,
       DateTime date,
       String name,
       String description});
@@ -65,9 +67,10 @@ class _$EventCopyWithImpl<$Res, $Val extends Event>
   @override
   $Res call({
     Object? id = null,
-    Object? hostId = null,
     Object? route = null,
     Object? location = null,
+    Object? status = null,
+    Object? hostId = null,
     Object? date = null,
     Object? name = null,
     Object? description = null,
@@ -77,10 +80,6 @@ class _$EventCopyWithImpl<$Res, $Val extends Event>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      hostId: null == hostId
-          ? _value.hostId
-          : hostId // ignore: cast_nullable_to_non_nullable
-              as String,
       route: null == route
           ? _value.route
           : route // ignore: cast_nullable_to_non_nullable
@@ -89,6 +88,14 @@ class _$EventCopyWithImpl<$Res, $Val extends Event>
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable
               as LatLng,
+      status: null == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as EventStatus,
+      hostId: null == hostId
+          ? _value.hostId
+          : hostId // ignore: cast_nullable_to_non_nullable
+              as String,
       date: null == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
@@ -113,9 +120,10 @@ abstract class _$$_EventCopyWith<$Res> implements $EventCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(includeFromJson: false, includeToJson: false) String id,
-      String hostId,
       @LatLngConverter() List<LatLng> route,
       @LatLngConverter() LatLng location,
+      EventStatus status,
+      String hostId,
       DateTime date,
       String name,
       String description});
@@ -131,9 +139,10 @@ class __$$_EventCopyWithImpl<$Res> extends _$EventCopyWithImpl<$Res, _$_Event>
   @override
   $Res call({
     Object? id = null,
-    Object? hostId = null,
     Object? route = null,
     Object? location = null,
+    Object? status = null,
+    Object? hostId = null,
     Object? date = null,
     Object? name = null,
     Object? description = null,
@@ -143,10 +152,6 @@ class __$$_EventCopyWithImpl<$Res> extends _$EventCopyWithImpl<$Res, _$_Event>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      hostId: null == hostId
-          ? _value.hostId
-          : hostId // ignore: cast_nullable_to_non_nullable
-              as String,
       route: null == route
           ? _value._route
           : route // ignore: cast_nullable_to_non_nullable
@@ -155,6 +160,14 @@ class __$$_EventCopyWithImpl<$Res> extends _$EventCopyWithImpl<$Res, _$_Event>
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable
               as LatLng,
+      status: null == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as EventStatus,
+      hostId: null == hostId
+          ? _value.hostId
+          : hostId // ignore: cast_nullable_to_non_nullable
+              as String,
       date: null == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
@@ -176,9 +189,10 @@ class __$$_EventCopyWithImpl<$Res> extends _$EventCopyWithImpl<$Res, _$_Event>
 class _$_Event extends _Event {
   const _$_Event(
       {@JsonKey(includeFromJson: false, includeToJson: false) this.id = '',
-      required this.hostId,
       @LatLngConverter() required final List<LatLng> route,
       @LatLngConverter() required this.location,
+      this.status = EventStatus.notStarted,
+      required this.hostId,
       required this.date,
       required this.name,
       required this.description})
@@ -191,8 +205,6 @@ class _$_Event extends _Event {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   final String id;
-  @override
-  final String hostId;
   final List<LatLng> _route;
   @override
   @LatLngConverter()
@@ -206,6 +218,11 @@ class _$_Event extends _Event {
   @LatLngConverter()
   final LatLng location;
   @override
+  @JsonKey()
+  final EventStatus status;
+  @override
+  final String hostId;
+  @override
   final DateTime date;
   @override
   final String name;
@@ -214,7 +231,7 @@ class _$_Event extends _Event {
 
   @override
   String toString() {
-    return 'Event(id: $id, hostId: $hostId, route: $route, location: $location, date: $date, name: $name, description: $description)';
+    return 'Event(id: $id, route: $route, location: $location, status: $status, hostId: $hostId, date: $date, name: $name, description: $description)';
   }
 
   @override
@@ -223,10 +240,11 @@ class _$_Event extends _Event {
         (other.runtimeType == runtimeType &&
             other is _$_Event &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.hostId, hostId) || other.hostId == hostId) &&
             const DeepCollectionEquality().equals(other._route, _route) &&
             (identical(other.location, location) ||
                 other.location == location) &&
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.hostId, hostId) || other.hostId == hostId) &&
             (identical(other.date, date) || other.date == date) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.description, description) ||
@@ -238,9 +256,10 @@ class _$_Event extends _Event {
   int get hashCode => Object.hash(
       runtimeType,
       id,
-      hostId,
       const DeepCollectionEquality().hash(_route),
       location,
+      status,
+      hostId,
       date,
       name,
       description);
@@ -262,9 +281,10 @@ class _$_Event extends _Event {
 abstract class _Event extends Event {
   const factory _Event(
       {@JsonKey(includeFromJson: false, includeToJson: false) final String id,
-      required final String hostId,
       @LatLngConverter() required final List<LatLng> route,
       @LatLngConverter() required final LatLng location,
+      final EventStatus status,
+      required final String hostId,
       required final DateTime date,
       required final String name,
       required final String description}) = _$_Event;
@@ -276,13 +296,15 @@ abstract class _Event extends Event {
   @JsonKey(includeFromJson: false, includeToJson: false)
   String get id;
   @override
-  String get hostId;
-  @override
   @LatLngConverter()
   List<LatLng> get route;
   @override
   @LatLngConverter()
   LatLng get location;
+  @override
+  EventStatus get status;
+  @override
+  String get hostId;
   @override
   DateTime get date;
   @override

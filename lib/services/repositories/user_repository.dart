@@ -3,8 +3,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:logger/logger.dart';
 import 'package:regatta_buddy/extensions/transaction_extension.dart';
-import 'package:regatta_buddy/models/auth_state.dart';
-import 'package:regatta_buddy/providers/auth/auth_state_notifier.dart';
 import 'package:regatta_buddy/providers/firebase_providers.dart';
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:regatta_buddy/models/user_data.dart';
@@ -44,12 +42,10 @@ class UserRepository {
   }
 
   Future<Either<String, UserData>> getCurrentUserData() async {
-    final AuthState authState = _ref.watch(authStateNotiferProvider);
+    final user = _ref.read(firebaseAuthProvider).currentUser;
 
-    return authState.maybeWhen(
-      orElse: () => throw Exception("User not logged in"),
-      authenticated: (user) => getUserData(user.uid),
-    );
+    if (user == null) return left("User not logged in");
+    return getUserData(user.uid);
   }
 
   /// Checks if user is already participating in the event.

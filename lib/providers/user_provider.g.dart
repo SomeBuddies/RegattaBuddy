@@ -154,11 +154,11 @@ class _UserDataProviderElement extends FutureProviderElement<UserData>
   String get uid => (origin as UserDataProvider).uid;
 }
 
-String _$currentUserDataHash() => r'42c968c61d2b29ab9b8008ff88d058e9ec61ae32';
+String _$currentUserDataHash() => r'308dc2babd10a44aca952c297ee05edbb4f23408';
 
 /// See also [CurrentUserData].
 @ProviderFor(CurrentUserData)
-final currentUserDataProvider = FutureProvider<UserData>.internal(
+final currentUserDataProvider = AutoDisposeFutureProvider<UserData>.internal(
   CurrentUserData,
   name: r'currentUserDataProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -168,6 +168,6 @@ final currentUserDataProvider = FutureProvider<UserData>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef CurrentUserDataRef = FutureProviderRef<UserData>;
+typedef CurrentUserDataRef = AutoDisposeFutureProviderRef<UserData>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

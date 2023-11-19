@@ -1,25 +1,37 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:regatta_buddy/extensions/transaction_extension.dart';
 import 'package:regatta_buddy/models/event.dart';
+import 'package:regatta_buddy/providers/firebase_providers.dart';
 
 class EventRepository {
-  final FirebaseFirestore _firestore;
-  final CollectionReference _events_collection;
+  final Ref _ref;
 
-  EventRepository(this._firestore)
-      : _events_collection = _firestore.collection('events');
+  EventRepository(this._ref);
 
-  void addEvent(Event event) {
-    _events_collection.add(event.toJson());
+  FirebaseFirestore get _firestore => _ref.read(firebaseFirestoreProvider);
+  CollectionReference<Map<String, dynamic>> get colRef =>
+      _firestore.collection('events');
+
+  Future<String> addEvent(Event event, {Transaction? transaction}) async {
+    final docRef = await transaction.maybeAdd(colRef, event.toJson());
+    return docRef.id;
+  }
+
+  void updateEvent(String eventId, Event event, {Transaction? transaction}) {
+    final docRef = colRef.doc(eventId);
+
+    transaction.maybeUpdate(docRef, event.toJson());
   }
 
   Future<Event> getEvent(String id) async {
-    final doc = await _events_collection.doc(id).get();
+    final doc = await colRef.doc(id).get();
     return Event.fromDocument(doc);
   }
 
   Future<List<Event>> getEvents() async {
-    final query = await _events_collection.get();
+    final query = await colRef.get();
     return query.docs.map((e) => Event.fromDocument(e)).toList();
   }
 
@@ -42,7 +54,7 @@ class EventRepository {
   }
 
   Future<List<Event>> getFutureEvents() async {
-    final query = await _events_collection
+    final query = await colRef
         .where(
           "date",
           isGreaterThan: DateTime.now()
