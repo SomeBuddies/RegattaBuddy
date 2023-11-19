@@ -4,12 +4,14 @@ class Message {
   final String? teamId;
   final String? value;
   final String timestamp;
+  String? teamName;
 
   Message(
       {required this.type,
       required this.receiverType,
       this.teamId,
       this.value,
+      this.teamName,
       required this.timestamp});
 
   Message.fromJson(Map<String, String> json)
@@ -53,7 +55,9 @@ enum MessageType {
   directedTextMessage,
   pointsAssignment,
   roundStarted,
-  roundFinished
+  roundFinished,
+  helpRequest,
+  protest,
 }
 
 enum MessageReceiverType { all, referee, team }

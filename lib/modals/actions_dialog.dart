@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:regatta_buddy/modals/action_button.dart';
 import 'package:regatta_buddy/modals/add_score_form.dart';
 import 'package:regatta_buddy/models/message.dart';
+import 'package:regatta_buddy/models/team.dart';
 import 'package:regatta_buddy/pages/race/messages_list.dart';
 import 'package:regatta_buddy/utils/constants.dart' as constants;
 
@@ -48,8 +51,8 @@ Future<void> showActionsDialog(
   }
 }
 
-Future<void> showSelectWithInputDialog(BuildContext context,
-    List<String> options, String eventId, int round) async {
+Future<void> showSelectWithInputDialog(
+    BuildContext context, List<Team> teams, String eventId, int round) async {
   await Future.delayed(const Duration(seconds: 0));
 
   if (context.mounted) {
@@ -71,7 +74,7 @@ Future<void> showSelectWithInputDialog(BuildContext context,
                 padding: const EdgeInsets.all(16),
                 child: SizedBox(
                   height: 270,
-                  child: AddScoreForm(options, eventId, round),
+                  child: AddScoreForm(teams, eventId, round),
                 ),
               ),
             ),
@@ -82,7 +85,8 @@ Future<void> showSelectWithInputDialog(BuildContext context,
   }
 }
 
-Future<void> showMessagesDialog(BuildContext context, List<Message> messages) async {
+Future<void> showMessagesDialog(
+    BuildContext context, List<Message> messages) async {
   await Future.delayed(const Duration(seconds: 0));
 
   if (context.mounted) {
@@ -98,7 +102,6 @@ Future<void> showMessagesDialog(BuildContext context, List<Message> messages) as
           content: SizedBox(
             height: 400,
             child: SingleChildScrollView(
-
               child: Column(
                 children: messages.map((message) {
                   return Padding(
@@ -109,6 +112,55 @@ Future<void> showMessagesDialog(BuildContext context, List<Message> messages) as
               ),
             ),
           ),
+        );
+      },
+    );
+  }
+}
+
+Future<void> showDisappearingMessageDialog(
+    BuildContext context, Message message, {String? customTitle}) async {
+  Timer? dialogTimer;
+
+  if (context.mounted) {
+    await showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (BuildContext cxt) {
+        dialogTimer = Timer(const Duration(seconds: 5), () => Navigator.of(context).pop());
+        return WillPopScope(
+            onWillPop: () async {
+              dialogTimer?.cancel();
+              return true;
+            },
+            child: AlertDialog(
+              title: customTitle != null ? Text(customTitle): const Text('Message'),
+              shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(constants.elementsBorderRadius),
+              ),
+              content: SizedBox(
+                height: 200,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: MessageListTile(message: message),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          dialogTimer?.cancel();
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text("OK"),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
         );
       },
     );

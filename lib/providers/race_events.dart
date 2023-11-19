@@ -25,7 +25,22 @@ Stream<Map<String, List<int>>> teamScores(TeamScoresRef ref, String eventId) {
 
     final scores = data.map((key, value) {
       final teamId = key as String;
-      final rounds = value as List<dynamic>;
+      List<dynamic> rounds = [];
+
+      // normalize the data to be a map
+      if (value is List) value = value.asMap();
+
+      int maxRound = 0;
+      for (var key in value.keys) {
+        if (key is int && key > maxRound) maxRound = key;
+        if (key is String && int.parse(key) > maxRound) maxRound = int.parse(key);
+      }
+      rounds = List<dynamic>.filled(maxRound + 1, Map.of({'score': 0}));
+      for (var key in value.keys) {
+        logger.i("key: $key, value: ${value[key]}");
+        if (key is String) rounds[int.parse(key)] = value[key];
+        if (key is int) rounds[key] = value[key];
+      }
 
       final scores = rounds.map((round) {
         return round['score'] as int;

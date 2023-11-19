@@ -3,18 +3,19 @@ import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:regatta_buddy/models/assigned_points_in_round.dart';
+import 'package:regatta_buddy/models/team.dart';
 import 'package:regatta_buddy/providers/firebase_writer_service_provider.dart';
 import 'package:regatta_buddy/services/event_message_sender.dart';
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 
 class AddScoreForm extends ConsumerStatefulWidget {
   final logger = getLogger('AddScoreForm');
-  final List<String> selectOptions;
+  final List<Team> teams;
   final String eventId;
   final int round;
 
   AddScoreForm(
-    this.selectOptions,
+    this.teams,
     this.eventId,
     this.round, {
     super.key,
@@ -27,14 +28,14 @@ class AddScoreForm extends ConsumerStatefulWidget {
 class _AddScoreFormState extends ConsumerState<AddScoreForm> {
   static final RegExp allowNegativeAndPositiveNumbersRegExp =
       RegExp(r'^-?\d{0,5}');
-  late String selectedTeam;
+  late Team selectedTeam;
 
   final pointsController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
-    selectedTeam = widget.selectOptions[0];
+    selectedTeam = widget.teams[0];
     super.initState();
   }
 
@@ -45,19 +46,19 @@ class _AddScoreFormState extends ConsumerState<AddScoreForm> {
       child: Column(
         children: [
           const Text("Select a team and add points"),
-          DropdownButton<String>(
+          DropdownButton<Team>(
             value: selectedTeam,
-            items: widget.selectOptions
-                .map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
+            items: widget.teams
+                .map<DropdownMenuItem<Team>>((Team value) {
+              return DropdownMenuItem<Team>(
                 value: value,
                 child: Text(
-                  value,
+                  value.name,
                   style: const TextStyle(fontSize: 30),
                 ),
               );
             }).toList(),
-            onChanged: (String? newValue) {
+            onChanged: (Team? newValue) {
               setState(() {
                 selectedTeam = newValue!;
               });
@@ -135,10 +136,11 @@ class _AddScoreFormState extends ConsumerState<AddScoreForm> {
   Future<Either<String, String>> updateTeamPoints() async {
     final firebaseWriterService = ref.watch(firebaseWriterServiceProvider);
 
+
     try {
       final currentScoreResponse = await firebaseWriterService.getTeamScore(
         widget.eventId,
-        selectedTeam,
+        selectedTeam.id,
         widget.round,
       );
 
@@ -160,12 +162,12 @@ class _AddScoreFormState extends ConsumerState<AddScoreForm> {
 
       final response = await firebaseWriterService.setPointsToTeam(
         widget.eventId,
-        selectedTeam,
+        selectedTeam.id,
         widget.round,
         newScore,
       );
 
-      EventMessageSender.assignPoints(widget.eventId, selectedTeam, AssignedPointsInRound(widget.round, points).toString());
+      EventMessageSender.assignPoints(widget.eventId, selectedTeam.id, AssignedPointsInRound(widget.round, points).toString());
 
       if (response.isLeft()) {
         throw Exception(response.fold((l) => l, (r) => r));

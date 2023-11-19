@@ -70,7 +70,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
     super.didChangeDependencies();
   }
 
-  addPointsHandler(List<String> teams) async {
+  addPointsHandler(List<Team> teams) async {
     await showSelectWithInputDialog(context, teams, event.id, round);
   }
 
@@ -157,7 +157,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
     return Expanded(
       child: teamScores.when(
         data: (data) {
-          processedScores = data_helper.processScoresData(data);
+          processedScores = data_helper.processScoresData(data, eventTeams);
           if (processedScores.isNotEmpty) {
             return ListView.builder(
               padding: const EdgeInsets.only(bottom: 100),
@@ -223,7 +223,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
       ActionButton(
           iconData: Icons.control_point,
           title: "Add points",
-          onTap: () => addPointsHandler(eventTeams.map((e) => e.name).toList())),
+          onTap: () => addPointsHandler(eventTeams)),
       ActionButton(
         iconData: Icons.question_answer,
         title: "Send message",
@@ -374,17 +374,16 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
   }
 
   void onEachNewMessage(Message message) {
-    // setState(() {
-    if (!messages.contains(message)) messages.add(message);
-    // });
+    message = populateMessageWithTeamName(message);
+    saveMessageInMemory(message);
   }
 
   void onStartEventMessage(Message message) {
     setState(() {
       eventStatus = EventStatus.inProgress;
       round = 0;
-      ref.read(currentRoundProvider(event.id).notifier).set(round);
     });
+    ref.read(currentRoundProvider(event.id).notifier).set(round);
   }
 
   void onFinishEventMessage(Message message) {
@@ -404,12 +403,11 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
   void onRoundStartedMessage(Message message) {
     setState(() {
       round = int.parse(message.value!);
-      ref.read(currentRoundProvider(event.id).notifier).set(round);
       roundStatus = RoundStatus.started;
     });
-
-    addNotification("Round $round started");
+    ref.read(currentRoundProvider(event.id).notifier).set(round);
     timer.startFrom(message.convertedTimestamp);
+    addNotification("Round $round started");
   }
 
   void addNotification(String title) {
@@ -439,6 +437,21 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
   }
 
   String getTeamName(String teamId) {
-    return eventTeams.firstWhere((element) => element.id == teamId, orElse: () => const Team(name: "unknown", captainId: "unknown")).name;
+    return eventTeams.firstWhere((element) => element.id == teamId, orElse: () {
+      return const Team(name: "unknown", captainId: "unknown");
+    }).name;
+  }
+
+  Message populateMessageWithTeamName(Message message) {
+    if (message.teamId != null) {
+      message.teamName = getTeamName(message.teamId!);
+    }
+    return message;
+  }
+
+  void saveMessageInMemory(Message message) {
+    setState(() {
+      if (!messages.contains(message)) messages.add(message);
+    });
   }
 }
