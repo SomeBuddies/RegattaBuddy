@@ -41,7 +41,6 @@ class EventMessageHandler {
       final message = Message.fromJson(messageData);
 
       onEachNewMessage?.call(message);
-
       if (message.isForAll() ||
           message.isForTeam(teamId) ||
           message.isForReferee(teamId)) {
@@ -61,6 +60,7 @@ class EventMessageHandler {
           case MessageType.roundFinished:
             onRoundFinishedMessage?.call(message);
           default:
+            logger.w('Unknown message type: ${message.type}');
         }
       }
     });

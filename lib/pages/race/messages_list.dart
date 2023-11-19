@@ -66,7 +66,7 @@ class MessageListTile extends StatelessWidget {
         return ListTile(
           leading: const Icon(Icons.score),
           title: Text(
-              '${assignment.points} points assigned in ${assignment.round} round to ${message.teamId}'),
+              '${assignment.points} points assigned in round ${assignment.round} to ${message.teamName ?? message.teamId}'),
           subtitle: Text(
             'Moderator at $formattedDate',
           ),
@@ -75,6 +75,32 @@ class MessageListTile extends StatelessWidget {
         return ListTile(
           leading: const Icon(Icons.cancel_outlined),
           title: const Text('Event ended'),
+          subtitle: Text(
+            'Moderator at $formattedDate',
+          ),
+        );
+      case MessageType.roundStarted:
+
+        var titleText = "Round nr ${message.value!} started";
+        if (message.value! == "0") {
+          titleText = "Warmup started";
+        }
+
+        return ListTile(
+          leading: const Icon(Icons.sports),
+          title: Text(titleText),
+          subtitle: Text(
+            'Moderator at $formattedDate',
+          ),
+        );
+      case MessageType.roundFinished:
+        var titleText = "Round nr ${message.value!} finished";
+        if (message.value! == "0") {
+          titleText = "Warmup finished";
+        }
+        return ListTile(
+          leading: const Icon(Icons.timer_sharp),
+          title: Text(titleText),
           subtitle: Text(
             'Moderator at $formattedDate',
           ),

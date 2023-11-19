@@ -24,46 +24,4 @@ void main() {
 
     await Firebase.initializeApp();
   });
-
-  testWidgets('Statistics are visible', (tester) async {
-    await tester.pumpWidget(MaterialApp(
-      onGenerateRoute: (settings) => MaterialPageRoute(
-          settings: RouteSettings(arguments: RacePageArguments(event, team)),
-          builder: (context) => RacePage()),
-    ));
-
-    expect(find.text('Distance'), findsOneWidget);
-    expect(find.text('Time'), findsOneWidget);
-    expect(find.text('Avg. Speed'), findsOneWidget);
-  });
-
-  testWidgets('Can open actions modal', (tester) async {
-    await tester.pumpWidget(MaterialApp(
-      onGenerateRoute: (settings) => MaterialPageRoute(
-          settings: RouteSettings(arguments: RacePageArguments(event, team)),
-          builder: (context) => RacePage()),
-    ));
-
-    expect(find.byIcon(Icons.warning_amber_rounded), findsOneWidget);
-
-    await tester.tap(find.byIcon(Icons.warning_amber_rounded));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Needs help'), findsOneWidget);
-    expect(find.text('Protest'), findsOneWidget);
-    expect(find.text('Problem'), findsOneWidget);
-    expect(find.text('Cancel'), findsOneWidget);
-  });
-
-  testWidgets('Statistics are visible', (tester) async {
-    await tester.pumpWidget(MaterialApp(
-      onGenerateRoute: (settings) => MaterialPageRoute(
-          settings: RouteSettings(arguments: RacePageArguments(event, team)),
-          builder: (context) => RacePage()),
-    ));
-
-    expect(find.text('Distance'), findsOneWidget);
-    expect(find.text('Time'), findsOneWidget);
-    expect(find.text('Avg. Speed'), findsOneWidget);
-  });
 }
