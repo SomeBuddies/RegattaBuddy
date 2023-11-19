@@ -10,6 +10,8 @@ class LocationSender {
   StreamSubscription<Position>? positionStream;
   bool _isOn = false;
 
+  int round = 0;
+
   LocationSender(this.setErrorMessage);
 
   Future<bool> _ensurePermissions() async {
@@ -60,8 +62,11 @@ class LocationSender {
             'lastPosition':
                 '${position.latitude.toString()}, ${position.longitude.toString()}'
           });
-          // todo remove round mock when message nextRound created
-          teamReference.child('positions').child('rounds').child('0').update({
+          teamReference
+              .child('positions')
+              .child('rounds')
+              .child(round.toString())
+              .update({
             position.timestamp!.millisecondsSinceEpoch.toString():
                 '${position.latitude.toString()}, ${position.longitude.toString()}',
           });

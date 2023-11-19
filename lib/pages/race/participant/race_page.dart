@@ -112,6 +112,7 @@ class _RacePageState extends ConsumerState<RacePage> {
     setState(() {
       round = int.parse(message.value!);
     });
+    locator?.round = round;
     ref.read(currentRoundProvider(event.id).notifier).set(round);
     ref.read(currentRoundStatusProvider.notifier).set(RoundStatus.started);
     timer.startFrom(message.convertedTimestamp);
