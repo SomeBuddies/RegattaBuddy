@@ -96,6 +96,7 @@ class _RacePageState extends ConsumerState<RacePage> {
   }
 
   void onRoundFinishedMessage(Message message) {
+    locator?.stop();
     ref.read(currentRoundStatusProvider.notifier).set(RoundStatus.finished);
     saveMessageInMemory(message);
     showDialogIfNewMessage(message);
@@ -113,6 +114,7 @@ class _RacePageState extends ConsumerState<RacePage> {
       round = int.parse(message.value!);
     });
     locator?.round = round;
+    locator?.start(event.id, team.id);
     ref.read(currentRoundProvider(event.id).notifier).set(round);
     ref.read(currentRoundStatusProvider.notifier).set(RoundStatus.started);
     timer.startFrom(message.convertedTimestamp);
@@ -168,8 +170,6 @@ class _RacePageState extends ConsumerState<RacePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (eventStarted) locator?.start(event.id, team.id);
-
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         elevation: 10,
