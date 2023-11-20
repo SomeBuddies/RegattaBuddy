@@ -130,7 +130,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
 
   @override
   Widget build(BuildContext context) {
-    final teamScores = ref.watch(teamScoresProvider(event.id));
+    final teamScores = ref.watch(teamScoresProvider(event));
     final teams = ref.watch(teamsProvider(event));
 
     teams.when(
@@ -304,7 +304,11 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
   }
 
   ListTile getTeamStatsTile(
-      String teamId, String teamName, LatLng? teamPosition, int index) {
+    String teamId,
+    String teamName,
+    LatLng? teamPosition,
+    int index,
+  ) {
     return ListTile(
       dense: true,
       leading: Wrap(

@@ -1,6 +1,7 @@
 import 'package:regatta_buddy/models/event.dart';
 import 'package:regatta_buddy/services/event_message_sender.dart';
 import 'package:regatta_buddy/services/repositories/event_repository.dart';
+import 'package:regatta_buddy/services/repositories/score_repository.dart';
 import 'package:regatta_buddy/services/repositories/team_repository.dart';
 import 'package:regatta_buddy/services/repositories/user_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -23,6 +24,11 @@ TeamRepository teamRepository(TeamRepositoryRef ref, Event event) {
     ref,
     event: event,
   );
+}
+
+@Riverpod(keepAlive: true)
+ScoreRepository scoreRepository(ScoreRepositoryRef ref) {
+  return ScoreRepository(ref);
 }
 
 @Riverpod(keepAlive: true)

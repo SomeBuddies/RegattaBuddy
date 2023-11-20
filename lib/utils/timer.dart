@@ -7,9 +7,7 @@ class Timer {
   void Function(Duration)? changeCallback;
   void Function(Duration)? additionalChangeCallback;
 
-  Timer(
-      {this.changeCallback,
-      this.interval = const Duration(seconds: 1)});
+  Timer({this.changeCallback, this.interval = const Duration(seconds: 1)});
 
   void start() {
     _timer = flutter_timer.Timer.periodic(
@@ -35,13 +33,14 @@ class Timer {
     _timer?.cancel();
   }
 
-  void setAdditionalChangeCallback(void Function(Duration) callback) {
+  void setAdditionalChangeCallback(void Function(Duration)? callback) {
     additionalChangeCallback = callback;
   }
 
   void stop() {
     _timer?.cancel();
   }
+
   get duration => _duration;
 
   String get formattedDuration {
