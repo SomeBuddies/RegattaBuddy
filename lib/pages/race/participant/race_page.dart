@@ -25,6 +25,8 @@ import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/widgets/custom_error.dart';
 import 'package:regatta_buddy/widgets/rb_notification.dart';
 
+import '../../home.dart';
+
 class RacePage extends ConsumerStatefulWidget {
   final logger = getLogger('RacePage');
 
@@ -96,6 +98,7 @@ class _RacePageState extends ConsumerState<RacePage> {
   }
 
   void onRoundFinishedMessage(Message message) {
+    locator?.stop();
     ref.read(currentRoundStatusProvider.notifier).set(RoundStatus.finished);
     saveMessageInMemory(message);
     showDialogIfNewMessage(message);
@@ -113,6 +116,7 @@ class _RacePageState extends ConsumerState<RacePage> {
       round = int.parse(message.value!);
     });
     locator?.round = round;
+    locator?.start(event.id, team.id);
     ref.read(currentRoundProvider(event.id).notifier).set(round);
     ref.read(currentRoundStatusProvider.notifier).set(RoundStatus.started);
     timer.startFrom(message.convertedTimestamp);
@@ -125,8 +129,9 @@ class _RacePageState extends ConsumerState<RacePage> {
 
     Future.delayed(
         const Duration(seconds: 5),
-        () => Navigator.of(context).pushNamed(
+            () => Navigator.of(context).pushNamedAndRemoveUntil(
               RegattaDetailsPage.route,
+              ModalRoute.withName(HomePage.route),
               arguments: event,
             ));
   }
@@ -168,15 +173,13 @@ class _RacePageState extends ConsumerState<RacePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (eventStarted) locator?.start(event.id, team.id);
-
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         elevation: 10,
         onPressed: () => showActionsDialog(context),
         child: const Icon(Icons.warning_amber_rounded, size: 35),
       ),
-      appBar: const AppHeader(),
+      appBar: const AppHeader.hideAllButtons(),
       body: !isError
           ? Column(
               children: [

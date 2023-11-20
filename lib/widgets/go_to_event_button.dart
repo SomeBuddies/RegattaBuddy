@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:regatta_buddy/models/event.dart';
 import 'package:regatta_buddy/models/team.dart';
+import 'package:regatta_buddy/pages/home.dart';
 import 'package:regatta_buddy/pages/race/moderator/race_moderator_page.dart';
 import 'package:regatta_buddy/pages/race/participant/race_page.dart';
 import 'package:regatta_buddy/pages/race/participant/race_page_arguments.dart';
@@ -51,15 +52,15 @@ class GoToEventButton extends HookConsumerWidget {
             if (team == null) {
               ref.watch(teamRepositoryProvider(event)).initRealtime();
 
-              Navigator.pushNamed(
-                context,
+              Navigator.of(context).pushNamedAndRemoveUntil(
                 RaceModeratorPage.route,
+                ModalRoute.withName(HomePage.route),
                 arguments: event,
               );
             } else {
-              Navigator.pushNamed(
-                context,
+              Navigator.of(context).pushNamedAndRemoveUntil(
                 RacePage.route,
+                ModalRoute.withName(HomePage.route),
                 arguments: RacePageArguments(event, team),
               );
             }

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:regatta_buddy/extensions/string_extension.dart';
 
 import 'package:regatta_buddy/utils/constants.dart' as constants;
 import 'package:regatta_buddy/utils/external_api_constants.dart'
@@ -53,9 +54,10 @@ class _EventRouteSubPageState extends State<EventRouteSubPage> {
             mapController: _mapController,
             options: MapOptions(
               onLongPress: (tapPosition, point) {
-                Color randomColor = generateBrightColor();
+                UniqueKey uniqueKey = UniqueKey();
+                Color randomColor = uniqueKey.toString().toSeededColor();
                 Marker markerWithRandomColor = Marker(
-                  key: UniqueKey(),
+                  key: uniqueKey,
                   point: point,
                   builder: (context) => Icon(
                     Icons.circle,

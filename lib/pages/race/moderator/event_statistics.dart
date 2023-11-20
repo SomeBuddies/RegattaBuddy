@@ -48,29 +48,8 @@ class _EventStatisticsState extends ConsumerState<EventStatistics> {
       child: Padding(
         padding: const EdgeInsets.only(left: 20, right: 20, bottom: 5, top: 5),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            const Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Online",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  "2 / 7",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

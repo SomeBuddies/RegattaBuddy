@@ -125,7 +125,7 @@ class _EventCreationPageState extends ConsumerState<EventCreationPage> {
 
     ref.read(eventRepositoryProvider).addEvent(event);
 
-    Navigator.pushReplacementNamed(context, HomePage.route);
+    Navigator.of(context).popUntil(ModalRoute.withName(HomePage.route));
   }
 
   @override
@@ -154,34 +154,37 @@ class _EventCreationPageState extends ConsumerState<EventCreationPage> {
                   Expanded(
                     child: pages[step](),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context)
-                            .popUntil(ModalRoute.withName(HomePage.route)),
-                        child: const Text("Cancel"),
-                      ),
-                      Row(
-                        children: [
-                          if (step > 0)
-                            TextButton(
-                              onPressed: previousStep,
-                              child: const Text("Previous"),
-                            ),
-                          if (step < pages.length - 1)
-                            TextButton(
-                              onPressed: nextStep,
-                              child: const Text("Next"),
-                            )
-                          else
-                            TextButton(
-                              onPressed: finishEventCreation,
-                              child: const Text("Finish"),
-                            ),
-                        ],
-                      )
-                    ],
+                  Container(
+                    color: Colors.grey,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context)
+                              .popUntil(ModalRoute.withName(HomePage.route)),
+                          child: const Text("Cancel"),
+                        ),
+                        Row(
+                          children: [
+                            if (step > 0)
+                              TextButton(
+                                onPressed: previousStep,
+                                child: const Text("Previous"),
+                              ),
+                            if (step < pages.length - 1)
+                              TextButton(
+                                onPressed: nextStep,
+                                child: const Text("Next"),
+                              )
+                            else
+                              TextButton(
+                                onPressed: finishEventCreation,
+                                child: const Text("Finish"),
+                              ),
+                          ],
+                        )
+                      ],
+                    ),
                   )
                 ],
               ),
