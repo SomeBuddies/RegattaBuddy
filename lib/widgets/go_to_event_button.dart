@@ -35,8 +35,13 @@ class GoToEventButton extends HookConsumerWidget {
 
   bool isEventActive() {
     DateTime now = DateTime.now();
-    return now.isAfter(event.date.subtract(const Duration(hours: 1))) &&
-        now.isBefore(event.date.add(const Duration(days: 1)));
+    return now.isAfter(
+          event.date.subtract(const Duration(hours: 1)),
+        ) &&
+        now.isBefore(
+          event.date.add(const Duration(days: 1)),
+        ) &&
+        event.status != EventStatus.finished;
   }
 
   @override

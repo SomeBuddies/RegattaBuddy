@@ -29,6 +29,12 @@ class _RaceStatisticsState extends ConsumerState<RaceStatistics> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    widget.timer.setAdditionalChangeCallback(null);
+    super.dispose();
+  }
+
   void onTimeChange(Duration duration) {
     setState(() {
       time = duration;

@@ -185,6 +185,21 @@ class _TeamRepositoryProviderElement extends ProviderElement<TeamRepository>
   Event get event => (origin as TeamRepositoryProvider).event;
 }
 
+String _$scoreRepositoryHash() => r'3131a95e56754b933c3efee71f60b1c60a3a9226';
+
+/// See also [scoreRepository].
+@ProviderFor(scoreRepository)
+final scoreRepositoryProvider = Provider<ScoreRepository>.internal(
+  scoreRepository,
+  name: r'scoreRepositoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$scoreRepositoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef ScoreRepositoryRef = ProviderRef<ScoreRepository>;
 String _$eventMessageSenderHash() =>
     r'9469cca670fb752d6df0aa540ab3539a5885e726';
 

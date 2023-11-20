@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:fpdart/fpdart.dart';
+import 'package:regatta_buddy/extensions/exception_extension.dart';
 import 'package:regatta_buddy/models/assigned_points_in_round.dart';
 import 'package:regatta_buddy/models/event.dart';
 import 'package:regatta_buddy/models/team.dart';
-import 'package:regatta_buddy/providers/firebase_writer_service_provider.dart';
 import 'package:regatta_buddy/providers/repository_providers.dart';
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 
@@ -108,16 +107,20 @@ class _AddScoreFormState extends ConsumerState<AddScoreForm> {
           ElevatedButton(
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
-                Either<String, String> response = await updateTeamPoints();
+                try {
+                  await updateTeamPoints();
+                } on Exception catch (error) {
+                  if (!context.mounted) return;
+                  error.showErrorSnackbar(context, "Failed to add points");
+                }
 
-                String responseText =
-                    response.fold((error) => "Failed to add points", (success) {
-                  // TODO send event to db about points change
-                  return "Successfully added ${pointsController.value.text} points to $selectedTeam";
-                });
                 if (!context.mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(responseText)),
+                  SnackBar(
+                    content: Text(
+                      "Successfully added ${pointsController.value.text} points to ${selectedTeam.name}",
+                    ),
+                  ),
                 );
                 Navigator.of(context).pop();
               }
@@ -133,33 +136,20 @@ class _AddScoreFormState extends ConsumerState<AddScoreForm> {
     );
   }
 
-  Future<Either<String, String>> updateTeamPoints() async {
-    final firebaseWriterService = ref.watch(firebaseWriterServiceProvider);
+  Future<void> updateTeamPoints() async {
+    final scoreRepository = ref.watch(scoreRepositoryProvider);
 
     try {
-      final currentScoreResponse = await firebaseWriterService.getTeamScore(
+      final currentScore = await scoreRepository.getTeamScore(
         widget.event.id,
         selectedTeam.id,
         widget.round,
       );
 
-      int currentScore = 0;
-
-      currentScoreResponse.fold(
-        (error) {
-          widget.logger
-              .e("Score update failed, couldn't get current score: $error");
-          return left("Score update failed, couldn't get current score");
-        },
-        (score) {
-          currentScore = score;
-        },
-      );
-
       final points = int.parse(pointsController.value.text);
       final newScore = currentScore + points;
 
-      final response = await firebaseWriterService.setPointsToTeam(
+      await scoreRepository.setPointsToTeam(
         widget.event.id,
         selectedTeam.id,
         widget.round,
@@ -171,15 +161,10 @@ class _AddScoreFormState extends ConsumerState<AddScoreForm> {
             selectedTeam,
             AssignedPointsInRound(widget.round, points).toString(),
           );
-
-      if (response.isLeft()) {
-        throw Exception(response.fold((l) => l, (r) => r));
-      }
-    } catch (e) {
-      widget.logger.e("Score update failed: ${e.toString()}");
-      return left(e.toString());
+    } on Exception catch (error) {
+      error.log(widget.logger);
+      rethrow;
     }
-    return right("Success");
   }
 }
 

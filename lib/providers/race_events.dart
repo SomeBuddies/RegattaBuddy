@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:regatta_buddy/enums/round_status.dart';
+import 'package:regatta_buddy/models/event.dart';
 import 'package:regatta_buddy/providers/firebase_providers.dart';
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -9,18 +10,18 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'race_events.g.dart';
 
 @riverpod
-Stream<Map<String, List<int>>> teamScores(TeamScoresRef ref, String eventId) {
+Stream<Map<String, List<int>>> teamScores(TeamScoresRef ref, Event event) {
   final logger = getLogger("TeamScoresProvider");
-  logger.i("initializing a teamScore provider for $eventId");
+  logger.i("initializing a teamScore provider for ${event.id}");
   final dbRef =
-      ref.watch(firebaseRealtimeProvider).child('scores').child(eventId);
+      ref.watch(firebaseRealtimeProvider).child('scores').child(event.id);
 
   final controller = StreamController<Map<String, List<int>>>();
 
-  final subscription = dbRef.onValue.listen((DatabaseEvent event) {
-    if (event.snapshot.value == null) return;
-    if (event.snapshot.value is! Map) return;
-    final data = event.snapshot.value as Map<dynamic, dynamic>;
+  final subscription = dbRef.onValue.listen((DatabaseEvent dbEvent) {
+    if (dbEvent.snapshot.value == null) return;
+    if (dbEvent.snapshot.value is! Map) return;
+    final data = dbEvent.snapshot.value as Map<dynamic, dynamic>;
     logger.i("getting new data from firebase: ${data.toString()}");
 
     final scores = data.map((key, value) {
@@ -33,7 +34,9 @@ Stream<Map<String, List<int>>> teamScores(TeamScoresRef ref, String eventId) {
       int maxRound = 0;
       for (var key in value.keys) {
         if (key is int && key > maxRound) maxRound = key;
-        if (key is String && int.parse(key) > maxRound) maxRound = int.parse(key);
+        if (key is String && int.parse(key) > maxRound) {
+          maxRound = int.parse(key);
+        }
       }
       rounds = List<dynamic>.filled(maxRound + 1, Map.of({'score': 0}));
       for (var key in value.keys) {

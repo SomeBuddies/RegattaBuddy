@@ -6,7 +6,7 @@ part of 'race_events.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$teamScoresHash() => r'c7b5a673f3923975b6a130bb2ddbad7581f3e7a0';
+String _$teamScoresHash() => r'bb04fa20acdd30c0683c1825908ae9655853c7bf';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -40,10 +40,10 @@ class TeamScoresFamily extends Family<AsyncValue<Map<String, List<int>>>> {
 
   /// See also [teamScores].
   TeamScoresProvider call(
-    String eventId,
+    Event event,
   ) {
     return TeamScoresProvider(
-      eventId,
+      event,
     );
   }
 
@@ -52,7 +52,7 @@ class TeamScoresFamily extends Family<AsyncValue<Map<String, List<int>>>> {
     covariant TeamScoresProvider provider,
   ) {
     return call(
-      provider.eventId,
+      provider.event,
     );
   }
 
@@ -76,11 +76,11 @@ class TeamScoresProvider
     extends AutoDisposeStreamProvider<Map<String, List<int>>> {
   /// See also [teamScores].
   TeamScoresProvider(
-    String eventId,
+    Event event,
   ) : this._internal(
           (ref) => teamScores(
             ref as TeamScoresRef,
-            eventId,
+            event,
           ),
           from: teamScoresProvider,
           name: r'teamScoresProvider',
@@ -91,7 +91,7 @@ class TeamScoresProvider
           dependencies: TeamScoresFamily._dependencies,
           allTransitiveDependencies:
               TeamScoresFamily._allTransitiveDependencies,
-          eventId: eventId,
+          event: event,
         );
 
   TeamScoresProvider._internal(
@@ -101,10 +101,10 @@ class TeamScoresProvider
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.eventId,
+    required this.event,
   }) : super.internal();
 
-  final String eventId;
+  final Event event;
 
   @override
   Override overrideWith(
@@ -119,7 +119,7 @@ class TeamScoresProvider
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        eventId: eventId,
+        event: event,
       ),
     );
   }
@@ -131,21 +131,21 @@ class TeamScoresProvider
 
   @override
   bool operator ==(Object other) {
-    return other is TeamScoresProvider && other.eventId == eventId;
+    return other is TeamScoresProvider && other.event == event;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, eventId.hashCode);
+    hash = _SystemHash.combine(hash, event.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
 
 mixin TeamScoresRef on AutoDisposeStreamProviderRef<Map<String, List<int>>> {
-  /// The parameter `eventId` of this provider.
-  String get eventId;
+  /// The parameter `event` of this provider.
+  Event get event;
 }
 
 class _TeamScoresProviderElement
@@ -154,7 +154,7 @@ class _TeamScoresProviderElement
   _TeamScoresProviderElement(super.provider);
 
   @override
-  String get eventId => (origin as TeamScoresProvider).eventId;
+  Event get event => (origin as TeamScoresProvider).event;
 }
 
 String _$currentRoundHash() => r'd48aadeb0fa4c1092dbadd43f0cbbcbd6031d490';
