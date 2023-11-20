@@ -261,12 +261,13 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
           ref.read(eventMessageSenderProvider).endEvent(event);
           eventStatus = EventStatus.finished;
           Future.delayed(
-              const Duration(seconds: 5),
-              () => Navigator.of(context).pushNamedAndRemoveUntil(
-                    RegattaDetailsPage.route,
-                    ModalRoute.withName(HomePage.route),
-                    arguments: event,
-                  ));
+            const Duration(seconds: 5),
+            () => Navigator.of(context).pushNamedAndRemoveUntil(
+              RegattaDetailsPage.route,
+              ModalRoute.withName(HomePage.route),
+              arguments: event.id,
+            ),
+          );
         },
       ));
     }

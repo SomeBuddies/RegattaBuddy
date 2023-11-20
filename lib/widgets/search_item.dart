@@ -19,7 +19,7 @@ class SearchItem extends StatelessWidget {
     return GestureDetector(
       onTap: () => Navigator.of(context).pushNamed(
         RegattaDetailsPage.route,
-        arguments: event,
+        arguments: event.id,
       ),
       child: Card(
         child: Padding(
