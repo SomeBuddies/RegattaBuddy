@@ -12,9 +12,9 @@ class AppHeader extends StatefulWidget implements PreferredSizeWidget {
     Key? key,
   }) : super(key: key);
 
-  const AppHeader.hideBackArrow({
+  const AppHeader.hideAllButtons({
     this.automaticallyImplyLeading = false,
-    this.showAuthButton = true,
+    this.showAuthButton = false,
     Key? key,
   }) : super(key: key);
 

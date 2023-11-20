@@ -140,7 +140,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
     );
 
     return Scaffold(
-      appBar: const AppHeader(),
+      appBar: const AppHeader.hideAllButtons(),
       body: Column(
         children: [
           Flexible(

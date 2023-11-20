@@ -176,7 +176,7 @@ class _RacePageState extends ConsumerState<RacePage> {
         onPressed: () => showActionsDialog(context),
         child: const Icon(Icons.warning_amber_rounded, size: 35),
       ),
-      appBar: const AppHeader(),
+      appBar: const AppHeader.hideAllButtons(),
       body: !isError
           ? Column(
               children: [
