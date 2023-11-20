@@ -25,6 +25,8 @@ import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/widgets/custom_error.dart';
 import 'package:regatta_buddy/widgets/rb_notification.dart';
 
+import '../../home.dart';
+
 class RacePage extends ConsumerStatefulWidget {
   final logger = getLogger('RacePage');
 
@@ -127,8 +129,9 @@ class _RacePageState extends ConsumerState<RacePage> {
 
     Future.delayed(
         const Duration(seconds: 5),
-        () => Navigator.of(context).pushNamed(
+            () => Navigator.of(context).pushNamedAndRemoveUntil(
               RegattaDetailsPage.route,
+              ModalRoute.withName(HomePage.route),
               arguments: event,
             ));
   }

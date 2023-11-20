@@ -24,6 +24,8 @@ import 'package:regatta_buddy/widgets/rb_notification.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../models/event.dart';
+import '../../home.dart';
+import '../../regatta_details.dart';
 
 class RaceModeratorPage extends ConsumerStatefulWidget {
   final logger = getLogger('RaceModeratorPage');
@@ -258,6 +260,13 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
         onTap: () {
           ref.read(eventMessageSenderProvider).endEvent(event);
           eventStatus = EventStatus.finished;
+          Future.delayed(
+              const Duration(seconds: 5),
+              () => Navigator.of(context).pushNamedAndRemoveUntil(
+                    RegattaDetailsPage.route,
+                    ModalRoute.withName(HomePage.route),
+                    arguments: event,
+                  ));
         },
       ));
     }
