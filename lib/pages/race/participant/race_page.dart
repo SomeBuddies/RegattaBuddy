@@ -128,12 +128,13 @@ class _RacePageState extends ConsumerState<RacePage> {
     saveMessageInMemory(message);
 
     Future.delayed(
-        const Duration(seconds: 5),
-            () => Navigator.of(context).pushNamedAndRemoveUntil(
-              RegattaDetailsPage.route,
-              ModalRoute.withName(HomePage.route),
-              arguments: event,
-            ));
+      const Duration(seconds: 5),
+      () => Navigator.of(context).pushNamedAndRemoveUntil(
+        RegattaDetailsPage.route,
+        ModalRoute.withName(HomePage.route),
+        arguments: event.id,
+      ),
+    );
   }
 
   void onDirectedTextMessage(Message message) {
@@ -199,10 +200,9 @@ class _RacePageState extends ConsumerState<RacePage> {
         onTap: () => {EventMessageSender.requestHelp(event.id, team.id)},
       ),
       ActionButton(
-        iconData: Icons.sports_kabaddi,
-        title: "Protest",
-        onTap: () => showProtestDialog(context, event.id, team.id)
-      ),
+          iconData: Icons.sports_kabaddi,
+          title: "Protest",
+          onTap: () => showProtestDialog(context, event.id, team.id)),
       ActionButton(
           iconData: Icons.medical_services_outlined,
           title: "Problem",

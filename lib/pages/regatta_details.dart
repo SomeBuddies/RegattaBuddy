@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:regatta_buddy/models/event.dart';
+import 'package:regatta_buddy/providers/event_details/event_provider.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/widgets/event_details_display.dart';
 import 'package:regatta_buddy/widgets/event_score_display.dart';
@@ -15,21 +16,34 @@ class RegattaDetailsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final event = ModalRoute.of(context)!.settings.arguments as Event;
+    final eventId = ModalRoute.of(context)!.settings.arguments as String;
+    final asyncEvent = ref.watch(eventProvider(eventId));
 
     return Scaffold(
       appBar: const AppHeader(),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            GoToEventButton(event),
-            EventDetailsDisplay(event),
-            switch (event.status) {
-              EventStatus.finished => EventScoreDisplay(event),
-              _ => EventTeamsDisplay(event),
-            }
-          ],
-        ),
+      body: RefreshIndicator(
+        onRefresh: () async => ref.refresh(eventProvider(eventId)),
+        child: switch (asyncEvent) {
+          AsyncData(value: final event) => SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                children: [
+                  GoToEventButton(event),
+                  EventDetailsDisplay(event),
+                  switch (event.status) {
+                    EventStatus.finished => EventScoreDisplay(event),
+                    _ => EventTeamsDisplay(event),
+                  }
+                ],
+              ),
+            ),
+          AsyncLoading() => const Center(
+              child: CircularProgressIndicator(),
+            ),
+          _ => const Center(
+              child: Text("Something went wrong while loading event"),
+            ),
+        },
       ),
     );
   }
