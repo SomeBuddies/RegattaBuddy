@@ -9,6 +9,7 @@ import 'package:regatta_buddy/models/event.dart';
 import 'package:regatta_buddy/models/message.dart';
 import 'package:regatta_buddy/models/team.dart';
 import 'package:regatta_buddy/pages/race/messages_list.dart';
+import 'package:regatta_buddy/services/repositories/team_repository.dart';
 import 'package:regatta_buddy/utils/constants.dart' as constants;
 
 Future<void> showActionsDialog(
@@ -55,7 +56,11 @@ Future<void> showActionsDialog(
 }
 
 Future<void> showSelectWithInputDialog(
-    BuildContext context, List<Team> teams, Event event, int round) async {
+  BuildContext context,
+  List<Team> teams,
+  Event event,
+  int round,
+) async {
   await Future.delayed(const Duration(seconds: 0));
 
   if (context.mounted) {
@@ -89,7 +94,9 @@ Future<void> showSelectWithInputDialog(
 }
 
 Future<void> showMessagesDialog(
-    BuildContext context, List<Message> messages) async {
+  BuildContext context,
+  List<Message> messages,
+) async {
   await Future.delayed(const Duration(seconds: 0));
 
   if (context.mounted) {
@@ -122,8 +129,11 @@ Future<void> showMessagesDialog(
 }
 
 Future<void> showDisappearingMessageDialog(
-    BuildContext context, Message message,
-    {String? customTitle, Duration? duration}) async {
+  BuildContext context,
+  Message message, {
+  String? customTitle,
+  Duration? duration,
+}) async {
   Timer? dialogTimer;
 
   if (context.mounted) {
@@ -176,7 +186,10 @@ Future<void> showDisappearingMessageDialog(
 }
 
 Future<void> showReportProblemDialog(
-    BuildContext context, String eventId, String teamId) async {
+  BuildContext context,
+  String eventId,
+  String teamId,
+) async {
   await Future.delayed(const Duration(seconds: 0));
 
   if (context.mounted) {
@@ -209,18 +222,16 @@ Future<void> showReportProblemDialog(
   }
 }
 
+// Todo use consumer instead of passing repository
 Future<void> showProtestDialog(
-    BuildContext context, String eventId, String teamId) async {
+  BuildContext context,
+  String eventId,
+  String teamId,
+  TeamRepository repo,
+) async {
   await Future.delayed(const Duration(seconds: 0));
 
-  // TODO pomoc krzysia needed
-  List<Team> teams = [
-    const Team(
-      name: 'Foki',
-      captainId: '123123',
-      members: [TeamMember(id: 'iddd', name: 'name')],
-    )
-  ];
+  List<Team> teams = await repo.getTeams();
 
   if (context.mounted) {
     await showDialog(

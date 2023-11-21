@@ -16,6 +16,7 @@ import 'package:regatta_buddy/pages/race/participant/race_page_arguments.dart';
 import 'package:regatta_buddy/pages/race/participant/race_statistics.dart';
 import 'package:regatta_buddy/pages/regatta_details.dart';
 import 'package:regatta_buddy/providers/race_events.dart';
+import 'package:regatta_buddy/providers/repository_providers.dart';
 import 'package:regatta_buddy/services/event_message_handler.dart';
 import 'package:regatta_buddy/services/event_message_sender.dart';
 import 'package:regatta_buddy/services/locator.dart';
@@ -202,7 +203,8 @@ class _RacePageState extends ConsumerState<RacePage> {
       ActionButton(
           iconData: Icons.sports_kabaddi,
           title: "Protest",
-          onTap: () => showProtestDialog(context, event.id, team.id)),
+          onTap: () => showProtestDialog(context, event.id, team.id,
+              ref.read(teamRepositoryProvider(event)))),
       ActionButton(
           iconData: Icons.medical_services_outlined,
           title: "Problem",
