@@ -108,18 +108,13 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                             signUp(context, registrationData);
                           }
                         },
+                        style: ElevatedButton.styleFrom(
+                          shape: const StadiumBorder(),
+                          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                        ),
                         child: const Text('Sign Up'),
                       ),
                     ),
-                    StreamBuilder<User?>(
-                        stream: FirebaseAuth.instance.authStateChanges(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return const Text('Logged in');
-                          } else {
-                            return const Text('Not logged in');
-                          }
-                        }),
                   ]),
             )));
   }
