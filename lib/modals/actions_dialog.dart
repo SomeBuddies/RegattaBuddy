@@ -113,7 +113,7 @@ Future<void> showMessagesDialog(
             height: 400,
             child: SingleChildScrollView(
               child: Column(
-                children: messages.map((message) {
+                children: messages.reversed.map((message) {
                   return Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: MessageListTile(message: message),

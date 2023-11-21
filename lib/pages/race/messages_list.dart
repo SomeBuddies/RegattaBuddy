@@ -16,6 +16,7 @@ class MessagesList extends StatelessWidget {
     return Expanded(
       child: ListView.builder(
         itemCount: messages.length,
+        reverse: true,
         itemBuilder: (BuildContext context, int index) {
           return MessageListTile(message: messages[index]);
         },
