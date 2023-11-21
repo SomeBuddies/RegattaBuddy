@@ -280,7 +280,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
             onTap: () => addPointsHandler(eventTeams)),
       ActionButton(
           iconData: Icons.format_list_bulleted_outlined,
-          title: "Show events",
+          title: "Show messages",
           onTap: () => showMessagesHandler()),
       ActionButton(
         iconData: Icons.close_outlined,
