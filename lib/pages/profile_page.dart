@@ -29,39 +29,73 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     return Scaffold(
       appBar: const AppHeader.hideAuthButton(),
       body: Container(
-        color: Colors.green,
         constraints: const BoxConstraints.expand(),
+        padding: const EdgeInsets.all(20),
         child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              const Text("Profile", style: TextStyle(fontSize: 30)),
-              const SizedBox(height: 20),
-              Text("user: ${userData.asData?.value.email ?? "Loading..."}",
-                  style: const TextStyle(fontSize: 20)),
-              Text("name: ${userData.asData?.value.firstName ?? "Loading..."} ",
-                  style: const TextStyle(fontSize: 20)),
-              const SizedBox(height: 20),
-              Card(
-                shape: const StadiumBorder(),
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                clipBehavior: Clip.antiAlias,
-                elevation: 1,
-                child: ListTile(
-                  onTap: () {
-                    showLoadingSpinner();
-                    Navigator.of(context)
-                        .popUntil(ModalRoute.withName(HomePage.route));
-                    ref.read(authStateNotiferProvider.notifier).signout();
-                  },
-                  contentPadding: const EdgeInsets.only(
-                    left: 30,
-                  ),
-                  title: const Text("Logout"),
-                  subtitle: const Text(""),
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              "Profile",
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            Card(
+              shape: const StadiumBorder(),
+              elevation: 5,
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.person,
+                          size: 40,
+                          color: Colors.blue,
+                        ),
+                        const SizedBox(width: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "User: ${userData.asData?.value.email ?? "Loading..."}",
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              "Name: ${userData.asData?.value.firstName ?? "Loading..."}",
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              )
-            ]),
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                showLoadingSpinner();
+                Navigator.of(context)
+                    .popUntil(ModalRoute.withName(HomePage.route));
+                ref.read(authStateNotiferProvider.notifier).signout();
+              },
+              style: ElevatedButton.styleFrom(
+                shape: const StadiumBorder(),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+              ),
+              child: const Text(
+                "Logout",
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

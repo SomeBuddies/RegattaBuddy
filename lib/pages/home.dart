@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quickalert/quickalert.dart';
-
 import 'package:regatta_buddy/pages/event_creation/event_creation.dart';
 import 'package:regatta_buddy/pages/login_page.dart';
 import 'package:regatta_buddy/pages/search_page.dart';
@@ -20,18 +19,24 @@ class HomePage extends ConsumerWidget {
   }) {
     return Card(
       shape: const StadiumBorder(),
+      color: Color(0xFF2194F0),
       margin: const EdgeInsets.symmetric(
         horizontal: 20,
       ),
       clipBehavior: Clip.antiAlias,
-      elevation: 1,
+      elevation: 5,
       child: ListTile(
         onTap: onTap,
         contentPadding: const EdgeInsets.only(
           left: 30,
         ),
-        title: Text(title),
-        subtitle: Text(text),
+        title: Text(title,
+            style: const TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold)),
+        subtitle: Text(text,
+            style: const TextStyle(color: Colors.white, fontSize: 14)),
       ),
     );
   }
@@ -56,7 +61,6 @@ class HomePage extends ConsumerWidget {
     return Scaffold(
       appBar: const AppHeader(),
       body: Container(
-        color: Colors.green,
         constraints: const BoxConstraints.expand(),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

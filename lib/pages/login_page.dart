@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -86,6 +85,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       signIn(emailController.text, passwordController.text);
                     }
                   },
+                  style: ElevatedButton.styleFrom(
+                    shape: const StadiumBorder(),
+                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                  ),
                   child: const Text('Login'),
                 ),
               ),
@@ -102,15 +105,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               Navigator.pushNamed(context, RegisterPage.route))
                   ],
                 ),
-              ),
-              StreamBuilder<User?>(
-                stream: FirebaseAuth.instance.authStateChanges(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return const Text('Logged in');
-                  }
-                  return const Text('Not logged in');
-                },
               ),
             ],
           ),
