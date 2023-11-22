@@ -30,6 +30,7 @@ class RaceMap extends ConsumerWidget {
       options: MapOptions(
         center: constants.startingPosition,
         zoom: constants.startingZoom,
+        maxZoom: 18.0,
       ),
       nonRotatedChildren: const [
         SimpleAttributionWidget(

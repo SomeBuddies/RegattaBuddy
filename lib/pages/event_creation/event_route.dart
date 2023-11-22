@@ -41,6 +41,7 @@ class _EventRouteSubPageState extends State<EventRouteSubPage> {
           child: FlutterMap(
             mapController: _mapController,
             options: MapOptions(
+              maxZoom: 18.0,
               onLongPress: (tapPosition, point) {
                 UniqueKey uniqueKey = UniqueKey();
                 Color randomColor = uniqueKey.toString().toSeededColor();
