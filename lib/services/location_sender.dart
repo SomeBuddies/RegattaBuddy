@@ -2,17 +2,27 @@ import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
+import 'package:regatta_buddy/providers/location_providers.dart';
 
 import 'package:regatta_buddy/utils/constants.dart';
+import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 
 class LocationSender {
+  Logger logger = getLogger((LocationSender).toString());
+  Ref ref;
+
   void Function(String) setErrorMessage;
   StreamSubscription<Position>? positionStream;
   bool _isOn = false;
 
   int round = 0;
 
-  LocationSender(this.setErrorMessage);
+  LocationSender(
+    this.ref, {
+    required this.setErrorMessage,
+  });
 
   Future<bool> _ensurePermissions() async {
     bool serviceEnabled;
@@ -52,6 +62,7 @@ class LocationSender {
         },
       );
       _isOn = true;
+      logger.i("Starting locator");
       positionStream =
           Geolocator.getPositionStream(locationSettings: kLocationSettings)
               .listen(
@@ -76,10 +87,13 @@ class LocationSender {
                 .child(round.toString())
                 .update(
               {
-                position.timestamp!.millisecondsSinceEpoch.toString():
+                position.timestamp.millisecondsSinceEpoch.toString():
                     '${position.latitude.toString()}, ${position.longitude.toString()}',
               },
             );
+
+            ref.read(locationSpeedProvider.notifier).speed =
+                position.speed * 3.6; //mps to kmph
           }
         },
       );

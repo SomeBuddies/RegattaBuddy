@@ -17,21 +17,27 @@ void main() {
     registerFallbackValue(mockComplexMarker(1, 10));
   });
 
-  testWidgets("Has no list tiles nor markers when rendered without markers", (tester) async {
+  testWidgets("Has no list tiles nor markers when rendered without markers",
+      (tester) async {
     // given
     List<ComplexMarker> markers = [];
 
     // when
-    await tester.pumpWidget(
-        MaterialApp(home: Scaffold(body: EventRouteSubPage(markers, (marker) {}, (marker) {}))));
+    await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+            body: EventRouteSubPage(markers, (marker) {}, (marker) {}))));
 
     // then
     expect(find.byType(ListTile), findsNothing);
-    expect(find.byType(MarkerLayer).evaluate().first.widget,
-        isA<MarkerLayer>().having((t) => t.markers.length, 'number of markers', 0));
+    expect(
+        find.byType(MarkerLayer).evaluate().first.widget,
+        isA<MarkerLayer>()
+            .having((t) => t.markers.length, 'number of markers', 0));
   });
 
-  testWidgets("Has exactly 3 list tiles and markers when rendered with 3 markers", (tester) async {
+  testWidgets(
+      "Has exactly 3 list tiles and markers when rendered with 3 markers",
+      (tester) async {
     // given
     List<ComplexMarker> markers = [
       mockComplexMarker(1, 2),
@@ -40,22 +46,26 @@ void main() {
     ];
 
     // when
-    await tester.pumpWidget(
-        MaterialApp(home: Scaffold(body: EventRouteSubPage(markers, (marker) {}, (marker) {}))));
+    await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+            body: EventRouteSubPage(markers, (marker) {}, (marker) {}))));
 
     // then
     expect(find.byType(ListTile), findsNWidgets(3));
-    expect(find.byType(MarkerLayer).evaluate().first.widget,
-        isA<MarkerLayer>().having((t) => t.markers.length, 'number of markers', 3));
+    expect(
+        find.byType(MarkerLayer).evaluate().first.widget,
+        isA<MarkerLayer>()
+            .having((t) => t.markers.length, 'number of markers', 3));
   });
 
   testWidgets("Calls addMarker function when longPress on map", (tester) async {
     // given
     List<ComplexMarker> markers = [];
-    final void Function(ComplexMarker) addMarker = MockFunction();
+    final void Function(ComplexMarker) addMarker = MockFunction().call;
 
-    await tester.pumpWidget(
-        MaterialApp(home: Scaffold(body: EventRouteSubPage(markers, addMarker, (marker) {}))));
+    await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+            body: EventRouteSubPage(markers, addMarker, (marker) {}))));
 
     // when
     await tester.longPressAt(tester.getCenter(find.byType(FlutterMap)));
@@ -63,13 +73,15 @@ void main() {
     verify(() => addMarker(any())).called(1);
   });
 
-  testWidgets("Calls removeMarker function when longPress on map", (tester) async {
+  testWidgets("Calls removeMarker function when longPress on map",
+      (tester) async {
     // given
     List<ComplexMarker> markers = [mockComplexMarker(43, 12)];
-    final void Function(ComplexMarker) removeMarker = MockFunction();
+    final void Function(ComplexMarker) removeMarker = MockFunction().call;
 
-    await tester.pumpWidget(
-        MaterialApp(home: Scaffold(body: EventRouteSubPage(markers, (marker) {}, removeMarker))));
+    await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+            body: EventRouteSubPage(markers, (marker) {}, removeMarker))));
 
     // when
     await tester.tap(find.byType(IconButton));

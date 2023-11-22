@@ -9,20 +9,20 @@ class AppHeader extends StatefulWidget implements PreferredSizeWidget {
   const AppHeader({
     this.automaticallyImplyLeading = true,
     this.showAuthButton = true,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   const AppHeader.hideAllButtons({
     this.automaticallyImplyLeading = false,
     this.showAuthButton = false,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   const AppHeader.hideAuthButton({
     this.automaticallyImplyLeading = true,
     this.showAuthButton = false,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final bool automaticallyImplyLeading;
   final bool showAuthButton;

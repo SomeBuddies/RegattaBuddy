@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:regatta_buddy/enums/round_status.dart';
+import 'package:regatta_buddy/providers/location_providers.dart';
 import 'package:regatta_buddy/providers/race_events.dart';
 import 'package:regatta_buddy/utils/constants.dart' as constants;
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
@@ -12,11 +13,11 @@ class RaceStatistics extends ConsumerStatefulWidget {
   final double height;
 
   const RaceStatistics({
-    Key? key,
     required this.eventId,
     required this.timer,
     this.height = 100,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   ConsumerState<RaceStatistics> createState() => _RaceStatisticsState();
@@ -48,6 +49,8 @@ class _RaceStatisticsState extends ConsumerState<RaceStatistics> {
   Widget build(BuildContext context) {
     final currentRound = ref.watch(currentRoundProvider(widget.eventId));
     final currentRoundStatus = ref.watch(currentRoundStatusProvider);
+
+    final currentSpeed = ref.watch(locationSpeedProvider);
 
     return Container(
       height: widget.height,
@@ -118,11 +121,11 @@ class _RaceStatisticsState extends ConsumerState<RaceStatistics> {
                 ),
               ],
             ),
-            const Column(
+            Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  "Avg. Speed",
+                const Text(
+                  "Current Speed",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20,
@@ -131,8 +134,8 @@ class _RaceStatisticsState extends ConsumerState<RaceStatistics> {
                 ),
                 Text(
                   // todo VALUE HERE
-                  "0.00km/h",
-                  style: TextStyle(
+                  "${currentSpeed.toStringAsFixed(2)}km/h",
+                  style: const TextStyle(
                     color: Colors.black,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
