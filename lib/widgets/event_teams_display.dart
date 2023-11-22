@@ -146,8 +146,13 @@ class TeamCard extends ConsumerWidget {
   final List<Team> teams;
   final BuildContext parentContext;
 
-  const TeamCard(this.team, this.event, this.teams, this.parentContext,
-      {super.key});
+  const TeamCard(
+    this.team,
+    this.event,
+    this.teams,
+    this.parentContext, {
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

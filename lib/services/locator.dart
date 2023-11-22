@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:geolocator/geolocator.dart';
 
-import '../utils/constants.dart';
+import 'package:regatta_buddy/utils/constants.dart';
 
 class LocationSender {
   void Function(String) setErrorMessage;
@@ -40,38 +40,49 @@ class LocationSender {
     return Future.value(true);
   }
 
-  void start(String eventId, String teamId) async {
+  void start(
+    String eventId,
+    String teamId,
+  ) async {
     if (!_isOn) {
-      await _ensurePermissions().catchError((error) {
-        setErrorMessage(error);
-        return false;
-      });
+      await _ensurePermissions().catchError(
+        (error) {
+          setErrorMessage(error);
+          return false;
+        },
+      );
       _isOn = true;
       positionStream =
           Geolocator.getPositionStream(locationSettings: kLocationSettings)
-              .listen((Position? position) {
-        if (position != null) {
-          DatabaseReference teamReference = FirebaseDatabase.instance
-              .ref()
-              .child('traces')
-              .child(eventId)
-              .child(teamId);
+              .listen(
+        (Position? position) {
+          if (position != null) {
+            DatabaseReference teamReference = FirebaseDatabase.instance
+                .ref()
+                .child('traces')
+                .child(eventId)
+                .child(teamId);
 
-          teamReference.update({
-            'lastUpdate': position.timestamp.toString(),
-            'lastPosition':
-                '${position.latitude.toString()}, ${position.longitude.toString()}'
-          });
-          teamReference
-              .child('positions')
-              .child('rounds')
-              .child(round.toString())
-              .update({
-            position.timestamp!.millisecondsSinceEpoch.toString():
-                '${position.latitude.toString()}, ${position.longitude.toString()}',
-          });
-        }
-      });
+            teamReference.update(
+              {
+                'lastUpdate': position.timestamp.toString(),
+                'lastPosition':
+                    '${position.latitude.toString()}, ${position.longitude.toString()}'
+              },
+            );
+            teamReference
+                .child('positions')
+                .child('rounds')
+                .child(round.toString())
+                .update(
+              {
+                position.timestamp!.millisecondsSinceEpoch.toString():
+                    '${position.latitude.toString()}, ${position.longitude.toString()}',
+              },
+            );
+          }
+        },
+      );
     }
   }
 

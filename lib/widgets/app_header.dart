@@ -77,25 +77,26 @@ class _AppHeaderState extends State<AppHeader> {
       return const SizedBox.shrink();
     }
     return StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return GestureDetector(
-              onTap: () => Navigator.pushNamed(context, ProfilePage.route),
-              child: const Icon(
-                Icons.account_circle,
-                size: 26.0,
-              ),
-            );
-          } else {
-            return GestureDetector(
-              onTap: () => Navigator.pushNamed(context, LoginPage.route),
-              child: const Icon(
-                Icons.login,
-                size: 26.0,
-              ),
-            );
-          }
-        });
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return GestureDetector(
+            onTap: () => Navigator.pushNamed(context, ProfilePage.route),
+            child: const Icon(
+              Icons.account_circle,
+              size: 26.0,
+            ),
+          );
+        } else {
+          return GestureDetector(
+            onTap: () => Navigator.pushNamed(context, LoginPage.route),
+            child: const Icon(
+              Icons.login,
+              size: 26.0,
+            ),
+          );
+        }
+      },
+    );
   }
 }

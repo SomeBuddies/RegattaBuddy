@@ -25,19 +25,21 @@ class TeamPositionNotifier extends _$TeamPositionNotifier {
                 .child(team.id)
                 .child('lastPosition');
 
-            dbRef.onValue.listen((DatabaseEvent event) {
-              if (event.snapshot.value == null) {
-                return;
-              }
-              final data = event.snapshot.value as String;
-              logger.i("updating $team position: ${data.toString()}");
-              final latlon = data.split(', ');
-              var latitude = double.parse(latlon[0]);
-              var longitude = double.parse(latlon[1]);
-              var newMap = Map.of(state);
-              newMap[team.id] = LatLng(latitude, longitude);
-              state = newMap;
-            });
+            dbRef.onValue.listen(
+              (DatabaseEvent event) {
+                if (event.snapshot.value == null) {
+                  return;
+                }
+                final data = event.snapshot.value as String;
+                logger.i("updating $team position: ${data.toString()}");
+                final latlon = data.split(', ');
+                var latitude = double.parse(latlon[0]);
+                var longitude = double.parse(latlon[1]);
+                var newMap = Map.of(state);
+                newMap[team.id] = LatLng(latitude, longitude);
+                state = newMap;
+              },
+            );
           }
         },
         error: (error, stackTrace) =>

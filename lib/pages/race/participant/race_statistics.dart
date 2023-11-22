@@ -11,9 +11,12 @@ class RaceStatistics extends ConsumerStatefulWidget {
   final Timer timer;
   final double height;
 
-  const RaceStatistics(
-      {Key? key, required this.eventId, required this.timer, this.height = 100})
-      : super(key: key);
+  const RaceStatistics({
+    Key? key,
+    required this.eventId,
+    required this.timer,
+    this.height = 100,
+  }) : super(key: key);
 
   @override
   ConsumerState<RaceStatistics> createState() => _RaceStatisticsState();
@@ -127,6 +130,7 @@ class _RaceStatisticsState extends ConsumerState<RaceStatistics> {
                   ),
                 ),
                 Text(
+                  // todo VALUE HERE
                   "0.00km/h",
                   style: TextStyle(
                     color: Colors.black,

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -33,16 +31,6 @@ class _EventRouteSubPageState extends State<EventRouteSubPage> {
   void initState() {
     super.initState();
     _mapController = MapController();
-  }
-
-  Color generateBrightColor() {
-    int r = 0, g = 0, b = 0, a = 255;
-    while (r + g + b < 255) {
-      r = Random().nextInt(0xffffffff);
-      g = Random().nextInt(255);
-      b = Random().nextInt(255);
-    }
-    return Color.fromARGB(a, r, g, b);
   }
 
   @override
@@ -95,8 +83,9 @@ class _EventRouteSubPageState extends State<EventRouteSubPage> {
                 ],
               ),
               MarkerLayer(
-                  markers:
-                      widget.markers.map((complex) => complex.marker).toList()),
+                markers:
+                    widget.markers.map((complex) => complex.marker).toList(),
+              ),
             ],
           ),
         ),

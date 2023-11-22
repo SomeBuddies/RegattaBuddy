@@ -43,7 +43,8 @@ class EventMessageHandler {
 
     messageStream = messRef.onChildAdded.listen((event) {
       final messageData = Map<String, String>.from(
-          event.snapshot.value as Map<Object?, Object?>);
+        event.snapshot.value as Map<Object?, Object?>,
+      );
       final message = Message.fromJson(messageData);
 
       onEachNewMessage?.call(message);
@@ -66,7 +67,6 @@ class EventMessageHandler {
           case MessageType.roundFinished:
             onRoundFinishedMessage?.call(message);
           default:
-
         }
       }
       if (message.isForReferee(teamId) || isSendByThisInstance(message)) {

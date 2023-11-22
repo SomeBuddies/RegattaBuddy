@@ -37,7 +37,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           authenticated: (user) {
             if (!hasNavigated) {
               Navigator.of(context).pushNamedAndRemoveUntil(
-                  HomePage.route, (Route route) => false);
+                HomePage.route,
+                (Route route) => false,
+              );
 
               hasNavigated = true;
             }
@@ -98,11 +100,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   style: const TextStyle(color: Colors.black),
                   children: <TextSpan>[
                     TextSpan(
-                        text: 'Sign up',
-                        style: const TextStyle(color: Colors.blue),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () =>
-                              Navigator.pushNamed(context, RegisterPage.route))
+                      text: 'Sign up',
+                      style: const TextStyle(color: Colors.blue),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () =>
+                            Navigator.pushNamed(context, RegisterPage.route),
+                    )
                   ],
                 ),
               ),
@@ -114,8 +117,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   }
 
   void showOnlyLoginScreen(BuildContext context) {
-    Navigator.of(context)
-        .popUntil((route) => route.settings.name == LoginPage.route);
+    Navigator.of(context).popUntil(
+      (route) => route.settings.name == LoginPage.route,
+    );
   }
 
   Future signIn(String email, String password) async {

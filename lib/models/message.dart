@@ -6,13 +6,14 @@ class Message {
   final String timestamp;
   String? teamName;
 
-  Message(
-      {required this.type,
-      required this.receiverType,
-      this.teamId,
-      this.value,
-      this.teamName,
-      required this.timestamp});
+  Message({
+    required this.type,
+    required this.receiverType,
+    this.teamId,
+    this.value,
+    this.teamName,
+    required this.timestamp,
+  });
 
   Message.fromJson(Map<String, String> json)
       : type = MessageType.values.byName(json['type']!),
@@ -61,7 +62,11 @@ enum MessageType {
   reportProblem
 }
 
-enum MessageReceiverType { all, referee, team }
+enum MessageReceiverType {
+  all,
+  referee,
+  team,
+}
 
 // contract:
 // type: roundStarted

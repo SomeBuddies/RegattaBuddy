@@ -19,7 +19,7 @@ class HomePage extends ConsumerWidget {
   }) {
     return Card(
       shape: const StadiumBorder(),
-      color: Color(0xFF2194F0),
+      color: const Color(0xFF2194F0),
       margin: const EdgeInsets.symmetric(
         horizontal: 20,
       ),

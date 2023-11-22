@@ -24,7 +24,8 @@ Future<void> showActionsDialog(
       builder: (BuildContext cxt) {
         var autoClosingActions = actions.map((action) {
           return action.copyWith(
-              additionalCallback: () => Navigator.of(cxt).pop(false));
+            additionalCallback: () => Navigator.of(cxt).pop(false),
+          );
         }).toList();
 
         return Align(
@@ -113,12 +114,14 @@ Future<void> showMessagesDialog(
             height: 400,
             child: SingleChildScrollView(
               child: Column(
-                children: messages.reversed.map((message) {
-                  return Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: MessageListTile(message: message),
-                  );
-                }).toList(),
+                children: messages.reversed.map(
+                  (message) {
+                    return Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: MessageListTile(message: message),
+                    );
+                  },
+                ).toList(),
               ),
             ),
           ),
@@ -146,40 +149,40 @@ Future<void> showDisappearingMessageDialog(
           () => Navigator.of(context).pop(),
         );
         return WillPopScope(
-            onWillPop: () async {
-              dialogTimer?.cancel();
-              return true;
-            },
-            child: AlertDialog(
-              title: customTitle != null
-                  ? Text(customTitle)
-                  : const Text('Message'),
-              shape: RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.circular(constants.elementsBorderRadius),
-              ),
-              content: SizedBox(
-                height: 200,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: MessageListTile(message: message),
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          dialogTimer?.cancel();
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text("OK"),
-                      ),
-                    ],
-                  ),
+          onWillPop: () async {
+            dialogTimer?.cancel();
+            return true;
+          },
+          child: AlertDialog(
+            title:
+                customTitle != null ? Text(customTitle) : const Text('Message'),
+            shape: RoundedRectangleBorder(
+              borderRadius:
+                  BorderRadius.circular(constants.elementsBorderRadius),
+            ),
+            content: SizedBox(
+              height: 200,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: MessageListTile(message: message),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        dialogTimer?.cancel();
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text("OK"),
+                    ),
+                  ],
                 ),
               ),
-            ));
+            ),
+          ),
+        );
       },
     );
   }
@@ -253,7 +256,10 @@ Future<void> showProtestDialog(
                 child: SizedBox(
                   height: 270,
                   child: ProtestForm(
-                      eventId: eventId, teams: teams, teamId: teamId),
+                    eventId: eventId,
+                    teams: teams,
+                    teamId: teamId,
+                  ),
                 ),
               ),
             ),
