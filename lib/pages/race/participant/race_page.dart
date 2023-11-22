@@ -17,11 +17,12 @@ import 'package:regatta_buddy/pages/race/messages_list.dart';
 import 'package:regatta_buddy/pages/race/participant/race_page_arguments.dart';
 import 'package:regatta_buddy/pages/race/participant/race_statistics.dart';
 import 'package:regatta_buddy/pages/regatta_details.dart';
+import 'package:regatta_buddy/providers/location_providers.dart';
 import 'package:regatta_buddy/providers/race_events.dart';
 import 'package:regatta_buddy/providers/repository_providers.dart';
 import 'package:regatta_buddy/services/event_message_handler.dart';
 import 'package:regatta_buddy/services/event_message_sender.dart';
-import 'package:regatta_buddy/services/locator.dart';
+import 'package:regatta_buddy/services/location_sender.dart';
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:regatta_buddy/utils/timer.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
@@ -61,12 +62,14 @@ class _RacePageState extends ConsumerState<RacePage> {
     timer = Timer();
     messages = [];
 
-    locator = LocationSender(
+    locator = ref.read(locationSenderProvider(
+      // todo avoid passing setState to providers
+      // ignore: provider_parameters
       (error) => setState(() {
         errorMessage = error;
         isError = true;
       }),
-    );
+    ));
   }
 
   @override

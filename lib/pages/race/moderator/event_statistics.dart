@@ -10,8 +10,11 @@ class EventStatistics extends ConsumerStatefulWidget {
   final String eventId;
   final Timer timer;
 
-  const EventStatistics({Key? key, required this.eventId, required this.timer})
-      : super(key: key);
+  const EventStatistics({
+    required this.eventId,
+    required this.timer,
+    super.key,
+  });
 
   @override
   ConsumerState<EventStatistics> createState() => _EventStatisticsState();

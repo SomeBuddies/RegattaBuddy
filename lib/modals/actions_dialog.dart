@@ -148,11 +148,8 @@ Future<void> showDisappearingMessageDialog(
           duration ?? const Duration(seconds: 5),
           () => Navigator.of(context).pop(),
         );
-        return WillPopScope(
-          onWillPop: () async {
-            dialogTimer?.cancel();
-            return true;
-          },
+        return PopScope(
+          onPopInvoked: (bool didPop) => dialogTimer?.cancel(),
           child: AlertDialog(
             title:
                 customTitle != null ? Text(customTitle) : const Text('Message'),
