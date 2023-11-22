@@ -6,6 +6,7 @@ import 'package:regatta_buddy/models/team.dart';
 import 'package:regatta_buddy/providers/event_details/teams_provider.dart';
 import 'package:regatta_buddy/providers/firebase_providers.dart';
 import 'package:regatta_buddy/providers/repository_providers.dart';
+import 'package:regatta_buddy/widgets/core/basic_card.dart';
 
 // Local version so we don't call the database unless needed
 bool isUserInEvent(String userId, List<Team> teams) {
@@ -30,41 +31,34 @@ class EventTeamsDisplay extends ConsumerWidget {
     final teams = ref.watch(teamsProvider(event));
     final userId = ref.read(firebaseAuthProvider).currentUser?.uid ?? "";
 
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      margin: const EdgeInsets.all(15.0),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: teams.when(
-          data: (data) => Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (data.isEmpty) const Text("No Teams Created Yet!"),
-              Flexible(
-                child: ListView.builder(
-                  itemBuilder: (context, index) => TeamCard(
-                    data[index],
-                    event,
-                    data,
-                    context,
-                    key: Key(data[index].id),
-                  ),
-                  itemCount: data.length,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
+    return BasicCard(
+      child: teams.when(
+        data: (data) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (data.isEmpty) const Text("No Teams Created Yet!"),
+            Flexible(
+              child: ListView.builder(
+                itemBuilder: (context, index) => TeamCard(
+                  data[index],
+                  event,
+                  data,
+                  context,
+                  key: Key(data[index].id),
                 ),
+                itemCount: data.length,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
               ),
-              if (!isUserInEvent(userId, data) &&
-                  !isUserHost(userId, event) &&
-                  event.status == EventStatus.notStarted)
-                CreateTeamButton(event),
-            ],
-          ),
-          loading: () => const CircularProgressIndicator(),
-          error: (error, stackTrace) => Text(error.toString()),
+            ),
+            if (!isUserInEvent(userId, data) &&
+                !isUserHost(userId, event) &&
+                event.status == EventStatus.notStarted)
+              CreateTeamButton(event),
+          ],
         ),
+        loading: () => const CircularProgressIndicator(),
+        error: (error, stackTrace) => Text(error.toString()),
       ),
     );
   }

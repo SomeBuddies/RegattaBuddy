@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:regatta_buddy/models/event.dart';
 import 'package:regatta_buddy/providers/event_details/event_provider.dart';
+import 'package:regatta_buddy/providers/event_details/teams_provider.dart';
 import 'package:regatta_buddy/widgets/core/app_header.dart';
 import 'package:regatta_buddy/widgets/event_details/event_details_display.dart';
 import 'package:regatta_buddy/widgets/event_details/event_score_display.dart';
@@ -21,7 +22,11 @@ class RegattaDetailsPage extends ConsumerWidget {
     return Scaffold(
       appBar: const AppHeader(),
       body: RefreshIndicator(
-        onRefresh: () async => ref.refresh(eventProvider(eventId)),
+        onRefresh: () async {
+          ref.invalidate(eventProvider(eventId));
+          final event = await ref.read(eventProvider(eventId).future);
+          ref.invalidate(teamsProvider(event));
+        },
         child: switch (asyncEvent) {
           AsyncData(value: final event) => _RegataDetailsPage(event: event),
           AsyncLoading() => const Center(
@@ -49,8 +54,11 @@ class _RegataDetailsPage extends StatelessWidget {
       physics: const AlwaysScrollableScrollPhysics(),
       child: Column(
         children: [
-          GoToEventButton(event),
           EventDetailsDisplay(event),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: GoToEventButton(event),
+          ),
           switch (event.status) {
             EventStatus.finished => EventScoreDisplay(event),
             _ => EventTeamsDisplay(event),

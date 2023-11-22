@@ -8,6 +8,7 @@ import 'package:regatta_buddy/models/team.dart';
 import 'package:regatta_buddy/providers/event_details/teams_provider.dart';
 import 'package:regatta_buddy/providers/race_events.dart';
 import 'package:regatta_buddy/utils/data_processing_helper.dart';
+import 'package:regatta_buddy/widgets/core/basic_card.dart';
 
 class EventScoreDisplay extends HookConsumerWidget {
   final Event event;
@@ -20,24 +21,17 @@ class EventScoreDisplay extends HookConsumerWidget {
     final teamScores = ref.watch(teamScoresProvider(event));
     final eventTeams = ref.watch(teamsProvider(event));
 
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      margin: const EdgeInsets.all(15.0),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: switch ((eventTeams, teamScores)) {
-          (AsyncData(value: final teams), AsyncData(value: final scores)) =>
-            _EventScoreDisplay(teams: teams, scores: scores),
-          (AsyncLoading(), _) || (_, AsyncLoading()) => const Center(
-              child: CircularProgressIndicator(),
-            ),
-          (_, _) => const Center(
-              child: Text("There was an error loading scores"),
-            ),
-        },
-      ),
+    return BasicCard(
+      child: switch ((eventTeams, teamScores)) {
+        (AsyncData(value: final teams), AsyncData(value: final scores)) =>
+          _EventScoreDisplay(teams: teams, scores: scores),
+        (AsyncLoading(), _) || (_, AsyncLoading()) => const Center(
+            child: CircularProgressIndicator(),
+          ),
+        (_, _) => const Center(
+            child: Text("There was an error loading scores"),
+          ),
+      },
     );
   }
 }
