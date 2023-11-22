@@ -5,7 +5,7 @@ import 'package:regatta_buddy/providers/auth/auth_state_notifier.dart';
 import 'package:regatta_buddy/providers/user_provider.dart';
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:regatta_buddy/utils/notification_helper.dart';
-import 'package:regatta_buddy/widgets/app_header.dart';
+import 'package:regatta_buddy/widgets/core/app_header.dart';
 
 class ProfilePage extends StatefulHookConsumerWidget {
   const ProfilePage({super.key});

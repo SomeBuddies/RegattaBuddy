@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:regatta_buddy/models/event.dart';
 import 'package:regatta_buddy/providers/event_details/event_provider.dart';
-import 'package:regatta_buddy/widgets/app_header.dart';
-import 'package:regatta_buddy/widgets/event_details_display.dart';
-import 'package:regatta_buddy/widgets/event_score_display.dart';
-import 'package:regatta_buddy/widgets/event_teams_display.dart';
-import 'package:regatta_buddy/widgets/go_to_event_button.dart';
+import 'package:regatta_buddy/widgets/core/app_header.dart';
+import 'package:regatta_buddy/widgets/event_details/event_details_display.dart';
+import 'package:regatta_buddy/widgets/event_details/event_score_display.dart';
+import 'package:regatta_buddy/widgets/event_details/event_teams_display.dart';
+import 'package:regatta_buddy/widgets/event_details/go_to_event_button.dart';
 
 class RegattaDetailsPage extends ConsumerWidget {
   static const String route = '/regattaDetails';
@@ -23,19 +23,7 @@ class RegattaDetailsPage extends ConsumerWidget {
       body: RefreshIndicator(
         onRefresh: () async => ref.refresh(eventProvider(eventId)),
         child: switch (asyncEvent) {
-          AsyncData(value: final event) => SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              child: Column(
-                children: [
-                  GoToEventButton(event),
-                  EventDetailsDisplay(event),
-                  switch (event.status) {
-                    EventStatus.finished => EventScoreDisplay(event),
-                    _ => EventTeamsDisplay(event),
-                  }
-                ],
-              ),
-            ),
+          AsyncData(value: final event) => _RegataDetailsPage(event: event),
           AsyncLoading() => const Center(
               child: CircularProgressIndicator(),
             ),
@@ -43,6 +31,31 @@ class RegattaDetailsPage extends ConsumerWidget {
               child: Text("Something went wrong while loading event"),
             ),
         },
+      ),
+    );
+  }
+}
+
+class _RegataDetailsPage extends StatelessWidget {
+  final Event event;
+
+  const _RegataDetailsPage({
+    required this.event,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      child: Column(
+        children: [
+          GoToEventButton(event),
+          EventDetailsDisplay(event),
+          switch (event.status) {
+            EventStatus.finished => EventScoreDisplay(event),
+            _ => EventTeamsDisplay(event),
+          }
+        ],
       ),
     );
   }

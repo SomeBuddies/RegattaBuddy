@@ -24,8 +24,8 @@ import 'package:regatta_buddy/services/event_message_handler.dart';
 import 'package:regatta_buddy/utils/data_processing_helper.dart' as data_helper;
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:regatta_buddy/utils/timer.dart';
-import 'package:regatta_buddy/widgets/app_header.dart';
-import 'package:regatta_buddy/widgets/rb_notification.dart';
+import 'package:regatta_buddy/widgets/core/app_header.dart';
+import 'package:regatta_buddy/widgets/core/rb_notification.dart';
 
 class RaceModeratorPage extends ConsumerStatefulWidget {
   final logger = getLogger('RaceModeratorPage');

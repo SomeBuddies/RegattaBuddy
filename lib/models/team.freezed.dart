@@ -83,9 +83,10 @@ class _$TeamCopyWithImpl<$Res, $Val extends Team>
 }
 
 /// @nodoc
-abstract class _$$_TeamCopyWith<$Res> implements $TeamCopyWith<$Res> {
-  factory _$$_TeamCopyWith(_$_Team value, $Res Function(_$_Team) then) =
-      __$$_TeamCopyWithImpl<$Res>;
+abstract class _$$TeamImplCopyWith<$Res> implements $TeamCopyWith<$Res> {
+  factory _$$TeamImplCopyWith(
+          _$TeamImpl value, $Res Function(_$TeamImpl) then) =
+      __$$TeamImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -96,9 +97,10 @@ abstract class _$$_TeamCopyWith<$Res> implements $TeamCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_TeamCopyWithImpl<$Res> extends _$TeamCopyWithImpl<$Res, _$_Team>
-    implements _$$_TeamCopyWith<$Res> {
-  __$$_TeamCopyWithImpl(_$_Team _value, $Res Function(_$_Team) _then)
+class __$$TeamImplCopyWithImpl<$Res>
+    extends _$TeamCopyWithImpl<$Res, _$TeamImpl>
+    implements _$$TeamImplCopyWith<$Res> {
+  __$$TeamImplCopyWithImpl(_$TeamImpl _value, $Res Function(_$TeamImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -109,7 +111,7 @@ class __$$_TeamCopyWithImpl<$Res> extends _$TeamCopyWithImpl<$Res, _$_Team>
     Object? captainId = null,
     Object? members = null,
   }) {
-    return _then(_$_Team(
+    return _then(_$TeamImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -133,8 +135,8 @@ class __$$_TeamCopyWithImpl<$Res> extends _$TeamCopyWithImpl<$Res, _$_Team>
 /// @nodoc
 
 @JsonSerializable(explicitToJson: true)
-class _$_Team extends _Team with DiagnosticableTreeMixin {
-  const _$_Team(
+class _$TeamImpl extends _Team with DiagnosticableTreeMixin {
+  const _$TeamImpl(
       {@JsonKey(includeFromJson: false, includeToJson: false) this.id = '',
       required this.name,
       required this.captainId,
@@ -142,7 +144,8 @@ class _$_Team extends _Team with DiagnosticableTreeMixin {
       : _members = members,
         super._();
 
-  factory _$_Team.fromJson(Map<String, dynamic> json) => _$$_TeamFromJson(json);
+  factory _$TeamImpl.fromJson(Map<String, dynamic> json) =>
+      _$$TeamImplFromJson(json);
 
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -180,7 +183,7 @@ class _$_Team extends _Team with DiagnosticableTreeMixin {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_Team &&
+            other is _$TeamImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.captainId, captainId) ||
@@ -196,12 +199,12 @@ class _$_Team extends _Team with DiagnosticableTreeMixin {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_TeamCopyWith<_$_Team> get copyWith =>
-      __$$_TeamCopyWithImpl<_$_Team>(this, _$identity);
+  _$$TeamImplCopyWith<_$TeamImpl> get copyWith =>
+      __$$TeamImplCopyWithImpl<_$TeamImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_TeamToJson(
+    return _$$TeamImplToJson(
       this,
     );
   }
@@ -212,10 +215,10 @@ abstract class _Team extends Team {
       {@JsonKey(includeFromJson: false, includeToJson: false) final String id,
       required final String name,
       required final String captainId,
-      final List<TeamMember> members}) = _$_Team;
+      final List<TeamMember> members}) = _$TeamImpl;
   const _Team._() : super._();
 
-  factory _Team.fromJson(Map<String, dynamic> json) = _$_Team.fromJson;
+  factory _Team.fromJson(Map<String, dynamic> json) = _$TeamImpl.fromJson;
 
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -228,7 +231,8 @@ abstract class _Team extends Team {
   List<TeamMember> get members;
   @override
   @JsonKey(ignore: true)
-  _$$_TeamCopyWith<_$_Team> get copyWith => throw _privateConstructorUsedError;
+  _$$TeamImplCopyWith<_$TeamImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 TeamMember _$TeamMemberFromJson(Map<String, dynamic> json) {
@@ -285,22 +289,22 @@ class _$TeamMemberCopyWithImpl<$Res, $Val extends TeamMember>
 }
 
 /// @nodoc
-abstract class _$$_TeamMemberCopyWith<$Res>
+abstract class _$$TeamMemberImplCopyWith<$Res>
     implements $TeamMemberCopyWith<$Res> {
-  factory _$$_TeamMemberCopyWith(
-          _$_TeamMember value, $Res Function(_$_TeamMember) then) =
-      __$$_TeamMemberCopyWithImpl<$Res>;
+  factory _$$TeamMemberImplCopyWith(
+          _$TeamMemberImpl value, $Res Function(_$TeamMemberImpl) then) =
+      __$$TeamMemberImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String id, String name});
 }
 
 /// @nodoc
-class __$$_TeamMemberCopyWithImpl<$Res>
-    extends _$TeamMemberCopyWithImpl<$Res, _$_TeamMember>
-    implements _$$_TeamMemberCopyWith<$Res> {
-  __$$_TeamMemberCopyWithImpl(
-      _$_TeamMember _value, $Res Function(_$_TeamMember) _then)
+class __$$TeamMemberImplCopyWithImpl<$Res>
+    extends _$TeamMemberCopyWithImpl<$Res, _$TeamMemberImpl>
+    implements _$$TeamMemberImplCopyWith<$Res> {
+  __$$TeamMemberImplCopyWithImpl(
+      _$TeamMemberImpl _value, $Res Function(_$TeamMemberImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -309,7 +313,7 @@ class __$$_TeamMemberCopyWithImpl<$Res>
     Object? id = null,
     Object? name = null,
   }) {
-    return _then(_$_TeamMember(
+    return _then(_$TeamMemberImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -324,11 +328,11 @@ class __$$_TeamMemberCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_TeamMember extends _TeamMember with DiagnosticableTreeMixin {
-  const _$_TeamMember({required this.id, required this.name}) : super._();
+class _$TeamMemberImpl extends _TeamMember with DiagnosticableTreeMixin {
+  const _$TeamMemberImpl({required this.id, required this.name}) : super._();
 
-  factory _$_TeamMember.fromJson(Map<String, dynamic> json) =>
-      _$$_TeamMemberFromJson(json);
+  factory _$TeamMemberImpl.fromJson(Map<String, dynamic> json) =>
+      _$$TeamMemberImplFromJson(json);
 
   @override
   final String id;
@@ -353,7 +357,7 @@ class _$_TeamMember extends _TeamMember with DiagnosticableTreeMixin {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_TeamMember &&
+            other is _$TeamMemberImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name));
   }
@@ -365,12 +369,12 @@ class _$_TeamMember extends _TeamMember with DiagnosticableTreeMixin {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_TeamMemberCopyWith<_$_TeamMember> get copyWith =>
-      __$$_TeamMemberCopyWithImpl<_$_TeamMember>(this, _$identity);
+  _$$TeamMemberImplCopyWith<_$TeamMemberImpl> get copyWith =>
+      __$$TeamMemberImplCopyWithImpl<_$TeamMemberImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_TeamMemberToJson(
+    return _$$TeamMemberImplToJson(
       this,
     );
   }
@@ -378,11 +382,12 @@ class _$_TeamMember extends _TeamMember with DiagnosticableTreeMixin {
 
 abstract class _TeamMember extends TeamMember {
   const factory _TeamMember(
-      {required final String id, required final String name}) = _$_TeamMember;
+      {required final String id,
+      required final String name}) = _$TeamMemberImpl;
   const _TeamMember._() : super._();
 
   factory _TeamMember.fromJson(Map<String, dynamic> json) =
-      _$_TeamMember.fromJson;
+      _$TeamMemberImpl.fromJson;
 
   @override
   String get id;
@@ -390,6 +395,6 @@ abstract class _TeamMember extends TeamMember {
   String get name;
   @override
   @JsonKey(ignore: true)
-  _$$_TeamMemberCopyWith<_$_TeamMember> get copyWith =>
+  _$$TeamMemberImplCopyWith<_$TeamMemberImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

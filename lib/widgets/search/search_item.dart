@@ -3,8 +3,8 @@ import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
 import 'package:regatta_buddy/models/event.dart';
 import 'package:regatta_buddy/pages/regatta_details.dart';
-import 'package:regatta_buddy/widgets/icon_with_text.dart';
-import 'package:regatta_buddy/widgets/route_preview_map.dart';
+import 'package:regatta_buddy/widgets/core/icon_with_text.dart';
+import 'package:regatta_buddy/widgets/core/route_preview_map.dart';
 
 class SearchItem extends StatelessWidget {
   final Event event;

@@ -25,9 +25,9 @@ import 'package:regatta_buddy/services/event_message_sender.dart';
 import 'package:regatta_buddy/services/location_sender.dart';
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:regatta_buddy/utils/timer.dart';
-import 'package:regatta_buddy/widgets/app_header.dart';
-import 'package:regatta_buddy/widgets/custom_error.dart';
-import 'package:regatta_buddy/widgets/rb_notification.dart';
+import 'package:regatta_buddy/widgets/core/app_header.dart';
+import 'package:regatta_buddy/widgets/core/custom_error.dart';
+import 'package:regatta_buddy/widgets/core/rb_notification.dart';
 
 class RacePage extends ConsumerStatefulWidget {
   final logger = getLogger('RacePage');

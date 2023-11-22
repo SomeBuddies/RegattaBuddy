@@ -10,7 +10,7 @@ import 'package:regatta_buddy/pages/home.dart';
 import 'package:regatta_buddy/providers/firebase_providers.dart';
 import 'package:regatta_buddy/providers/repository_providers.dart';
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
-import 'package:regatta_buddy/widgets/app_header.dart';
+import 'package:regatta_buddy/widgets/core/app_header.dart';
 
 class EventCreationPage extends ConsumerStatefulWidget {
   final logger = getLogger('EventCreationPage');
