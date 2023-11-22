@@ -87,8 +87,10 @@ class _ProtestFormState extends State<ProtestForm> {
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.all(15),
             ),
-            child: const Text("Send to referee",
-                style: TextStyle(fontWeight: FontWeight.bold)),
+            child: const Text(
+              "Send to referee",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),

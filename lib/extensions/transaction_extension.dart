@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 extension TransactionMaybeExtension on Transaction? {
-  Future<DocumentSnapshot<Object?>> maybeGet(DocumentReference docRef) {
+  Future<DocumentSnapshot<Object?>> maybeGet(
+    DocumentReference docRef,
+  ) {
     if (this == null) {
       return docRef.get();
     } else {
@@ -45,7 +47,9 @@ extension TransactionMaybeExtension on Transaction? {
     }
   }
 
-  void maybeDelete(DocumentReference docRef) {
+  void maybeDelete(
+    DocumentReference docRef,
+  ) {
     if (this == null) {
       docRef.delete();
     } else {

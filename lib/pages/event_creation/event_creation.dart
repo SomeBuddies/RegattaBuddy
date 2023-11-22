@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:regatta_buddy/extensions/datetime_extension.dart';
-import 'package:regatta_buddy/models/event.dart';
 
+import 'package:regatta_buddy/extensions/datetime_extension.dart';
+import 'package:regatta_buddy/models/complex_marker.dart';
+import 'package:regatta_buddy/models/event.dart';
 import 'package:regatta_buddy/pages/event_creation/event_form.dart';
 import 'package:regatta_buddy/pages/event_creation/event_route.dart';
 import 'package:regatta_buddy/pages/home.dart';
@@ -10,7 +11,6 @@ import 'package:regatta_buddy/providers/firebase_providers.dart';
 import 'package:regatta_buddy/providers/repository_providers.dart';
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
-import 'package:regatta_buddy/models/complex_marker.dart';
 
 class EventCreationPage extends ConsumerStatefulWidget {
   final logger = getLogger('EventCreationPage');
@@ -160,8 +160,9 @@ class _EventCreationPageState extends ConsumerState<EventCreationPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         TextButton(
-                          onPressed: () => Navigator.of(context)
-                              .popUntil(ModalRoute.withName(HomePage.route)),
+                          onPressed: () => Navigator.of(context).popUntil(
+                            ModalRoute.withName(HomePage.route),
+                          ),
                           child: const Text("Cancel"),
                         ),
                         Row(

@@ -36,21 +36,20 @@ class EventRepository {
   }
 
   Future<List<String>> _getUserEventsIds(String userId) async {
-    final snapshot = await _firestore
-        .collection('users')
-        .doc(userId)
-        .collection('joinedEvents')
-        .get();
+    final snapshot =
+        await _firestore.collection('users/$userId/joinedEvents').get();
     return snapshot.docs.map((e) => e.id).toList();
   }
 
   Future<List<Event>> getUserEvents(String userId) async {
     final List<String> eventIds = await _getUserEventsIds(userId);
 
-    return await getEvents().then((events) => events
-        .filter(
-            (event) => event.hostId == userId || eventIds.contains(event.id))
-        .toList());
+    return await getEvents().then(
+      (events) => events
+          .filter(
+              (event) => event.hostId == userId || eventIds.contains(event.id))
+          .toList(),
+    );
   }
 
   Future<List<Event>> getFutureEvents() async {
@@ -68,9 +67,11 @@ class EventRepository {
 
   Future<List<Event>> getFutureUserEvents(String userId) async {
     final List<String> eventIds = await _getUserEventsIds(userId);
-    return await getFutureEvents().then((events) => events
-        .filter(
-            (event) => event.hostId == userId || eventIds.contains(event.id))
-        .toList());
+    return await getFutureEvents().then(
+      (events) => events
+          .filter(
+              (event) => event.hostId == userId || eventIds.contains(event.id))
+          .toList(),
+    );
   }
 }

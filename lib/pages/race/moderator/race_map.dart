@@ -8,7 +8,6 @@ import 'package:regatta_buddy/models/event.dart';
 import 'package:regatta_buddy/providers/event_details/team_position_notifier.dart';
 import 'package:regatta_buddy/providers/event_details/team_traces_notifier.dart';
 import 'package:regatta_buddy/providers/race_events.dart';
-
 import 'package:regatta_buddy/utils/constants.dart' as constants;
 import 'package:regatta_buddy/utils/external_api_constants.dart'
     as api_constants;
@@ -58,24 +57,32 @@ class RaceMap extends ConsumerWidget {
     );
   }
 
-  List<LatLng> getTrackedTeamTrace(String trackedTeam,
-          Map<String, Map<int, List<LatLng>>> teamTraces, int currentRound) =>
-      [
-        if (pointsAreAvailable(trackedTeam, teamTraces, currentRound))
-          ...teamTraces[trackedTeam]![currentRound]!
-      ];
+  List<LatLng> getTrackedTeamTrace(
+    String trackedTeam,
+    Map<String, Map<int, List<LatLng>>> teamTraces,
+    int currentRound,
+  ) {
+    return [
+      if (pointsAreAvailable(trackedTeam, teamTraces, currentRound))
+        ...teamTraces[trackedTeam]![currentRound]!
+    ];
+  }
 
-  bool pointsAreAvailable(String trackedTeam,
-          Map<String, Map<int, List<LatLng>>> teamTraces, int currentRound) =>
-      trackedTeam != "" &&
-      teamTraces[trackedTeam] != null &&
-      teamTraces[trackedTeam]![currentRound] != null;
+  bool pointsAreAvailable(
+    String trackedTeam,
+    Map<String, Map<int, List<LatLng>>> teamTraces,
+    int currentRound,
+  ) {
+    return trackedTeam != "" &&
+        teamTraces[trackedTeam] != null &&
+        teamTraces[trackedTeam]![currentRound] != null;
+  }
 }
 
 class RaceMarkerLayer extends ConsumerWidget {
-  const RaceMarkerLayer({super.key, required this.event});
-
   final Event event;
+
+  const RaceMarkerLayer({super.key, required this.event});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

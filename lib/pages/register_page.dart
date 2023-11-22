@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -44,79 +43,87 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
     );
 
     return Scaffold(
-        appBar: const AppHeader.hideAuthButton(),
-        body: Container(
-            padding: const EdgeInsets.all(20),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    TextFormField(
-                      controller: firstNameController,
-                      validator: (firstName) =>
-                          validateShortTextInput(firstName, 'first name'),
-                      decoration: const InputDecoration(
-                        labelText: 'First Name',
-                      ),
-                    ),
-                    TextFormField(
-                      controller: lastNameController,
-                      validator: (firstName) =>
-                          validateShortTextInput(firstName, 'last name'),
-                      decoration: const InputDecoration(
-                        labelText: 'Last Name',
-                      ),
-                    ),
-                    TextFormField(
-                      controller: emailController,
-                      validator: (email) => validateEmail(email),
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                      ),
-                    ),
-                    TextFormField(
-                      controller: passwordController,
-                      obscureText: true,
-                      validator: (password) => validatePassword(password),
-                      decoration: const InputDecoration(
-                        labelText: 'Password',
-                      ),
-                    ),
-                    TextFormField(
-                      controller: confirmPasswordController,
-                      obscureText: true,
-                      validator: (confirmPassword) => validateConfirmPassword(
-                          confirmPassword, passwordController.text),
-                      decoration: const InputDecoration(
-                        labelText: 'Confirm Password',
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            var registrationData = RegistrationData(
-                              email: emailController.text,
-                              password: passwordController.text,
-                              firstName: firstNameController.text,
-                              lastName: lastNameController.text,
-                            );
+      appBar: const AppHeader.hideAuthButton(),
+      body: Container(
+        padding: const EdgeInsets.all(20),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              TextFormField(
+                controller: firstNameController,
+                validator: (firstName) =>
+                    validateShortTextInput(firstName, 'first name'),
+                decoration: const InputDecoration(
+                  labelText: 'First Name',
+                ),
+              ),
+              TextFormField(
+                controller: lastNameController,
+                validator: (firstName) =>
+                    validateShortTextInput(firstName, 'last name'),
+                decoration: const InputDecoration(
+                  labelText: 'Last Name',
+                ),
+              ),
+              TextFormField(
+                controller: emailController,
+                validator: (email) => validateEmail(email),
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                ),
+              ),
+              TextFormField(
+                controller: passwordController,
+                obscureText: true,
+                validator: (password) => validatePassword(password),
+                decoration: const InputDecoration(
+                  labelText: 'Password',
+                ),
+              ),
+              TextFormField(
+                controller: confirmPasswordController,
+                obscureText: true,
+                validator: (confirmPassword) => validateConfirmPassword(
+                  confirmPassword,
+                  passwordController.text,
+                ),
+                decoration: const InputDecoration(
+                  labelText: 'Confirm Password',
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      var registrationData = RegistrationData(
+                        email: emailController.text,
+                        password: passwordController.text,
+                        firstName: firstNameController.text,
+                        lastName: lastNameController.text,
+                      );
 
-                            signUp(context, registrationData);
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: const StadiumBorder(),
-                          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                        ),
-                        child: const Text('Sign Up'),
-                      ),
+                      signUp(context, registrationData);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: const StadiumBorder(),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 30,
+                      vertical: 15,
                     ),
-                  ]),
-            )));
+                  ),
+                  child: const Text('Sign Up'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Future signUp(BuildContext context, RegistrationData data) async {

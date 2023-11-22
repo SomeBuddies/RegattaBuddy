@@ -19,7 +19,8 @@ class SearchPage extends HookConsumerWidget {
     final controller = useTextEditingController();
 
     final eventsAsync = ref.watch(
-        eventListProvider(query: searchQuery.value, isUserView: isUserView));
+      eventListProvider(query: searchQuery.value, isUserView: isUserView),
+    );
 
     return Scaffold(
       appBar: const AppHeader(),
@@ -35,7 +36,7 @@ class SearchPage extends HookConsumerWidget {
                     decoration: const InputDecoration(hintText: "Search"),
                     autocorrect: false,
                     onSubmitted: (value) =>
-                    searchQuery.value = value.toLowerCase(),
+                        searchQuery.value = value.toLowerCase(),
                   ),
                 ),
                 Switch(
@@ -56,7 +57,9 @@ class SearchPage extends HookConsumerWidget {
                   ),
                   dropdownMenuEntries: SortType.values
                       .map((e) => DropdownMenuEntry(
-                      value: e, label: e.name.toCapitalized()))
+                            value: e,
+                            label: e.name.toCapitalized(),
+                          ))
                       .toList(),
                   onSelected: (value) =>
                       ref.read(currentSortTypeProvider.notifier).set(value!),
@@ -70,7 +73,9 @@ class SearchPage extends HookConsumerWidget {
                   ),
                   dropdownMenuEntries: SortOrder.values
                       .map((e) => DropdownMenuEntry(
-                      value: e, label: e.name.toCapitalized()))
+                            value: e,
+                            label: e.name.toCapitalized(),
+                          ))
                       .toList(),
                   onSelected: (value) =>
                       ref.read(currentSortOrderProvider.notifier).set(value!),

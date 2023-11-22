@@ -37,8 +37,9 @@ class MessageListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     String formattedDate = "";
 
-    final date =
-        DateTime.fromMillisecondsSinceEpoch(int.parse(message.timestamp));
+    final date = DateTime.fromMillisecondsSinceEpoch(
+      int.parse(message.timestamp),
+    );
     formattedDate = DateFormat('HH:mm').format(date);
 
     switch (message.type) {
@@ -65,7 +66,8 @@ class MessageListTile extends StatelessWidget {
         return ListTile(
           leading: const Icon(Icons.score),
           title: Text(
-              '${assignment.points} points assigned in round ${assignment.round} to ${message.teamName ?? message.teamId}'),
+            '${assignment.points} points assigned in round ${assignment.round} to ${message.teamName ?? message.teamId}',
+          ),
           subtitle: Text(
             'Moderator at $formattedDate',
           ),
@@ -105,10 +107,10 @@ class MessageListTile extends StatelessWidget {
         );
 
       case MessageType.reportProblem:
-        var titleText =
-            "Problem reported";
+        var titleText = "Problem reported";
         return ListTile(
-          leading: const Icon(Icons.medical_services_outlined, color: Colors.red),
+          leading:
+              const Icon(Icons.medical_services_outlined, color: Colors.red),
           title: Text(titleText),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,8 +129,7 @@ class MessageListTile extends StatelessWidget {
         );
 
       case MessageType.requestHelp:
-        var titleText =
-            "Help requested";
+        var titleText = "Help requested";
         return ListTile(
           leading: const Icon(Icons.help_outline, color: Colors.red),
           title: Text(titleText),

@@ -6,13 +6,12 @@ import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/widgets/event_details_display.dart';
 import 'package:regatta_buddy/widgets/event_score_display.dart';
 import 'package:regatta_buddy/widgets/event_teams_display.dart';
-
 import 'package:regatta_buddy/widgets/go_to_event_button.dart';
 
 class RegattaDetailsPage extends ConsumerWidget {
-  const RegattaDetailsPage({super.key});
-
   static const String route = '/regattaDetails';
+
+  const RegattaDetailsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

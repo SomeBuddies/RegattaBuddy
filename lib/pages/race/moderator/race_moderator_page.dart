@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:uuid/uuid.dart';
+
 import 'package:regatta_buddy/enums/round_status.dart';
 import 'package:regatta_buddy/extensions/string_extension.dart';
 import 'package:regatta_buddy/modals/action_button.dart';
 import 'package:regatta_buddy/modals/actions_dialog.dart' as actions_dialog;
 import 'package:regatta_buddy/modals/actions_dialog.dart';
+import 'package:regatta_buddy/models/event.dart';
 import 'package:regatta_buddy/models/message.dart';
 import 'package:regatta_buddy/models/team.dart';
+import 'package:regatta_buddy/pages/home.dart';
 import 'package:regatta_buddy/pages/race/moderator/event_statistics.dart';
 import 'package:regatta_buddy/pages/race/moderator/race_map.dart';
+import 'package:regatta_buddy/pages/regatta_details.dart';
 import 'package:regatta_buddy/providers/event_details/team_position_notifier.dart';
 import 'package:regatta_buddy/providers/event_details/teams_provider.dart';
 import 'package:regatta_buddy/providers/race_events.dart';
@@ -21,11 +26,6 @@ import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:regatta_buddy/utils/timer.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/widgets/rb_notification.dart';
-import 'package:uuid/uuid.dart';
-
-import '../../../models/event.dart';
-import '../../home.dart';
-import '../../regatta_details.dart';
 
 class RaceModeratorPage extends ConsumerStatefulWidget {
   final logger = getLogger('RaceModeratorPage');
@@ -228,48 +228,58 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
     List<ActionButton> raceActions = [];
 
     if (eventStatus == EventStatus.notStarted) {
-      raceActions.add(ActionButton(
+      raceActions.add(
+        ActionButton(
           iconData: Icons.start,
           title: "Start event",
           onTap: () {
             ref.read(eventMessageSenderProvider).startEvent(event);
             eventStatus = EventStatus.inProgress;
-          }));
+          },
+        ),
+      );
     } else if (eventStatus == EventStatus.inProgress &&
         roundStatus == RoundStatus.finished) {
-      raceActions.add(ActionButton(
+      raceActions.add(
+        ActionButton(
           iconData: Icons.sports,
           title: "Start round ${round + 1}",
           onTap: () => ref
               .read(eventMessageSenderProvider)
-              .startRound(event.id, round + 1)));
+              .startRound(event.id, round + 1),
+        ),
+      );
     } else if (eventStatus == EventStatus.inProgress &&
         roundStatus == RoundStatus.started) {
-      raceActions.add(ActionButton(
+      raceActions.add(
+        ActionButton(
           iconData: Icons.timer_sharp,
           title: "Finish round $round",
-          onTap: () => ref
-              .read(eventMessageSenderProvider)
-              .finishRound(event.id, round)));
+          onTap: () =>
+              ref.read(eventMessageSenderProvider).finishRound(event.id, round),
+        ),
+      );
     }
     if (eventStatus == EventStatus.inProgress &&
         roundStatus != RoundStatus.started) {
-      raceActions.add(ActionButton(
-        iconData: Icons.flag_circle_outlined,
-        title: "Finish event",
-        onTap: () {
-          ref.read(eventMessageSenderProvider).endEvent(event);
-          eventStatus = EventStatus.finished;
-          Future.delayed(
-            const Duration(seconds: 5),
-            () => Navigator.of(context).pushNamedAndRemoveUntil(
-              RegattaDetailsPage.route,
-              ModalRoute.withName(HomePage.route),
-              arguments: event.id,
-            ),
-          );
-        },
-      ));
+      raceActions.add(
+        ActionButton(
+          iconData: Icons.flag_circle_outlined,
+          title: "Finish event",
+          onTap: () {
+            ref.read(eventMessageSenderProvider).endEvent(event);
+            eventStatus = EventStatus.finished;
+            Future.delayed(
+              const Duration(seconds: 5),
+              () => Navigator.of(context).pushNamedAndRemoveUntil(
+                RegattaDetailsPage.route,
+                ModalRoute.withName(HomePage.route),
+                arguments: event.id,
+              ),
+            );
+          },
+        ),
+      );
     }
 
     raceActions.addAll([
@@ -486,9 +496,12 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
   }
 
   String getTeamName(String teamId) {
-    return eventTeams.firstWhere((element) => element.id == teamId, orElse: () {
-      return const Team(name: "unknown", captainId: "unknown");
-    }).name;
+    return eventTeams.firstWhere(
+      (element) => element.id == teamId,
+      orElse: () {
+        return const Team(name: "unknown", captainId: "unknown");
+      },
+    ).name;
   }
 
   Message populateMessageWithTeamName(Message message) {

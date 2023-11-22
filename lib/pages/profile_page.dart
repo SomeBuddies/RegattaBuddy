@@ -80,8 +80,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
             ElevatedButton(
               onPressed: () {
                 showLoadingSpinner();
-                Navigator.of(context)
-                    .popUntil(ModalRoute.withName(HomePage.route));
+                Navigator.of(context).popUntil(
+                  ModalRoute.withName(HomePage.route),
+                );
                 ref.read(authStateNotiferProvider.notifier).signout();
               },
               style: ElevatedButton.styleFrom(

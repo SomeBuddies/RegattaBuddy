@@ -4,13 +4,15 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
 import 'package:regatta_buddy/enums/round_status.dart';
 import 'package:regatta_buddy/modals/action_button.dart';
-import 'package:regatta_buddy/modals/actions_dialog.dart';
 import 'package:regatta_buddy/modals/actions_dialog.dart' as actions_dialog;
+import 'package:regatta_buddy/modals/actions_dialog.dart';
 import 'package:regatta_buddy/models/event.dart';
 import 'package:regatta_buddy/models/message.dart';
 import 'package:regatta_buddy/models/team.dart';
+import 'package:regatta_buddy/pages/home.dart';
 import 'package:regatta_buddy/pages/race/messages_list.dart';
 import 'package:regatta_buddy/pages/race/participant/race_page_arguments.dart';
 import 'package:regatta_buddy/pages/race/participant/race_statistics.dart';
@@ -25,8 +27,6 @@ import 'package:regatta_buddy/utils/timer.dart';
 import 'package:regatta_buddy/widgets/app_header.dart';
 import 'package:regatta_buddy/widgets/custom_error.dart';
 import 'package:regatta_buddy/widgets/rb_notification.dart';
-
-import '../../home.dart';
 
 class RacePage extends ConsumerStatefulWidget {
   final logger = getLogger('RacePage');
@@ -61,10 +61,12 @@ class _RacePageState extends ConsumerState<RacePage> {
     timer = Timer();
     messages = [];
 
-    locator = LocationSender((error) => setState(() {
-          errorMessage = error;
-          isError = true;
-        }));
+    locator = LocationSender(
+      (error) => setState(() {
+        errorMessage = error;
+        isError = true;
+      }),
+    );
   }
 
   @override

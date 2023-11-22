@@ -10,16 +10,19 @@ class EventMessageSender {
 
   EventMessageSender(this._ref);
 
-  void startEvent(Event event) {
+  void startEvent(
+    Event event,
+  ) {
     String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
     final databaseReference = FirebaseDatabase.instance.ref();
     DatabaseReference newMessage =
         databaseReference.child('messages').child(event.id).child(timestamp);
 
     Message message = Message(
-        type: MessageType.startEvent,
-        receiverType: MessageReceiverType.all,
-        timestamp: timestamp);
+      type: MessageType.startEvent,
+      receiverType: MessageReceiverType.all,
+      timestamp: timestamp,
+    );
 
     newMessage.set(message.toJson());
 
@@ -29,7 +32,9 @@ class EventMessageSender {
         );
   }
 
-  void endEvent(Event event) {
+  void endEvent(
+    Event event,
+  ) {
     String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
     final databaseReference = FirebaseDatabase.instance.ref();
     DatabaseReference newMessage =
@@ -48,7 +53,11 @@ class EventMessageSender {
         );
   }
 
-  void assignPoints(Event event, Team team, String roundPoints) {
+  void assignPoints(
+    Event event,
+    Team team,
+    String roundPoints,
+  ) {
     String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
     final databaseReference = FirebaseDatabase.instance.ref();
     DatabaseReference newMessage =
@@ -64,7 +73,11 @@ class EventMessageSender {
     newMessage.set(message.toJson());
   }
 
-  void sendDirectedTextMessage(String eventId, String teamId, String text) {
+  void sendDirectedTextMessage(
+    String eventId,
+    String teamId,
+    String text,
+  ) {
     String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
     final databaseReference = FirebaseDatabase.instance.ref();
     DatabaseReference newMessage =
@@ -80,7 +93,10 @@ class EventMessageSender {
     newMessage.set(message.toJson());
   }
 
-  void startRound(String eventId, int round) {
+  void startRound(
+    String eventId,
+    int round,
+  ) {
     String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
     final databaseReference = FirebaseDatabase.instance.ref();
     DatabaseReference newMessage =
@@ -95,7 +111,10 @@ class EventMessageSender {
     newMessage.set(message.toJson());
   }
 
-  void finishRound(String eventId, int round) {
+  void finishRound(
+    String eventId,
+    int round,
+  ) {
     String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
     final databaseReference = FirebaseDatabase.instance.ref();
     DatabaseReference newMessage =
@@ -110,7 +129,10 @@ class EventMessageSender {
     newMessage.set(message.toJson());
   }
 
-  static void requestHelp(String eventId, String teamId) {
+  static void requestHelp(
+    String eventId,
+    String teamId,
+  ) {
     String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
     final databaseReference = FirebaseDatabase.instance.ref();
     DatabaseReference newMessage =
@@ -126,7 +148,11 @@ class EventMessageSender {
   }
 
   static void protest(
-      String eventId, String teamId, String otherTeamId, String description) {
+    String eventId,
+    String teamId,
+    String otherTeamId,
+    String description,
+  ) {
     String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
     final databaseReference = FirebaseDatabase.instance.ref();
     DatabaseReference newMessage =
@@ -143,7 +169,10 @@ class EventMessageSender {
   }
 
   static void reportProblem(
-      String eventId, String teamId, String problemDescription) {
+    String eventId,
+    String teamId,
+    String problemDescription,
+  ) {
     String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
     final databaseReference = FirebaseDatabase.instance.ref();
     DatabaseReference newMessage =
