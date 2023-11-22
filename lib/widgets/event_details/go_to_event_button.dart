@@ -70,7 +70,10 @@ class GoToEventButton extends HookConsumerWidget {
               );
             }
           },
-          child: const Text("Enter event"),
+          child: const SizedBox(
+            width: double.infinity,
+            child: Center(child: Text("Enter event")),
+          ),
         ),
       _ => const SizedBox.shrink(),
     };

@@ -7,7 +7,7 @@ import 'package:regatta_buddy/pages/register_page.dart';
 import 'package:regatta_buddy/providers/auth/auth_state_notifier.dart';
 import 'package:regatta_buddy/utils/logging/logger_helper.dart';
 import 'package:regatta_buddy/utils/validations.dart';
-import 'package:regatta_buddy/widgets/app_header.dart';
+import 'package:regatta_buddy/widgets/core/app_header.dart';
 
 class LoginPage extends StatefulHookConsumerWidget {
   LoginPage({super.key});
@@ -89,7 +89,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   },
                   style: ElevatedButton.styleFrom(
                     shape: const StadiumBorder(),
-                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 15),
                   ),
                   child: const Text('Login'),
                 ),

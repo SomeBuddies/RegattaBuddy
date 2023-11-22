@@ -5,7 +5,7 @@ import 'package:regatta_buddy/models/registration_data.dart';
 import 'package:regatta_buddy/pages/home.dart';
 import 'package:regatta_buddy/providers/auth/auth_state_notifier.dart';
 import 'package:regatta_buddy/utils/validations.dart';
-import 'package:regatta_buddy/widgets/app_header.dart';
+import 'package:regatta_buddy/widgets/core/app_header.dart';
 
 class RegisterPage extends StatefulHookConsumerWidget {
   const RegisterPage({super.key});
