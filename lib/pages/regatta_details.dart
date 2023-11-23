@@ -24,8 +24,8 @@ class RegattaDetailsPage extends ConsumerWidget {
       body: RefreshIndicator(
         onRefresh: () async {
           ref.invalidate(eventProvider(eventId));
-          final event = await ref.read(eventProvider(eventId).future);
-          ref.invalidate(teamsProvider(event));
+          ref.invalidate(teamsProvider(eventId));
+          ref.invalidate(getUserTeamControllerProvider);
         },
         child: switch (asyncEvent) {
           AsyncData(value: final event) => _RegataDetailsPage(event: event),

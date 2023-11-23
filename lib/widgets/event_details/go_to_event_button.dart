@@ -14,18 +14,19 @@ part 'go_to_event_button.g.dart';
 
 @riverpod
 FutureOr<Team?> getUserTeamController(
-    GetUserTeamControllerRef ref, Event event) async {
-  final userId = ref.watch(firebaseAuthProvider).currentUser?.uid;
-
+  GetUserTeamControllerRef ref, {
+  required String? userId,
+  required String eventId,
+}) async {
   if (userId == null) return null;
 
   final teamId = await ref
       .watch(userRepositoryProvider)
-      .getUserTeamId(userId: userId, eventId: event.id);
+      .getUserTeamId(userId: userId, eventId: eventId);
 
   if (teamId == null) return null;
 
-  return await ref.watch(teamRepositoryProvider(event)).getTeam(teamId);
+  return await ref.watch(teamRepositoryProvider(eventId)).getTeam(teamId);
 }
 
 class GoToEventButton extends HookConsumerWidget {
@@ -47,7 +48,10 @@ class GoToEventButton extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userId = ref.watch(firebaseAuthProvider).currentUser?.uid;
-    final asyncTeam = ref.watch(getUserTeamControllerProvider(event));
+    final asyncTeam = ref.watch(getUserTeamControllerProvider(
+      userId: userId,
+      eventId: event.id,
+    ));
 
     return switch (asyncTeam) {
       AsyncData(value: final team)
@@ -55,7 +59,7 @@ class GoToEventButton extends HookConsumerWidget {
         ElevatedButton(
           onPressed: () async {
             if (team == null) {
-              ref.watch(teamRepositoryProvider(event)).initRealtime();
+              ref.watch(teamRepositoryProvider(event.id)).initRealtime();
 
               Navigator.of(context).pushNamedAndRemoveUntil(
                 RaceModeratorPage.route,

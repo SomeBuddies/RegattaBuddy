@@ -28,7 +28,7 @@ class EventTeamsDisplay extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final teams = ref.watch(teamsProvider(event));
+    final teams = ref.watch(teamsProvider(event.id));
     final userId = ref.read(firebaseAuthProvider).currentUser?.uid ?? "";
 
     return BasicCard(
@@ -73,7 +73,7 @@ class CreateTeamButton extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = useTextEditingController();
     final formKey = useMemoized(() => GlobalKey<FormState>());
-    final teamRepository = ref.read(teamRepositoryProvider(event));
+    final teamRepository = ref.read(teamRepositoryProvider(event.id));
 
     return SizedBox(
       width: double.infinity,
@@ -150,7 +150,7 @@ class TeamCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final teamRepository = ref.read(teamRepositoryProvider(event));
+    final teamRepository = ref.read(teamRepositoryProvider(event.id));
     final userId = ref.read(firebaseAuthProvider).currentUser?.uid ?? "";
 
     return Card(

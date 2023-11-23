@@ -7,7 +7,7 @@ part of 'go_to_event_button.dart';
 // **************************************************************************
 
 String _$getUserTeamControllerHash() =>
-    r'b039a6c33b030be1c828f1883ca3af8e3d10fb66';
+    r'2a8675d52180e2667145b49b1f8b41e7215fb176';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -40,11 +40,13 @@ class GetUserTeamControllerFamily extends Family<AsyncValue<Team?>> {
   const GetUserTeamControllerFamily();
 
   /// See also [getUserTeamController].
-  GetUserTeamControllerProvider call(
-    Event event,
-  ) {
+  GetUserTeamControllerProvider call({
+    required String? userId,
+    required String eventId,
+  }) {
     return GetUserTeamControllerProvider(
-      event,
+      userId: userId,
+      eventId: eventId,
     );
   }
 
@@ -53,7 +55,8 @@ class GetUserTeamControllerFamily extends Family<AsyncValue<Team?>> {
     covariant GetUserTeamControllerProvider provider,
   ) {
     return call(
-      provider.event,
+      userId: provider.userId,
+      eventId: provider.eventId,
     );
   }
 
@@ -75,12 +78,14 @@ class GetUserTeamControllerFamily extends Family<AsyncValue<Team?>> {
 /// See also [getUserTeamController].
 class GetUserTeamControllerProvider extends AutoDisposeFutureProvider<Team?> {
   /// See also [getUserTeamController].
-  GetUserTeamControllerProvider(
-    Event event,
-  ) : this._internal(
+  GetUserTeamControllerProvider({
+    required String? userId,
+    required String eventId,
+  }) : this._internal(
           (ref) => getUserTeamController(
             ref as GetUserTeamControllerRef,
-            event,
+            userId: userId,
+            eventId: eventId,
           ),
           from: getUserTeamControllerProvider,
           name: r'getUserTeamControllerProvider',
@@ -91,7 +96,8 @@ class GetUserTeamControllerProvider extends AutoDisposeFutureProvider<Team?> {
           dependencies: GetUserTeamControllerFamily._dependencies,
           allTransitiveDependencies:
               GetUserTeamControllerFamily._allTransitiveDependencies,
-          event: event,
+          userId: userId,
+          eventId: eventId,
         );
 
   GetUserTeamControllerProvider._internal(
@@ -101,10 +107,12 @@ class GetUserTeamControllerProvider extends AutoDisposeFutureProvider<Team?> {
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.event,
+    required this.userId,
+    required this.eventId,
   }) : super.internal();
 
-  final Event event;
+  final String? userId;
+  final String eventId;
 
   @override
   Override overrideWith(
@@ -119,7 +127,8 @@ class GetUserTeamControllerProvider extends AutoDisposeFutureProvider<Team?> {
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        event: event,
+        userId: userId,
+        eventId: eventId,
       ),
     );
   }
@@ -131,21 +140,27 @@ class GetUserTeamControllerProvider extends AutoDisposeFutureProvider<Team?> {
 
   @override
   bool operator ==(Object other) {
-    return other is GetUserTeamControllerProvider && other.event == event;
+    return other is GetUserTeamControllerProvider &&
+        other.userId == userId &&
+        other.eventId == eventId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, event.hashCode);
+    hash = _SystemHash.combine(hash, userId.hashCode);
+    hash = _SystemHash.combine(hash, eventId.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
 
 mixin GetUserTeamControllerRef on AutoDisposeFutureProviderRef<Team?> {
-  /// The parameter `event` of this provider.
-  Event get event;
+  /// The parameter `userId` of this provider.
+  String? get userId;
+
+  /// The parameter `eventId` of this provider.
+  String get eventId;
 }
 
 class _GetUserTeamControllerProviderElement
@@ -154,7 +169,9 @@ class _GetUserTeamControllerProviderElement
   _GetUserTeamControllerProviderElement(super.provider);
 
   @override
-  Event get event => (origin as GetUserTeamControllerProvider).event;
+  String? get userId => (origin as GetUserTeamControllerProvider).userId;
+  @override
+  String get eventId => (origin as GetUserTeamControllerProvider).eventId;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

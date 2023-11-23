@@ -209,7 +209,7 @@ class _RacePageState extends ConsumerState<RacePage> {
           iconData: Icons.sports_kabaddi,
           title: "Protest",
           onTap: () => showProtestDialog(context, event.id, team.id,
-              ref.read(teamRepositoryProvider(event)))),
+              ref.read(teamRepositoryProvider(event.id)))),
       ActionButton(
           iconData: Icons.medical_services_outlined,
           title: "Problem",

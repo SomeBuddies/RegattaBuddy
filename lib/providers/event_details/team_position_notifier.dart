@@ -12,7 +12,7 @@ part 'team_position_notifier.g.dart';
 class TeamPositionNotifier extends _$TeamPositionNotifier {
   @override
   Map<String, LatLng> build(Event event) {
-    final teams = ref.watch(teamsProvider(event));
+    final teams = ref.watch(teamsProvider(event.id));
     final firebaseDb = ref.watch(firebaseRealtimeProvider);
     final logger = getLogger("TeamPositionNotifier");
     logger.i("initializing a TeamPositionNotifier provider");

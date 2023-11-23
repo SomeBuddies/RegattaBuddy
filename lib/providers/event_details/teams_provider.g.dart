@@ -6,7 +6,7 @@ part of 'teams_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$teamsHash() => r'e2b3e2535512d7480bf1766416ffb1f566a84ec0';
+String _$teamsHash() => r'cc50e79a3324289163a157a553725c8b9daf3b46';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -40,10 +40,10 @@ class TeamsFamily extends Family<AsyncValue<List<Team>>> {
 
   /// See also [teams].
   TeamsProvider call(
-    Event event,
+    String eventId,
   ) {
     return TeamsProvider(
-      event,
+      eventId,
     );
   }
 
@@ -52,7 +52,7 @@ class TeamsFamily extends Family<AsyncValue<List<Team>>> {
     covariant TeamsProvider provider,
   ) {
     return call(
-      provider.event,
+      provider.eventId,
     );
   }
 
@@ -75,11 +75,11 @@ class TeamsFamily extends Family<AsyncValue<List<Team>>> {
 class TeamsProvider extends AutoDisposeFutureProvider<List<Team>> {
   /// See also [teams].
   TeamsProvider(
-    Event event,
+    String eventId,
   ) : this._internal(
           (ref) => teams(
             ref as TeamsRef,
-            event,
+            eventId,
           ),
           from: teamsProvider,
           name: r'teamsProvider',
@@ -89,7 +89,7 @@ class TeamsProvider extends AutoDisposeFutureProvider<List<Team>> {
                   : _$teamsHash,
           dependencies: TeamsFamily._dependencies,
           allTransitiveDependencies: TeamsFamily._allTransitiveDependencies,
-          event: event,
+          eventId: eventId,
         );
 
   TeamsProvider._internal(
@@ -99,10 +99,10 @@ class TeamsProvider extends AutoDisposeFutureProvider<List<Team>> {
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.event,
+    required this.eventId,
   }) : super.internal();
 
-  final Event event;
+  final String eventId;
 
   @override
   Override overrideWith(
@@ -117,7 +117,7 @@ class TeamsProvider extends AutoDisposeFutureProvider<List<Team>> {
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        event: event,
+        eventId: eventId,
       ),
     );
   }
@@ -129,21 +129,21 @@ class TeamsProvider extends AutoDisposeFutureProvider<List<Team>> {
 
   @override
   bool operator ==(Object other) {
-    return other is TeamsProvider && other.event == event;
+    return other is TeamsProvider && other.eventId == eventId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, event.hashCode);
+    hash = _SystemHash.combine(hash, eventId.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
 
 mixin TeamsRef on AutoDisposeFutureProviderRef<List<Team>> {
-  /// The parameter `event` of this provider.
-  Event get event;
+  /// The parameter `eventId` of this provider.
+  String get eventId;
 }
 
 class _TeamsProviderElement extends AutoDisposeFutureProviderElement<List<Team>>
@@ -151,7 +151,7 @@ class _TeamsProviderElement extends AutoDisposeFutureProviderElement<List<Team>>
   _TeamsProviderElement(super.provider);
 
   @override
-  Event get event => (origin as TeamsProvider).event;
+  String get eventId => (origin as TeamsProvider).eventId;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
