@@ -48,6 +48,13 @@ class Message {
   get convertedTimestamp {
     return DateTime.fromMillisecondsSinceEpoch(int.parse(timestamp));
   }
+
+  (String, String) getTeamNameAndProtestDesc() {
+    if (type != MessageType.protest) return ('', '');
+    List<String> values = value!.split(':');
+    return (values[0], values[1]);
+  }
+
 }
 
 enum MessageType {
@@ -76,7 +83,7 @@ enum MessageReceiverType {
 // type: protest
 // receiverType: referee
 // teamId: team that protests
-// value: problematic team
+// value: problematic team : description
 
 // type: requestHelp
 // receiverType: referee

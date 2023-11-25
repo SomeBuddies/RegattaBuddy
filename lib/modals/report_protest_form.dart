@@ -25,7 +25,7 @@ class _ProtestFormState extends State<ProtestForm> {
 
   @override
   void initState() {
-    selectedTeam = widget.teams[0];
+    selectedTeam = widget.teams.where((team) => team.id != widget.teamId).first;
     super.initState();
   }
 
@@ -35,11 +35,13 @@ class _ProtestFormState extends State<ProtestForm> {
       key: _formKey,
       child: Column(
         children: [
-          const Text("Select problematic team and describe protest"),
+          const Text("Select a problematic team and describe protest"),
           const SizedBox(height: 20),
           DropdownButton<Team>(
             value: selectedTeam,
-            items: widget.teams.map<DropdownMenuItem<Team>>((Team value) {
+            items: widget.teams
+                .where((team) => team.id != widget.teamId)
+                .map<DropdownMenuItem<Team>>((Team value) {
               return DropdownMenuItem<Team>(
                 value: value,
                 child: Text(
@@ -74,7 +76,7 @@ class _ProtestFormState extends State<ProtestForm> {
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
                 EventMessageSender.protest(widget.eventId, widget.teamId,
-                    selectedTeam.id, descriptionController.text);
+                    selectedTeam.name, descriptionController.text);
 
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(

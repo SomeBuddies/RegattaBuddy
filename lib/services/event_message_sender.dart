@@ -150,7 +150,7 @@ class EventMessageSender {
   static void protest(
     String eventId,
     String teamId,
-    String otherTeamId,
+    String otherTeamName,
     String description,
   ) {
     String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
@@ -162,7 +162,7 @@ class EventMessageSender {
         type: MessageType.protest,
         receiverType: MessageReceiverType.referee,
         teamId: teamId,
-        value: otherTeamId,
+        value: "$otherTeamName:$description",
         timestamp: timestamp);
 
     newMessage.set(message.toJson());

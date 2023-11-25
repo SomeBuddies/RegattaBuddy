@@ -139,12 +139,31 @@ class MessageListTile extends StatelessWidget {
         );
 
       case MessageType.protest:
-        var titleText = "Team ${message.teamName ?? message.teamId} protested";
+        var value = message.getTeamNameAndProtestDesc();
+        var titleText = "Protest by ${message.teamName ?? message.teamId}";
         return ListTile(
           leading: const Icon(Icons.sports_kabaddi, color: Colors.red),
           title: Text(titleText),
-          subtitle: Text(
-            '${message.teamName ?? message.teamId} at $formattedDate',
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 5),
+              Text("other team: ${value.$1}"),
+              const SizedBox(height: 5),
+              Text(
+                value.$2,
+                style: const TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                '${message.teamName ?? message.teamId} at $formattedDate',
+                style: const TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
+            ],
           ),
         );
 
