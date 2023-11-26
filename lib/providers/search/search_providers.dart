@@ -23,7 +23,7 @@ class CurrentSortType extends _$CurrentSortType {
 class CurrentSortOrder extends _$CurrentSortOrder {
   @override
   SortOrder build() {
-    return SortOrder.descending;
+    return SortOrder.ascending;
   }
 
   void set(SortOrder value) {

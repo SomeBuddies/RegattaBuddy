@@ -41,8 +41,18 @@ class SearchPage extends HookConsumerWidget {
                 ),
                 Switch(
                   value: ref.watch(showPastEventsProvider),
-                  onChanged: (value) =>
-                      ref.read(showPastEventsProvider.notifier).set(value),
+                  onChanged: (value) {
+                    if (value) {
+                      ref
+                          .read(currentSortOrderProvider.notifier)
+                          .set(SortOrder.descending);
+                    } else {
+                      ref
+                          .read(currentSortOrderProvider.notifier)
+                          .set(SortOrder.ascending);
+                    }
+                    ref.read(showPastEventsProvider.notifier).set(value);
+                  },
                 ),
                 const Text("Past Events"),
               ],
