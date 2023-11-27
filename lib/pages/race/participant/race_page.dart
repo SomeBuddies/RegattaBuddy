@@ -161,7 +161,7 @@ class _RacePageState extends ConsumerState<RacePage> {
       showDisappearingMessageDialog(
         context,
         message,
-        customTitle: "Points assigned to your team",
+        customTitle: "Punkty przydzielone dla twojej drużyny",
       );
     }
   }
@@ -202,7 +202,7 @@ class _RacePageState extends ConsumerState<RacePage> {
     List<ActionButton> raceActions = [
       ActionButton(
         iconData: Icons.help_outline,
-        title: "Needs help",
+        title: "Pomocy",
         onTap: () => {EventMessageSender.requestHelp(event.id, team.id)},
       ),
       ActionButton(
@@ -216,7 +216,7 @@ class _RacePageState extends ConsumerState<RacePage> {
           onTap: () => showReportProblemDialog(context, event.id, team.id)),
       ActionButton(
         iconData: Icons.close_outlined,
-        title: "Cancel",
+        title: "Anuluj",
         onTap: () => {},
       ),
     ];
