@@ -76,7 +76,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 controller: passwordController,
                 obscureText: true,
                 decoration: const InputDecoration(
-                  labelText: 'Password',
+                  labelText: 'Hasło',
                 ),
               ),
               Padding(
@@ -92,16 +92,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 30, vertical: 15),
                   ),
-                  child: const Text('Login'),
+                  child: const Text('Zaloguj się'),
                 ),
               ),
               RichText(
                 text: TextSpan(
-                  text: 'Don\'t have an account? ',
+                  text: 'Nie masz konta? ',
                   style: const TextStyle(color: Colors.black),
                   children: <TextSpan>[
                     TextSpan(
-                      text: 'Sign up',
+                      text: 'Zarejestruj się',
                       style: const TextStyle(color: Colors.blue),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () =>

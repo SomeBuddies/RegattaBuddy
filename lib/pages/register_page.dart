@@ -55,17 +55,17 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
               TextFormField(
                 controller: firstNameController,
                 validator: (firstName) =>
-                    validateShortTextInput(firstName, 'first name'),
+                    validateShortTextInput(firstName, 'imię'),
                 decoration: const InputDecoration(
-                  labelText: 'First Name',
+                  labelText: 'Imię',
                 ),
               ),
               TextFormField(
                 controller: lastNameController,
                 validator: (firstName) =>
-                    validateShortTextInput(firstName, 'last name'),
+                    validateShortTextInput(firstName, 'nazwisko'),
                 decoration: const InputDecoration(
-                  labelText: 'Last Name',
+                  labelText: 'Nazwisko',
                 ),
               ),
               TextFormField(
@@ -80,7 +80,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 obscureText: true,
                 validator: (password) => validatePassword(password),
                 decoration: const InputDecoration(
-                  labelText: 'Password',
+                  labelText: 'Hasło',
                 ),
               ),
               TextFormField(
@@ -91,7 +91,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                   passwordController.text,
                 ),
                 decoration: const InputDecoration(
-                  labelText: 'Confirm Password',
+                  labelText: 'Potwierdź hasło',
                 ),
               ),
               Padding(
@@ -116,7 +116,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                       vertical: 15,
                     ),
                   ),
-                  child: const Text('Sign Up'),
+                  child: const Text('Zarejestruj się'),
                 ),
               ),
             ],
