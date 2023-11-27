@@ -36,7 +36,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             const Text(
-              "Profile",
+              "Twój profil",
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
@@ -60,12 +60,12 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "User: ${userData.asData?.value.email ?? "Loading..."}",
+                              "Użytkownik: ${userData.asData?.value.email ?? "Ładowanie..."}",
                               style: const TextStyle(fontSize: 18),
                             ),
                             const SizedBox(height: 10),
                             Text(
-                              "Name: ${userData.asData?.value.firstName ?? "Loading..."}",
+                              "Imię: ${userData.asData?.value.firstName ?? "Ładowanie..."}",
                               style: const TextStyle(fontSize: 18),
                             ),
                           ],
@@ -91,7 +91,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                     const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
               ),
               child: const Text(
-                "Logout",
+                "Wyloguj się",
                 style: TextStyle(fontSize: 18),
               ),
             ),
