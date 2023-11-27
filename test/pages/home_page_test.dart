@@ -55,9 +55,9 @@ void main() {
       ),
     );
 
-    expect(find.text('Your events'), findsOneWidget);
-    expect(find.text('Organize event'), findsOneWidget);
-    expect(find.text('Browse events'), findsOneWidget);
+    expect(find.text('Twoje wydarzenia'), findsOneWidget);
+    expect(find.text('Zorganizuj wydarzenie'), findsOneWidget);
+    expect(find.text('Przeglądaj wydarzenia'), findsOneWidget);
   });
 
   testWidgets("Navigates to SearchPage on search button click", (tester) async {
@@ -79,7 +79,7 @@ void main() {
 
     expect(find.text('mockedSearchPage'), findsNothing);
 
-    await tester.tap(find.text('Browse events'));
+    await tester.tap(find.text('Przeglądaj wydarzenia'));
     await tester.pumpAndSettle();
 
     verify(() => mockObserver.didPush(any(), any()));
@@ -105,7 +105,7 @@ void main() {
 
     expect(find.text('mockedSearchPage'), findsNothing);
 
-    await tester.tap(find.text('Your events'));
+    await tester.tap(find.text('Twoje wydarzenia'));
     await tester.pumpAndSettle();
 
     verify(() => mockObserver.didPush(any(), any()));
@@ -131,10 +131,10 @@ void main() {
 
     expect(find.text('mockedCreatePage'), findsNothing);
 
-    await tester.tap(find.text('Organize event'));
+    await tester.tap(find.text('Zorganizuj wydarzenie'));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Yes'));
+    await tester.tap(find.text('Tak'));
     await tester.pumpAndSettle();
 
     verify(() => mockObserver.didPush(any(), any()));
