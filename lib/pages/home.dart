@@ -80,7 +80,7 @@ class HomePage extends ConsumerWidget {
                   type: QuickAlertType.confirm,
                   title: 'Zorganizuj wydarzenie',
                   text:
-                      'Jesteś pewny, że chcesz zacząć tworzyć swoje wydarzenie regata?',
+                      'Jesteś pewny, że chcesz zacząć tworzyć swoje wydarzenie?',
                   onConfirmBtnTap: () {
                     Navigator.of(context).pop();
                     Navigator.pushNamed(context, EventCreationPage.route);

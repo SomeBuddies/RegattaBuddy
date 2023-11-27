@@ -202,7 +202,7 @@ class _RacePageState extends ConsumerState<RacePage> {
     List<ActionButton> raceActions = [
       ActionButton(
         iconData: Icons.help_outline,
-        title: "Pomocy",
+        title: "Potrzebna pomoc",
         onTap: () => {EventMessageSender.requestHelp(event.id, team.id)},
       ),
       ActionButton(

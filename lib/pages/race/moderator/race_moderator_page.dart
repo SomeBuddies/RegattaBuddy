@@ -466,7 +466,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
     });
     ref.read(currentRoundProvider(event.id).notifier).set(round);
     timer.startFrom(message.convertedTimestamp);
-    addNotification("Runda $round rozpoczeła się");
+    addNotification("Runda $round rozpoczęła się");
   }
 
   void addNotification(String title) {
@@ -499,7 +499,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
     return eventTeams.firstWhere(
       (element) => element.id == teamId,
       orElse: () {
-        return const Team(name: "nieznana", captainId: "nieznana");
+        return const Team(name: "nieznana", captainId: "nieznane");
       },
     ).name;
   }
