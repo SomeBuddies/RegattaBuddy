@@ -69,8 +69,8 @@ class HomePage extends ConsumerWidget {
             buildButton(
               onTap: () => Navigator.pushNamed(context, SearchPage.route,
                   arguments: {'isUserView': true}),
-              title: 'Your events',
-              text: 'View your upcoming regatta events',
+              title: 'Twoje wydarzenia',
+              text: 'Zobacz swoje nadchodzące wydarzenia',
             ),
             const SizedBox(height: 30.0),
             buildButton(
@@ -78,25 +78,25 @@ class HomePage extends ConsumerWidget {
                 QuickAlert.show(
                   context: context,
                   type: QuickAlertType.confirm,
-                  title: 'Organize event',
+                  title: 'Zorganizuj wydarzenie',
                   text:
-                      'Are you sure you want to start creating a new regatta event?',
+                      'Jesteś pewny, że chcesz zacząć tworzyć swoje wydarzenie regata?',
                   onConfirmBtnTap: () {
                     Navigator.of(context).pop();
                     Navigator.pushNamed(context, EventCreationPage.route);
                   },
-                  confirmBtnText: 'Yes',
+                  confirmBtnText: 'Tak',
                 );
               },
-              title: 'Organize event',
-              text: 'Organize a new regatta event',
+              title: 'Zorganizuj wydarzenie',
+              text: 'Zorganizuj nowe wydarzenie regata',
             ),
             const SizedBox(height: 30.0),
             buildButton(
               onTap: () => Navigator.pushNamed(context, SearchPage.route,
                   arguments: {'isUserView': false}),
-              title: 'Browse events',
-              text: 'Browse regatta events in your area',
+              title: 'Przeglądaj wydarzenia',
+              text: 'Przeglądaj wszystkie wydarzenia',
             )
           ],
         ),
