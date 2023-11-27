@@ -81,7 +81,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
         context,
         message,
         duration: const Duration(seconds: 10),
-        customTitle: "PROBLEM WAS REPORTED",
+        customTitle: "Zgłoszono problem",
       );
     }
   }
@@ -92,7 +92,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
         context,
         message,
         duration: const Duration(seconds: 10),
-        customTitle: "PROTEST WAS REPORTED",
+        customTitle: "Zgłoszono protest",
       );
     }
   }
@@ -103,7 +103,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
         context,
         message,
         duration: const Duration(seconds: 10),
-        customTitle: "HELP WAS REQUESTED",
+        customTitle: "Poproszono o pomoc",
       );
     }
   }
@@ -186,7 +186,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
       return const Expanded(
         child: Center(
           child: Text(
-            "Event not started yet",
+            "Wydarzenie nie zostało jeszcze rozpoczęte",
             style: TextStyle(fontSize: 20),
           ),
         ),
@@ -210,7 +210,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
             );
           } else {
             return const Center(
-              child: Text("No team scores yet"),
+              child: Text("Brak punktów drużyn"),
             );
           }
         },
@@ -231,7 +231,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
       raceActions.add(
         ActionButton(
           iconData: Icons.start,
-          title: "Start event",
+          title: "Rozpocznij wydarzenie",
           onTap: () {
             ref.read(eventMessageSenderProvider).startEvent(event);
             eventStatus = EventStatus.inProgress;
@@ -243,7 +243,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
       raceActions.add(
         ActionButton(
           iconData: Icons.sports,
-          title: "Start round ${round + 1}",
+          title: "Rozpocznij rundę ${round + 1}",
           onTap: () => ref
               .read(eventMessageSenderProvider)
               .startRound(event.id, round + 1),
@@ -254,7 +254,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
       raceActions.add(
         ActionButton(
           iconData: Icons.timer_sharp,
-          title: "Finish round $round",
+          title: "Zakończ rundę $round",
           onTap: () =>
               ref.read(eventMessageSenderProvider).finishRound(event.id, round),
         ),
@@ -265,7 +265,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
       raceActions.add(
         ActionButton(
           iconData: Icons.flag_circle_outlined,
-          title: "Finish event",
+          title: "Zakończ wydarzenie",
           onTap: () {
             ref.read(eventMessageSenderProvider).endEvent(event);
             eventStatus = EventStatus.finished;
@@ -286,15 +286,15 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
       if (eventStatus == EventStatus.inProgress)
         ActionButton(
             iconData: Icons.control_point,
-            title: "Add points",
+            title: "Przydziel punkty",
             onTap: () => addPointsHandler(eventTeams)),
       ActionButton(
           iconData: Icons.format_list_bulleted_outlined,
-          title: "Show messages",
+          title: "Pokaż wiadomości",
           onTap: () => showMessagesHandler()),
       ActionButton(
         iconData: Icons.close_outlined,
-        title: "Cancel",
+        title: "Anuluj",
         onTap: () => {},
       ),
     ]);
@@ -305,7 +305,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
     if (eventStatus == EventStatus.notStarted) {
       return ActionButton(
         iconData: Icons.start,
-        title: "Start event",
+        title: "Rozpocznij wydarzenie",
         onTap: () {
           ref.read(eventMessageSenderProvider).startEvent(event);
         },
@@ -394,7 +394,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
         ],
       ),
       title: Text(teamName),
-      subtitle: Text('Points: ${processedScores[teamId]}'),
+      subtitle: Text('Punkty: ${processedScores[teamId]}'),
     );
   }
 
@@ -455,7 +455,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
     setState(() {
       roundStatus = RoundStatus.finished;
     });
-    addNotification("Round $round finished");
+    addNotification("Runda $round zakończyła się");
     timer.stop();
   }
 
@@ -466,7 +466,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
     });
     ref.read(currentRoundProvider(event.id).notifier).set(round);
     timer.startFrom(message.convertedTimestamp);
-    addNotification("Round $round started");
+    addNotification("Runda $round rozpoczeła się");
   }
 
   void addNotification(String title) {
@@ -499,7 +499,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
     return eventTeams.firstWhere(
       (element) => element.id == teamId,
       orElse: () {
-        return const Team(name: "unknown", captainId: "unknown");
+        return const Team(name: "nieznana", captainId: "nieznana");
       },
     ).name;
   }
