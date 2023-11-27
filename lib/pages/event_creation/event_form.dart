@@ -31,22 +31,22 @@ class EventFormSubPage extends HookWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           RBRequiredInputFormField(
-            label: 'Event name',
+            label: 'Nazwa',
             controller: eventNameController,
             handler: nameSubmitHandler,
           ),
           RBRequiredTextAreaFormField(
-            label: 'Event description',
+            label: 'Opis',
             controller: eventDescriptionController,
             handler: descriptionSubmitHandler,
           ),
           RBRequiredDateFormField(
-            label: 'Event date',
+            label: 'Data',
             controller: eventDateController,
             handler: dateSubmitHandler,
           ),
           RBRequiredTimeFormField(
-            label: 'Event time',
+            label: 'Godzina',
             controller: eventTimeController,
             handler: timeSubmitHandler,
           ),

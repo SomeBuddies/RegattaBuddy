@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:regatta_buddy/enums/sort_enums.dart';
-import 'package:regatta_buddy/extensions/string_extension.dart';
 import 'package:regatta_buddy/providers/search/search_providers.dart';
 import 'package:regatta_buddy/widgets/core/app_header.dart';
 import 'package:regatta_buddy/widgets/search/search_item.dart';
@@ -33,7 +32,7 @@ class SearchPage extends HookConsumerWidget {
                 Expanded(
                   child: TextField(
                     controller: controller,
-                    decoration: const InputDecoration(hintText: "Search"),
+                    decoration: const InputDecoration(hintText: "Szukaj"),
                     autocorrect: false,
                     onSubmitted: (value) =>
                         searchQuery.value = value.toLowerCase(),
@@ -54,7 +53,7 @@ class SearchPage extends HookConsumerWidget {
                     ref.read(showPastEventsProvider.notifier).set(value);
                   },
                 ),
-                const Text("Past Events"),
+                const Text("Dodaj zakończone wydarzenia"),
               ],
             ),
             Row(
@@ -68,13 +67,13 @@ class SearchPage extends HookConsumerWidget {
                   dropdownMenuEntries: SortType.values
                       .map((e) => DropdownMenuEntry(
                             value: e,
-                            label: e.name.toCapitalized(),
+                            label: sortTypeDisplayName(e),
                           ))
                       .toList(),
                   onSelected: (value) =>
                       ref.read(currentSortTypeProvider.notifier).set(value!),
                   initialSelection: ref.watch(currentSortTypeProvider),
-                  label: const Text("Sort by"),
+                  label: const Text("Sortuj według"),
                 ),
                 DropdownMenu(
                   inputDecorationTheme: const InputDecorationTheme(
@@ -84,13 +83,13 @@ class SearchPage extends HookConsumerWidget {
                   dropdownMenuEntries: SortOrder.values
                       .map((e) => DropdownMenuEntry(
                             value: e,
-                            label: e.name.toCapitalized(),
+                            label: sortOrderDisplayName(e),
                           ))
                       .toList(),
                   onSelected: (value) =>
                       ref.read(currentSortOrderProvider.notifier).set(value!),
                   initialSelection: ref.watch(currentSortOrderProvider),
-                  label: const Text("Order by"),
+                  label: const Text("Kolejność"),
                 ),
               ],
             ),

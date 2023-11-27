@@ -106,7 +106,7 @@ Future<void> showMessagesDialog(
       context: context,
       builder: (BuildContext cxt) {
         return AlertDialog(
-          title: const Text('Messages'),
+          title: const Text('Wiadomości'),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(constants.elementsBorderRadius),
           ),
@@ -151,8 +151,9 @@ Future<void> showDisappearingMessageDialog(
         return PopScope(
           onPopInvoked: (bool didPop) => dialogTimer?.cancel(),
           child: AlertDialog(
-            title:
-                customTitle != null ? Text(customTitle) : const Text('Message'),
+            title: customTitle != null
+                ? Text(customTitle)
+                : const Text('Wiadomość'),
             shape: RoundedRectangleBorder(
               borderRadius:
                   BorderRadius.circular(constants.elementsBorderRadius),

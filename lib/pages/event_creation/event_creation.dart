@@ -150,7 +150,7 @@ class _EventCreationPageState extends ConsumerState<EventCreationPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Event creation'),
+                  const Text('Kreator wydarzenia'),
                   Expanded(
                     child: pages[step](),
                   ),
@@ -163,24 +163,24 @@ class _EventCreationPageState extends ConsumerState<EventCreationPage> {
                           onPressed: () => Navigator.of(context).popUntil(
                             ModalRoute.withName(HomePage.route),
                           ),
-                          child: const Text("Cancel"),
+                          child: const Text("Anuluj"),
                         ),
                         Row(
                           children: [
                             if (step > 0)
                               TextButton(
                                 onPressed: previousStep,
-                                child: const Text("Previous"),
+                                child: const Text("Poprzedni"),
                               ),
                             if (step < pages.length - 1)
                               TextButton(
                                 onPressed: nextStep,
-                                child: const Text("Next"),
+                                child: const Text("Następny"),
                               )
                             else
                               TextButton(
                                 onPressed: finishEventCreation,
-                                child: const Text("Finish"),
+                                child: const Text("Zakończ"),
                               ),
                           ],
                         )

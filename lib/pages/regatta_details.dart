@@ -33,7 +33,8 @@ class RegattaDetailsPage extends ConsumerWidget {
               child: CircularProgressIndicator(),
             ),
           _ => const Center(
-              child: Text("Something went wrong while loading event"),
+              child: Text(
+                  "Podczas ładowania wydarzenia wystąpił nieoczekiwany problem"),
             ),
         },
       ),

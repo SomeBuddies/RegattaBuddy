@@ -29,7 +29,8 @@ class EventScoreDisplay extends HookConsumerWidget {
             child: CircularProgressIndicator(),
           ),
         (_, _) => const Center(
-            child: Text("There was an error loading scores"),
+            child: Text(
+                "Podczas ładowania wyników wystąpił nieoczekiwany problem"),
           ),
       },
     );
@@ -69,7 +70,7 @@ class _EventScoreDisplay extends StatelessWidget {
       );
     } else {
       return const Center(
-        child: Text("No team scores yet"),
+        child: Text("Brak wyników drużyn"),
       );
     }
   }
@@ -134,7 +135,7 @@ class TeamScoreTile extends StatelessWidget {
             ),
           ]),
       title: Text(team.name),
-      subtitle: Text('Points: $score'),
+      subtitle: Text('Punkty: $score'),
     );
   }
 }
