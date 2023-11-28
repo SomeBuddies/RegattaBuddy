@@ -4,27 +4,28 @@ import 'package:fpdart/fpdart.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:regatta_buddy/extensions/transaction_extension.dart';
 
-import 'package:regatta_buddy/models/event.dart';
 import 'package:regatta_buddy/models/team.dart';
 import 'package:regatta_buddy/providers/event_details/teams_provider.dart';
 import 'package:regatta_buddy/providers/firebase_providers.dart';
 import 'package:regatta_buddy/providers/repository_providers.dart';
+import 'package:regatta_buddy/services/repositories/event_repository.dart';
 import 'package:regatta_buddy/services/repositories/user_repository.dart';
 
 class TeamRepository {
   final Ref _ref;
-  final Event event;
+  final String eventId;
   //final Logger _logger = getLogger((TeamRepository).toString());
 
-  TeamRepository(this._ref, {required this.event});
+  TeamRepository(this._ref, {required this.eventId});
 
   FirebaseFirestore get _firestore => _ref.read(firebaseFirestoreProvider);
   realtime_db.DatabaseReference get _realtime =>
       _ref.read(firebaseRealtimeProvider);
+  EventRepository get _eventRepo => _ref.read(eventRepositoryProvider);
   UserRepository get _userRepo => _ref.read(userRepositoryProvider);
 
   CollectionReference<Map<String, dynamic>> get colRef =>
-      _firestore.collection('events/${event.id}/teams');
+      _firestore.collection('events/$eventId/teams');
 
   Future<String> addTeam(Team team, {Transaction? transaction}) async {
     final docRef = await transaction.maybeAdd(colRef, team.toJson());
@@ -60,6 +61,7 @@ class TeamRepository {
   /// Note that we do not sanitise the team name in any way.
   Future<Either<String, Unit>> createTeamFromName(String name) async {
     final user = await _userRepo.getCurrentUserData();
+    final event = await _eventRepo.getEvent(eventId);
 
     return user.fold(
       (error) => left(error),
@@ -95,7 +97,7 @@ class TeamRepository {
 
           Future.delayed(
             const Duration(milliseconds: 100),
-            () => _ref.invalidate(teamsProvider(event)),
+            () => _ref.invalidate(teamsProvider(event.id)),
           );
           return right(unit);
         });
@@ -107,6 +109,7 @@ class TeamRepository {
   /// Function fails is user is already in a team or is the event host.
   Future<Either<String, Unit>> joinTeam(String teamId) async {
     final user = await _userRepo.getCurrentUserData();
+    final event = await _eventRepo.getEvent(eventId);
 
     return user.fold(
       (error) => left(error),
@@ -149,7 +152,7 @@ class TeamRepository {
 
           Future.delayed(
             const Duration(milliseconds: 100),
-            () => _ref.invalidate(teamsProvider(event)),
+            () => _ref.invalidate(teamsProvider(event.id)),
           );
           return right(unit);
         });
@@ -161,6 +164,7 @@ class TeamRepository {
   /// Note it's not possible to leave a team as Team Captain.
   Future<Either<String, Unit>> leaveTeam(String teamId) async {
     final uid = _ref.read(firebaseAuthProvider).currentUser?.uid;
+    final event = await _eventRepo.getEvent(eventId);
 
     if (uid == null) return left("User is not logged in.");
 
@@ -188,7 +192,7 @@ class TeamRepository {
 
       Future.delayed(
         const Duration(milliseconds: 100),
-        () => _ref.invalidate(teamsProvider(event)),
+        () => _ref.invalidate(teamsProvider(event.id)),
       );
       return right(unit);
     });
@@ -196,6 +200,7 @@ class TeamRepository {
 
   Future<Either<String, Unit>> disbandTeam(String teamId) async {
     final uid = _ref.read(firebaseAuthProvider).currentUser?.uid;
+    final event = await _eventRepo.getEvent(eventId);
 
     if (uid == null) return left("User is not logged in.");
 
@@ -219,7 +224,7 @@ class TeamRepository {
 
       Future.delayed(
         const Duration(milliseconds: 100),
-        () => _ref.invalidate(teamsProvider(event)),
+        () => _ref.invalidate(teamsProvider(event.id)),
       );
       return right(unit);
     });
@@ -230,9 +235,7 @@ class TeamRepository {
     final teams = await getTeams();
 
     for (Team team in teams) {
-      await _realtime
-          .child("scores/${event.id}/${team.id}/0")
-          .set({"score": 0});
+      await _realtime.child("scores/$eventId/${team.id}/0").set({"score": 0});
     }
   }
 }

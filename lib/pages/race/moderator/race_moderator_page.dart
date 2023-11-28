@@ -131,7 +131,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
   @override
   Widget build(BuildContext context) {
     final teamScores = ref.watch(teamScoresProvider(event));
-    final teams = ref.watch(teamsProvider(event));
+    final teams = ref.watch(teamsProvider(event.id));
 
     teams.when(
       data: (data) => {

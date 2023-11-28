@@ -36,7 +36,7 @@ final userRepositoryProvider = Provider<UserRepository>.internal(
 );
 
 typedef UserRepositoryRef = ProviderRef<UserRepository>;
-String _$teamRepositoryHash() => r'a13ecb0a3eff2e90b3c2d61d180adb7b7c91ee70';
+String _$teamRepositoryHash() => r'387de16d8ddc3a34f2f1ad7ae5d9fe0b72763622';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -70,10 +70,10 @@ class TeamRepositoryFamily extends Family<TeamRepository> {
 
   /// See also [teamRepository].
   TeamRepositoryProvider call(
-    Event event,
+    String eventId,
   ) {
     return TeamRepositoryProvider(
-      event,
+      eventId,
     );
   }
 
@@ -82,7 +82,7 @@ class TeamRepositoryFamily extends Family<TeamRepository> {
     covariant TeamRepositoryProvider provider,
   ) {
     return call(
-      provider.event,
+      provider.eventId,
     );
   }
 
@@ -105,11 +105,11 @@ class TeamRepositoryFamily extends Family<TeamRepository> {
 class TeamRepositoryProvider extends Provider<TeamRepository> {
   /// See also [teamRepository].
   TeamRepositoryProvider(
-    Event event,
+    String eventId,
   ) : this._internal(
           (ref) => teamRepository(
             ref as TeamRepositoryRef,
-            event,
+            eventId,
           ),
           from: teamRepositoryProvider,
           name: r'teamRepositoryProvider',
@@ -120,7 +120,7 @@ class TeamRepositoryProvider extends Provider<TeamRepository> {
           dependencies: TeamRepositoryFamily._dependencies,
           allTransitiveDependencies:
               TeamRepositoryFamily._allTransitiveDependencies,
-          event: event,
+          eventId: eventId,
         );
 
   TeamRepositoryProvider._internal(
@@ -130,10 +130,10 @@ class TeamRepositoryProvider extends Provider<TeamRepository> {
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.event,
+    required this.eventId,
   }) : super.internal();
 
-  final Event event;
+  final String eventId;
 
   @override
   Override overrideWith(
@@ -148,7 +148,7 @@ class TeamRepositoryProvider extends Provider<TeamRepository> {
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        event: event,
+        eventId: eventId,
       ),
     );
   }
@@ -160,21 +160,21 @@ class TeamRepositoryProvider extends Provider<TeamRepository> {
 
   @override
   bool operator ==(Object other) {
-    return other is TeamRepositoryProvider && other.event == event;
+    return other is TeamRepositoryProvider && other.eventId == eventId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, event.hashCode);
+    hash = _SystemHash.combine(hash, eventId.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
 
 mixin TeamRepositoryRef on ProviderRef<TeamRepository> {
-  /// The parameter `event` of this provider.
-  Event get event;
+  /// The parameter `eventId` of this provider.
+  String get eventId;
 }
 
 class _TeamRepositoryProviderElement extends ProviderElement<TeamRepository>
@@ -182,7 +182,7 @@ class _TeamRepositoryProviderElement extends ProviderElement<TeamRepository>
   _TeamRepositoryProviderElement(super.provider);
 
   @override
-  Event get event => (origin as TeamRepositoryProvider).event;
+  String get eventId => (origin as TeamRepositoryProvider).eventId;
 }
 
 String _$scoreRepositoryHash() => r'3131a95e56754b933c3efee71f60b1c60a3a9226';

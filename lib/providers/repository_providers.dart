@@ -1,4 +1,3 @@
-import 'package:regatta_buddy/models/event.dart';
 import 'package:regatta_buddy/services/event_message_sender.dart';
 import 'package:regatta_buddy/services/repositories/event_repository.dart';
 import 'package:regatta_buddy/services/repositories/score_repository.dart';
@@ -19,10 +18,10 @@ UserRepository userRepository(UserRepositoryRef ref) {
 }
 
 @Riverpod(keepAlive: true)
-TeamRepository teamRepository(TeamRepositoryRef ref, Event event) {
+TeamRepository teamRepository(TeamRepositoryRef ref, String eventId) {
   return TeamRepository(
     ref,
-    event: event,
+    eventId: eventId,
   );
 }
 

@@ -7,7 +7,7 @@ part of 'team_position_notifier.dart';
 // **************************************************************************
 
 String _$teamPositionNotifierHash() =>
-    r'6167958f13fb6f51d01858b5d5952e87f34a34d4';
+    r'82b7c344f47c548410de8360489904d809e4cb23';
 
 /// Copied from Dart SDK
 class _SystemHash {

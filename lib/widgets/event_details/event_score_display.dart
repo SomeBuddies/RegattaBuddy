@@ -19,7 +19,7 @@ class EventScoreDisplay extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final teamScores = ref.watch(teamScoresProvider(event));
-    final eventTeams = ref.watch(teamsProvider(event));
+    final eventTeams = ref.watch(teamsProvider(event.id));
 
     return BasicCard(
       child: switch ((eventTeams, teamScores)) {
