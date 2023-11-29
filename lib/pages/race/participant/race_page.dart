@@ -203,17 +203,26 @@ class _RacePageState extends ConsumerState<RacePage> {
       ActionButton(
         iconData: Icons.help_outline,
         title: "Potrzebna pomoc",
-        onTap: () => {EventMessageSender.requestHelp(event.id, team.id)},
+        onTap: () => EventMessageSender.requestHelp(event.id, team.id),
       ),
       ActionButton(
-          iconData: Icons.sports_kabaddi,
-          title: "Protest",
-          onTap: () => showProtestDialog(context, event.id, team.id,
-              ref.read(teamRepositoryProvider(event.id)))),
+        iconData: Icons.sports_kabaddi,
+        title: "Protest",
+        onTap: () => showProtestDialog(
+          context,
+          event.id,
+          team.id,
+          ref.read(teamRepositoryProvider(event.id)),
+        ),
+      ),
       ActionButton(
           iconData: Icons.medical_services_outlined,
           title: "Problem",
-          onTap: () => showReportProblemDialog(context, event.id, team.id)),
+          onTap: () => showReportProblemDialog(
+                context,
+                event.id,
+                team.id,
+              )),
       ActionButton(
         iconData: Icons.close_outlined,
         title: "Anuluj",

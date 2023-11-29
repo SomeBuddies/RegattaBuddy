@@ -39,6 +39,16 @@ enum EventStatus {
   finished,
 }
 
+extension EventStatusDisplay on EventStatus {
+  String get displayName {
+    return switch (this) {
+      EventStatus.notStarted => "Nierozpoczęte",
+      EventStatus.inProgress => "W Trakcie",
+      EventStatus.finished => "Zakończone",
+    };
+  }
+}
+
 // Because LatLng is a custom class it needs to have its own JsonConverter
 // (even though it does have it's own converter and I'm just redirecting the call,
 // the code generator doesn't know it's there)
