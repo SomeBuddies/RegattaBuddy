@@ -50,6 +50,12 @@ class RaceMap extends ConsumerWidget {
                 strokeWidth: 4.0,
                 color: teamId.toSeededColor(),
               ),
+            Polyline(
+              points: event.route,
+              isDotted: true,
+              color: Colors.red.shade300,
+              strokeWidth: 2,
+            )
           ],
         ),
         CurrentLocationLayer(),
@@ -91,6 +97,16 @@ class RaceMarkerLayer extends ConsumerWidget {
         ref.watch(teamPositionNotifierProvider(event));
     var logger = getLogger("RaceMarkerLayer");
     logger.i("building a RaceMarkerLayer widget");
+    List<Marker> routeMarkers = event.route
+        .map((point) => Marker(
+              point: point,
+              builder: (context) => const Icon(
+                Icons.circle,
+                color: Colors.red,
+                size: 12,
+              ),
+            ))
+        .toList();
 
     return MarkerLayer(
       markers: [
@@ -119,6 +135,7 @@ class RaceMarkerLayer extends ConsumerWidget {
               },
             ),
           ),
+        ...routeMarkers,
       ],
     );
   }
