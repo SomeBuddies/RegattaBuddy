@@ -28,7 +28,7 @@ class RaceMap extends ConsumerWidget {
     return FlutterMap(
       mapController: mapController,
       options: MapOptions(
-        center: constants.startingPosition,
+        center: event.location,
         zoom: constants.startingZoom,
         maxZoom: 18.0,
       ),
