@@ -186,7 +186,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
       return const Expanded(
         child: Center(
           child: Text(
-            "Wydarzenie nie zostało jeszcze rozpoczęte",
+            "Rozpocznij wydarzenie",
             style: TextStyle(fontSize: 20),
           ),
         ),
