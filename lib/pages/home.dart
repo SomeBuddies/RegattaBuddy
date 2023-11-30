@@ -86,17 +86,18 @@ class HomePage extends ConsumerWidget {
                     Navigator.pushNamed(context, EventCreationPage.route);
                   },
                   confirmBtnText: 'Tak',
+                  cancelBtnText: 'Anuluj',
                 );
               },
               title: 'Zorganizuj wydarzenie',
-              text: 'Zorganizuj nowe wydarzenie regata',
+              text: 'Stwórz wydarzenie do którego dołączą inni',
             ),
             const SizedBox(height: 30.0),
             buildButton(
               onTap: () => Navigator.pushNamed(context, SearchPage.route,
                   arguments: {'isUserView': false}),
               title: 'Przeglądaj wydarzenia',
-              text: 'Przeglądaj wszystkie wydarzenia',
+              text: 'Zobacz wydarzenia innych użytkowników',
             )
           ],
         ),
