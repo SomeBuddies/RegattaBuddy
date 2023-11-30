@@ -17,4 +17,6 @@ extension StringCasingExtension on String {
     final double hue = hash.toDouble();
     return HSLColor.fromAHSL(1.0, hue, saturation, lightness).toColor();
   }
+
+  String toShortened() => length < 150 ? this : replaceRange(150, null, '...');
 }
