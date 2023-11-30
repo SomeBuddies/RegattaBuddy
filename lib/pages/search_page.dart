@@ -40,20 +40,16 @@ class SearchPage extends HookConsumerWidget {
                 ),
                 Switch(
                   value: ref.watch(showPastEventsProvider),
-                  onChanged: (value) {
-                    if (value) {
-                      ref
-                          .read(currentSortOrderProvider.notifier)
-                          .set(SortOrder.descending);
-                    } else {
-                      ref
-                          .read(currentSortOrderProvider.notifier)
-                          .set(SortOrder.ascending);
-                    }
+                  onChanged: (value) async {
                     ref.read(showPastEventsProvider.notifier).set(value);
+                    await Future.delayed(const Duration(milliseconds: 50));
+                    if (ref.read(currentSortTypeProvider) == SortType.date) {
+                      ref.read(currentSortOrderProvider.notifier).set(
+                          value ? SortOrder.descending : SortOrder.ascending);
+                    }
                   },
                 ),
-                const Text("Dodaj zakończone wydarzenia"),
+                const Text("Pokaż zakończone"),
               ],
             ),
             Row(
@@ -67,7 +63,7 @@ class SearchPage extends HookConsumerWidget {
                   dropdownMenuEntries: SortType.values
                       .map((e) => DropdownMenuEntry(
                             value: e,
-                            label: sortTypeDisplayName(e),
+                            label: e.displayName,
                           ))
                       .toList(),
                   onSelected: (value) =>
@@ -83,7 +79,7 @@ class SearchPage extends HookConsumerWidget {
                   dropdownMenuEntries: SortOrder.values
                       .map((e) => DropdownMenuEntry(
                             value: e,
-                            label: sortOrderDisplayName(e),
+                            label: e.displayName,
                           ))
                       .toList(),
                   onSelected: (value) =>
