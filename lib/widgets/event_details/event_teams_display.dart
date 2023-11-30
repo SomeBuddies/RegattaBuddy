@@ -36,7 +36,7 @@ class EventTeamsDisplay extends ConsumerWidget {
         data: (data) => Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (data.isEmpty) const Text("No Teams Created Yet!"),
+            if (data.isEmpty) const Text("Nikt nie utworzył drużyny"),
             Flexible(
               child: ListView.builder(
                 itemBuilder: (context, index) => TeamCard(
@@ -89,11 +89,11 @@ class CreateTeamButton extends HookConsumerWidget {
                     key: formKey,
                     child: TextFormField(
                       controller: controller,
-                      decoration:
-                          const InputDecoration(hintText: "Enter a team name"),
+                      decoration: const InputDecoration(
+                          hintText: "Wprowadź nazwę drużyny"),
                       validator: (value) {
                         if (value == null || value.characters.length < 3) {
-                          return "Team name needs to be at least 3 characters";
+                          return "Nazwa drużyny musi mieć przynajmniej 3 znaki";
                         }
                         return null;
                       },
@@ -113,11 +113,11 @@ class CreateTeamButton extends HookConsumerWidget {
                           (success) => Navigator.of(context).pop(),
                         );
                       },
-                      child: const Text("Submit"),
+                      child: const Text("Utwórz"),
                     ),
                     ElevatedButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      child: const Text("Cancel"),
+                      child: const Text("Anuluj"),
                     )
                   ],
                 ),
@@ -128,7 +128,7 @@ class CreateTeamButton extends HookConsumerWidget {
         style: ElevatedButton.styleFrom(
           shape: const StadiumBorder(),
         ),
-        child: const Text("Create a new team"),
+        child: const Text("Utwórz drużynę"),
       ),
     );
   }
@@ -178,7 +178,7 @@ class TeamCard extends ConsumerWidget {
                         (success) => null,
                       );
                     },
-                    child: const Text("Join Team"),
+                    child: const Text("Dołącz do drużyny"),
                   ),
               ],
             ),
@@ -203,11 +203,12 @@ class TeamCard extends ConsumerWidget {
                           (success) =>
                               ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                                content: Text("Left the team ${team.name}!")),
+                                content:
+                                    Text("Opuściłeś drużynę ${team.name}!")),
                           ),
                         );
                       },
-                      child: const Text("Leave Team"),
+                      child: const Text("Opuść drużynę"),
                     ),
                   if (userId == team.members[index].id &&
                       userId == team.captainId &&
@@ -225,11 +226,11 @@ class TeamCard extends ConsumerWidget {
                               ScaffoldMessenger.of(parentContext).showSnackBar(
                             SnackBar(
                                 content:
-                                    Text("Deleted the team ${team.name}!")),
+                                    Text("Usunięto drużynę ${team.name}!")),
                           ),
                         );
                       },
-                      child: const Text("Delete Team"),
+                      child: const Text("Usuń drużynę"),
                     ),
                 ],
               ),
