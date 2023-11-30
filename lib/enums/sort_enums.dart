@@ -4,12 +4,12 @@ enum SortType {
   //todo: add location
 }
 
-String sortTypeDisplayName(SortType sortType) {
-  switch (sortType) {
-    case SortType.name:
-      return "nazwy";
-    case SortType.date:
-      return "daty";
+extension SortTypeDisplay on SortType {
+  String get displayName {
+    return switch (this) {
+      SortType.name => "nazwy",
+      SortType.date => "daty",
+    };
   }
 }
 
@@ -18,11 +18,11 @@ enum SortOrder {
   descending,
 }
 
-String sortOrderDisplayName(SortOrder sortOrder) {
-  switch (sortOrder) {
-    case SortOrder.ascending:
-      return "rosnąca";
-    case SortOrder.descending:
-      return "malejąca";
+extension SortOrderDisplay on SortOrder {
+  String get displayName {
+    return switch (this) {
+      SortOrder.ascending => "rosnąca",
+      SortOrder.descending => "malejąca"
+    };
   }
 }

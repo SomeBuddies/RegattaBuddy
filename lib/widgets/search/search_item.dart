@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:regatta_buddy/models/event.dart';
 import 'package:regatta_buddy/pages/regatta_details.dart';
+import 'package:regatta_buddy/providers/event_details/placemark_provider.dart';
 import 'package:regatta_buddy/widgets/core/icon_with_text.dart';
 import 'package:regatta_buddy/widgets/core/route_preview_map.dart';
 
-class SearchItem extends StatelessWidget {
+class SearchItem extends ConsumerWidget {
   final Event event;
 
   const SearchItem(
@@ -15,7 +16,9 @@ class SearchItem extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final placemark = ref.watch(placemarkProvider(event.location));
+
     return GestureDetector(
       onTap: () => Navigator.of(context).pushNamed(
         RegattaDetailsPage.route,
@@ -48,34 +51,35 @@ class SearchItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              event.name,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  event.name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.fade,
+                                  softWrap: false,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
-                            ),
-                            FutureBuilder(
-                              future: placemarkFromCoordinates(
-                                event.location.latitude,
-                                event.location.longitude,
-                              ),
-                              builder: (context, snapshot) => (snapshot
-                                          .connectionState ==
-                                      ConnectionState.waiting)
-                                  ? const Center(
-                                      child: CircularProgressIndicator(),
-                                    )
-                                  : IconWithText(
-                                      icon: const Icon(Icons.pin_drop),
-                                      label: snapshot.data?.first.locality ??
-                                          event.location.toString(),
-                                    ),
-                            )
-                          ],
+                              switch (placemark) {
+                                AsyncData(:final value) => IconWithText(
+                                    icon: const Icon(Icons.pin_drop),
+                                    label: value.first.locality ??
+                                        event.location.toSexagesimal(),
+                                  ),
+                                AsyncLoading() => const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                _ => const SizedBox.shrink(),
+                              },
+                            ],
+                          ),
                         ),
                         Text(event.description),
                         const SizedBox(
@@ -88,14 +92,25 @@ class SearchItem extends StatelessWidget {
                               icon: const Icon(Icons.calendar_month),
                               label:
                                   DateFormat("dd.MM.yyyy").format(event.date),
+                              style: const TextStyle(fontSize: 13),
                             ),
                             const SizedBox(
-                              width: 10,
+                              width: 8,
                             ),
                             IconWithText(
                               icon: const Icon(Icons.access_time),
                               label: DateFormat("HH:mm").format(event.date),
+                              style: const TextStyle(fontSize: 13),
                             ),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            if (event.status != EventStatus.notStarted)
+                              IconWithText(
+                                icon: const Icon(Icons.emoji_flags),
+                                label: event.status.displayName,
+                                style: const TextStyle(fontSize: 13),
+                              ),
                           ],
                         ),
                       ],
