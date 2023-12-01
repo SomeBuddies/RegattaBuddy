@@ -8,6 +8,8 @@ import 'package:regatta_buddy/widgets/core/basic_card.dart';
 import 'package:regatta_buddy/widgets/core/icon_with_text.dart';
 import 'package:regatta_buddy/widgets/core/route_preview_map.dart';
 
+import '../../providers/user_provider.dart';
+
 class EventDetailsDisplay extends ConsumerWidget {
   final Event event;
 
@@ -19,6 +21,7 @@ class EventDetailsDisplay extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final placemark = ref.watch(placemarkProvider(event.location));
+    final hostData = ref.watch(userDataProvider(event.hostId));
 
     return BasicCard(
       child: Column(
@@ -73,10 +76,31 @@ class EventDetailsDisplay extends ConsumerWidget {
                 icon: const Icon(Icons.access_time),
                 label: DateFormat("HH:mm").format(event.date),
               ),
+              switch (hostData) {
+                AsyncData(:final value) => IconWithText(
+                    icon: const Icon(Icons.account_circle_rounded),
+                    label: value.firstName,
+                    style: const TextStyle(fontSize: 13),
+                  ),
+                AsyncLoading() => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                _ => const SizedBox.shrink(),
+              },
+            ],
+          ),
+          const SizedBox(
+            height: 15,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
               placemark.when(
                 data: (data) => IconWithText(
                   icon: const Icon(Icons.pin_drop),
-                  label: data.first.locality ?? event.location.toString(),
+                  label: data.first.locality != null
+                      ? '${data.first.postalCode} ${data.first.locality}\nul. ${data.first.street}'
+                      : event.location.toString(),
                 ),
                 error: (error, stackTrace) => Text(event.location.toString()),
                 loading: () => const Center(
@@ -84,7 +108,7 @@ class EventDetailsDisplay extends ConsumerWidget {
                 ),
               ),
             ],
-          ),
+          )
         ],
       ),
     );

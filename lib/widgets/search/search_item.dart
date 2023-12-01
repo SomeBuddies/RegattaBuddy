@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:regatta_buddy/extensions/string_extension.dart';
 import 'package:regatta_buddy/models/event.dart';
 import 'package:regatta_buddy/pages/regatta_details.dart';
 import 'package:regatta_buddy/providers/event_details/placemark_provider.dart';
+import 'package:regatta_buddy/providers/user_provider.dart';
 import 'package:regatta_buddy/widgets/core/icon_with_text.dart';
 import 'package:regatta_buddy/widgets/core/route_preview_map.dart';
 
@@ -18,6 +20,7 @@ class SearchItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final placemark = ref.watch(placemarkProvider(event.location));
+    final hostData = ref.watch(userDataProvider(event.hostId));
 
     return GestureDetector(
       onTap: () => Navigator.of(context).pushNamed(
@@ -81,7 +84,21 @@ class SearchItem extends ConsumerWidget {
                             ],
                           ),
                         ),
-                        Text(event.description),
+                        Text(event.description.toShortened()),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        switch (hostData) {
+                          AsyncData(:final value) => IconWithText(
+                              icon: const Icon(Icons.account_circle_rounded),
+                              label: value.firstName,
+                              style: const TextStyle(fontSize: 13),
+                            ),
+                          AsyncLoading() => const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          _ => const SizedBox.shrink(),
+                        },
                         const SizedBox(
                           height: 10,
                         ),
