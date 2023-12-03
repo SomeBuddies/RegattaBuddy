@@ -25,17 +25,17 @@ class _ReportProblemFormState extends State<ReportProblemForm> {
       key: _formKey,
       child: Column(
         children: [
-          const Text("Describe the problem"),
+          const Text("Opisz problem"),
           const SizedBox(height: 30),
           TextFormField(
             keyboardType: TextInputType.text,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
-              labelText: 'Description',
+              labelText: 'Opis',
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please describe the problem';
+                return 'Opis nie może być pusty';
               }
               return null;
             },
@@ -52,7 +52,7 @@ class _ReportProblemFormState extends State<ReportProblemForm> {
                 );
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text("Reported problem to referee"),
+                    content: Text("Zgłoszono problem"),
                   ),
                 );
                 Navigator.of(context).pop();
@@ -62,7 +62,7 @@ class _ReportProblemFormState extends State<ReportProblemForm> {
               padding: const EdgeInsets.all(15),
             ),
             child: const Text(
-              "Send to referee",
+              "Zgłoś problem",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),

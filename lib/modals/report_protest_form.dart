@@ -35,7 +35,7 @@ class _ProtestFormState extends State<ProtestForm> {
       key: _formKey,
       child: Column(
         children: [
-          const Text("Select a problematic team and describe protest"),
+          const Text("Wybierz drużynę, przeciwko której protestujesz"),
           const SizedBox(height: 20),
           DropdownButton<Team>(
             value: selectedTeam,
@@ -61,11 +61,11 @@ class _ProtestFormState extends State<ProtestForm> {
             keyboardType: TextInputType.text,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
-              labelText: 'Description',
+              labelText: 'Opis',
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter a description';
+                return 'Opis nie może być pusty';
               }
               return null;
             },
@@ -80,7 +80,7 @@ class _ProtestFormState extends State<ProtestForm> {
 
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text("Protest submitted for ${selectedTeam.name}"),
+                    content: Text("Zgłoszono protest przeciwko ${selectedTeam.name}"),
                   ),
                 );
                 Navigator.of(context).pop();
@@ -90,7 +90,7 @@ class _ProtestFormState extends State<ProtestForm> {
               padding: const EdgeInsets.all(15),
             ),
             child: const Text(
-              "Send to referee",
+              "Zgłoś protest",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
