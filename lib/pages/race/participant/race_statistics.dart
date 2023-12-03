@@ -71,7 +71,7 @@ class _RaceStatisticsState extends ConsumerState<RaceStatistics> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  "Round",
+                  "Runda",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20,
@@ -104,7 +104,7 @@ class _RaceStatisticsState extends ConsumerState<RaceStatistics> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  "Time",
+                  "Czas",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20,
@@ -125,7 +125,7 @@ class _RaceStatisticsState extends ConsumerState<RaceStatistics> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  "Current Speed",
+                  "Aktualna prędkość",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20,
@@ -133,7 +133,6 @@ class _RaceStatisticsState extends ConsumerState<RaceStatistics> {
                   ),
                 ),
                 Text(
-                  // todo VALUE HERE
                   "${currentSpeed.toStringAsFixed(2)}km/h",
                   style: const TextStyle(
                     color: Colors.black,
