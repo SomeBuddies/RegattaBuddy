@@ -234,7 +234,7 @@ Future<void> showProtestDialog(
 
   List<Team> teams = await repo.getTeams();
 
-  if (context.mounted) {
+  if (context.mounted && teams.length > 1) {
     await showDialog(
       barrierDismissible: true,
       context: context,
