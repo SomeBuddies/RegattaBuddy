@@ -57,7 +57,7 @@ class _EventStatisticsState extends ConsumerState<EventStatistics> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  "Time",
+                  "Czas",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20,
@@ -81,7 +81,7 @@ class _EventStatisticsState extends ConsumerState<EventStatistics> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      "Round",
+                      "Runda",
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 20,
