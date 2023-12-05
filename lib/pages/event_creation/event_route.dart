@@ -97,7 +97,10 @@ class _EventRouteSubPageState extends State<EventRouteSubPage> {
                 .map(
                   (complexMarker) => ListTile(
                     key: complexMarker.marker.key,
-                    title: Text(complexMarker.marker.point.toString()),
+                    title: Text(
+                      complexMarker.marker.point.toSexagesimal(),
+                      style: TextStyle(fontSize: 13),
+                    ),
                     tileColor: complexMarker.color,
                     trailing: IconButton(
                       icon: const Icon(Icons.delete),

@@ -70,9 +70,9 @@ class _RaceStatisticsState extends ConsumerState<RaceStatistics> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  "Runda",
-                  style: TextStyle(
+                Text(
+                  currentRound == 0 ? "Przygotowania" : "Runda",
+                  style: const TextStyle(
                     color: Colors.black,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -82,7 +82,7 @@ class _RaceStatisticsState extends ConsumerState<RaceStatistics> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "$currentRound",
+                      currentRound == 0 ? "" : "$currentRound",
                       style: const TextStyle(
                         color: Colors.black,
                         fontSize: 20,

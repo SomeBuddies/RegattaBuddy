@@ -80,16 +80,16 @@ class _EventStatisticsState extends ConsumerState<EventStatistics> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      "Runda",
-                      style: TextStyle(
+                    Text(
+                      currentRound == 0 ? "Przygotowania" : "Runda",
+                      style: const TextStyle(
                         color: Colors.black,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                      "$currentRound",
+                      currentRound == 0 ? "" : "$currentRound",
                       style: const TextStyle(
                         color: Colors.black,
                         fontSize: 20,

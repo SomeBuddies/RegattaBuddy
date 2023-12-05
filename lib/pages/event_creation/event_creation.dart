@@ -46,6 +46,10 @@ class _EventCreationPageState extends ConsumerState<EventCreationPage> {
             changeDescription,
             changeDate,
             changeTime,
+            eventName,
+            eventDescription,
+            eventDate,
+            eventTime,
           ),
       () => EventRouteSubPage(
             markers,

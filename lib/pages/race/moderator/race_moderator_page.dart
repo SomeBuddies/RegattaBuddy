@@ -254,7 +254,7 @@ class _RaceModeratorPageState extends ConsumerState<RaceModeratorPage> {
       raceActions.add(
         ActionButton(
           iconData: Icons.timer_sharp,
-          title: "Zakończ rundę $round",
+          title: round == 0 ? "Zakończ przygotowania" : "Zakończ rundę $round",
           onTap: () =>
               ref.read(eventMessageSenderProvider).finishRound(event.id, round),
         ),
