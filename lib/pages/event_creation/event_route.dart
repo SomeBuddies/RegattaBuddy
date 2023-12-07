@@ -37,6 +37,7 @@ class _EventRouteSubPageState extends State<EventRouteSubPage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        const Text("Utwórz trasę przytrzymując palcem punkty na mapie"),
         Flexible(
           child: FlutterMap(
             mapController: _mapController,
