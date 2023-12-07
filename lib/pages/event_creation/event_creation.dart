@@ -113,7 +113,7 @@ class _EventCreationPageState extends ConsumerState<EventCreationPage> {
   void finishEventCreation() {
     final userId = ref.read(firebaseAuthProvider).currentUser?.uid;
 
-    if (userId == null) return;
+    if (userId == null || markers.isEmpty) return;
 
     Event event = Event(
       hostId: userId,
